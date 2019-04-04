@@ -1,0 +1,44 @@
+/* reset */
+@import "./zanui/zanui.wxss";
+@import "./utils/animate.wxss";
+/* view ,image{
+  touch-action: none;
+} */
+page {
+  background-color: #f3f3f3;
+  height: 100%;
+  font-size: 28rpx;
+  line-height: 1.6;
+  font-family: "PingFangSC-Regular",
+                 "\5FAE\8F6F\96C5\9ED1",
+                 "Helvetica Neue",
+                 "Helvetica",
+                 "STHeiti",
+                 "Droid Sans";
+}
+
+checkbox, radio {
+  margin-right: 10rpx;
+}
+
+button {
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  font-size: 16px;
+}
+
+form {
+  width: 100%;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.clear {
+  clear: both;
+}
+
+.hide{
+  display: none;
+}
