@@ -1,0 +1,95 @@
+@import '/pages/detail/detail.wxss';
+
+.red {
+  font-size: 36rpx !important;
+  font-weight: 800 !important;
+  color: #f40000 !important;
+}
+
+.question-index .article {
+  margin-bottom: 14rpx;
+}
+
+.question-index .article-ext-info {
+  font-size: 24rpx;
+  justify-content: left;
+  position: relative;
+}
+
+.article-ext-info .ext.btn {
+  position: absolute;
+  bottom: 2rpx;
+  right: 0;
+  padding: 6rpx 12rpx;
+  border-radius: 30rpx;
+  color: #fff;
+  background-color: #00c481;
+  font-size: 30rpx;
+  line-height: 120%;
+}
+.article-ext-info .text-green{
+  padding: 0 6rpx;
+}
+
+.question-index .article-ext-info text {
+  margin-right: 30rpx;
+  height: 36rpx;
+  /* line-height: 60rpx; */
+}
+
+.zan-loadmore--nomore .zan-loadmore__tips {
+  top: -11px;
+}
+
+.zan-loadmore {
+  margin: 14px auto 20rpx;
+}
+
+.answer {
+  background-color: #eee;
+  color: #646464;
+  padding: 20rpx 10rpx;
+  font-size: 24rpx;
+  position: relative;
+}
+
+.answer-text {
+  font-weight: 600;
+  color: #aaa;
+}
+
+.answer-abs {
+  position: absolute;
+  right: 12%;
+  bottom: 116rpx;
+  width: 120rpx;
+  height: 120rpx;
+}
+
+.article-text.rich-text {
+  padding: 20rpx 0;
+}
+
+.images {
+  display: flex;
+}
+
+.images .li {
+  width: 33%;
+  height: 156rpx;
+  box-sizing: border-box;
+  margin: 10rpx;
+  background-size: cover;
+  background-position: center center;
+}
+text.cars{
+  font-size: 22rpx;
+  padding: 2rpx 8rpx ;
+  border: 2rpx solid #76ceaf;
+  border-radius: 4rpx;
+  height: 36rpx !important;
+  line-height: 36rpx !important;
+}
+.question-index .article-ext-info text text{
+  margin-right: 0;
+}

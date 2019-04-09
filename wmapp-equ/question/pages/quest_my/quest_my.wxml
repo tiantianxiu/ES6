@@ -1,0 +1,89 @@
+<import src="/zanui/loadmore/index.wxml" />
+
+<navBar navbar-data='{{navbarData}}'></navBar>
+  <loading hidden="{{loading_hidden}}">
+    {{loading_msg}}
+  </loading>
+  <view style="height: {{heightMt}}px"></view>
+
+<view class="page-body" >
+  <view class="my-money-header">
+    <view class="em">余额（元）</view>
+    <view class="span">{{balance}}元</view>
+  </view>
+
+
+   <view >
+    <view class="my-quest">
+      <view class="list"  bindtap="todetail" data-item="quest_quest_my">
+        <text>提问记录</text>
+        <text class="navigator-arrow"></text>
+      </view>
+      <view class="list" bindtap="todetail" data-item="quest_answer_my">
+        <text>回答记录</text>
+        <text class="navigator-arrow"></text>
+      </view>
+
+    </view>
+  </view>
+
+  <view class="my-money-content">
+    <view class="section-wrap">
+      <view class="section-title section-ext">
+        <text class="title">余额明细</text>
+      </view>
+      <view class="money-detail">
+        <view class="money-record {{budget4.length == 0 ? '' : 'active'}}">
+          <view class="record-header" bindtap="budgetap" data-item="budget4" data-id="4">提现</view>
+
+          <view class="record-content" wx:for="{{budget4}}" wx:key="{{index}}" wx:for-item="item">
+            <view class="list">
+              {{item.dateline}}
+            </view>
+            <view class="text texted">-{{item.price}}</view>
+          </view>
+
+        </view>
+
+
+        <view class="money-record {{budget2.length == 0 ? '' : 'active'}}">
+          <view class="record-header" bindtap="budgetap" data-item="budget2" data-id="2">回答被采纳</view>
+
+          <view class="record-content" wx:for="{{budget2}}" wx:key="{{index}}" wx:for-item="item">
+            <view class="list">
+              {{item.dateline}}
+            </view>
+            <view class="text">+{{item.price}}</view>
+          </view>
+
+        </view>
+
+        <view class="money-record {{budget3.length == 0 ? '' : 'active'}}">
+          <view class="record-header" bindtap="budgetap" data-item="budget3" data-id="3">提问支出</view>
+
+          <view class="record-content" wx:for="{{budget3}}" wx:key="{{index}}" wx:for-item="item">
+            <view class="list">
+              {{item.dateline}}
+            </view>
+            <view class="text texted">-{{item.price}}</view>
+          </view>
+
+        </view>
+      </view>
+    </view>
+    <view class="cash-fixed {{balance > 2 ? 'active' : '' }}" bindtap="{{balance > 2 ? 'cashTap' : 'isCashTap' }}">
+      <text>提现</text>
+    </view>
+  </view>
+</view>
+
+<block wx:if="{{wtCash}}">
+  <view class="get-money">
+    <view class="title">您的余额将会提现到微信零钱中</view>
+    <view class="select">
+      <text bindtap="cashTap">取消</text>
+      <text bindtap="havCashTap" class="active" >确定</text>
+    </view>
+  </view>
+  <view class="mask"></view>
+</block>

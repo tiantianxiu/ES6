@@ -1,0 +1,155 @@
+<import src="/zanui/loadmore/index.wxml" />
+<navBar navbar-data="{{navbarData}}"></navBar>
+
+<form bindsubmit="formSubmit" report-submit="{{true}}">
+  <view style="margin-top:{{heightMt}}px">
+    <loading hidden="{{loading_hidden}}">
+      {{loading_msg}}
+    </loading>
+    <view class="ask-content">
+      <view class="posting-title">提问赏金</view>
+
+      <view class="ask-money">
+        <block wx:for="{{moneys}}" wx:for-item="item" wx:key="{{index}}">
+          <button formType="submit" class='form-btn' plain="{{true}}" bindtap="addMoney" data-val="{{item}}">
+            <view class="list {{fee == item && !diy ? 'active':''}}">{{item}}元</view>
+          </button>
+        </block>
+        <view class="list diy-list" bindtap="diyMoney">
+          <block wx:if="{{!diy}}">
+            <text>自定义</text>
+          </block>
+          <block wx:else>
+            <input placeholder-class="place-class" placeholder="" bindinput="setDiyFee" focus="{{true}}" value="{{price || diy_fee}}" type="number" style="font-size: 12px;" bindblur="diyMoneyBlur" bindfocus="diyMoneyFocus"></input>
+          </block>
+        </view>
+      </view>
+
+    </view>
+
+    <view class="ask-content" bindtap="addCar">
+      <button formType="submit" class='form-btn' plain="{{true}}">
+        <view class="posting-title">
+          咨询车型
+          <text>（可以不选）</text>
+          <view class="navigator-arrow">{{my_car}}</view>
+        </view>
+      </button>
+    </view>
+
+    <view class="ask-content">
+      <view class="posting-title">
+        填写提问
+      </view>
+      <view class="content-wrap">
+        <view class="textarea-wrap">
+
+          <view class="textarea">
+            <button formType="submit" class='form-btn' style="height: 100%;" plain="{{true}}">
+              <textarea wx:if="{{!carModelShow && !quest_success && !carsShow && !show_clause}}" bindinput="inputContent" maxlength="-1" focus="{{focus}}" value="{{message}}">
+              </textarea>
+            </button>
+          </view>
+
+          <view class="">
+            <view class="imgs">
+              <block wx:for="{{imageList}}" wx:key="{{index}}" wx:for-item="item">
+
+                <view class="img-li">
+                  <image src="{{item.url}}" data-src="{{item.url}}">
+                  </image>
+                  <view data-index="{{index}}" class="img-minus" bindtap="delImg"></view>
+                </view>
+              </block>
+              <button formType="submit" class='form-btn' plain="{{true}}" bindtap="chooseImage">
+
+                <view class="add-img"> </view>
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="ask-content" style="margin-bottom: 0;">
+      <view class="posting-title">
+        谁可以答
+      </view>
+      <view class="who">
+        <button formType="submit" class='form-btn' plain="{{true}}" style="margin-right: 30rpx;" bindtap="appoint" data-item="all">
+          <view class="member-tag {{member_tag == 0 ? 'active':''}}" >所有人</view>
+        </button>
+        <button formType="submit" class='form-btn' plain="{{true}}" style="margin-right: 30rpx;" bindtap="appoint" data-item="allOfNo">
+          <view class="member-tag {{member_tag != 0 ? 'active':''}}" >指定车主</view>
+        </button>
+      </view>
+      <view class="cars-arr" wx:if="{{cars_arr.length > 0}}">
+
+        <block wx:for="{{cars_arr}}" wx:for-item="item" wx:key="{{index}}">
+          <view class="li" bindtap="carsArrTap" data-item="{{item}}">
+            {{item}}
+            <view data-index="{{index}}" class="img-minus" bindtap="delImg"></view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <view bindtap="clauseTap" bindtap="clauseAgree">
+      <view class="mask-text">
+        <button formType="submit" class='form-btn' plain="{{true}}" style="display: inline-block;">
+          <icon type="success" size="14" color="{{clause_agree ? 'red' : 'grey'}}" />我已阅读并同意
+        </button>
+        <button formType="submit" class='form-btn' plain="{{true}}" catchtap="showClause" style="display: inline-block;">
+          <text hover-stop-propagation="{{true}}">《用户须知》</text>
+        </button>
+      </view>
+    </view>
+    <!-- <view class="put-quest" bindtap="payFee">支付（￥0.01）</view> -->
+
+    <block wx:if="{{!clause_agree}}">
+     <button formType="submit" class='form-btn' plain="{{true}}">
+      <view class="put-quest" bindtap="askQuestNone">提交问题（￥{{fee || 0.00}}）</view>
+      </button>
+    </block>
+    <block wx:else>
+      <button formType="submit" class='form-btn' plain="{{true}}">
+        <view class="put-quest active" bindtap="askQuest">提交问题（￥{{fee || 0.00}}）</view>
+      </button>
+    </block>
+
+  </view>
+
+  <!-- 车型 -->
+  <carModel carModelShow="{{carModelShow}}" hasQuest="{{true}}" bindcarModelInfo="carModelInfo" bindaddCar="addCar"></carModel>
+  <!-- 车主 -->
+  <cars id="cars" carsShow="{{carsShow}}" bindcarsInfo="carsInfo" bindappoint="appoint"></cars>
+
+  <!-- <view class="quest-success animated {{quest_success ? 'slideInRight' : ''}}" wx:if="{{quest_success}}"> -->
+  <view class="quest-success animated {{quest_success ? 'slideInRight' : ''}}" wx:if="{{quest_success}}">
+    <image src="http://cdn.e-power.vip/resources/image/question/quest_success.png"></image>
+      <view class="navbar">
+        <button formType="submit" class='form-btn li' plain="{{true}}" bindtap="questiontap" data-item="question">
+          问答首页
+        </button>
+        <button formType="submit" class='form-btn li' plain="{{true}}" bindtap="questiontap" data-item="quest_detail" data-id="{{sid}}">
+          查看问题
+        </button>
+
+      </view>
+  </view>
+  <view wx:if="{{show_clause}}">
+    <view class="clause">
+      <view class="header">免责条款</view>
+      <view class="content">
+        <view class="title">用户须知</view>
+        <text>1、提问超3天仍没采纳，系统将自动采纳第一位回答者；</text>
+        <view></view>
+        <text>2、提问若违反互联网相关法律法规，将对其删除所付赏金无法退还；</text>
+      </view>
+      <!-- <view class="footer" catchtap="showClause"> -->
+      <button formType="submit" class='form-btn footer' plain="{{true}}" bindtap="showClause">
+        我知道了
+      </button>
+      <!-- </view> -->
+    </view>
+    <view class="mask"></view>
+  </view>
+  </form>
