@@ -66,9 +66,7 @@
         "pages/quest_ask/quest_ask",
         "pages/quest_dialogue/quest_dialogue",
         "pages/quest_quest_my/quest_quest_my",
-        "pages/quest_answer_my/quest_answer_my",
-        "pages/my_money/my_money",
-        "pages/poll/poll"
+        "pages/quest_answer_my/quest_answer_my"
       ]
     },
     {
@@ -84,7 +82,7 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#00c481",
     "navigationBarTitleText": "E区-新能源车主社区",
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false,
     "backgroundColor": "#00c481",
     "navigationStyle": "custom"
@@ -127,7 +125,7 @@
     ]
   },
   "networkTimeout": {
-    "request": 7000,
+    "request": 6000,
     "connectSocket": 20000,
     "uploadFile": 15000,
     "downloadFile": 15000

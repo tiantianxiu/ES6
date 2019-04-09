@@ -41,6 +41,19 @@ App({
       })
     })
   },
+  formSubmit: function (e) {  //收集FORMID
+    const that = this
+    console.log(e)
+    if (e.detail.formId != 'the formId is a mock one') {
+      request('post', 'add_form_id.php', {
+        token: wx.getStorageSync("token"),
+        form_id: e.detail.formId
+      }).then((res) => {
+        if (res != 0)
+          return
+      })
+    }
+  },
   get_code: function() {
     const that = this
     return new Promise(function(resolve, reject) {
@@ -253,13 +266,16 @@ App({
   },
   wxGetUpdateManager: function() {
     const updateManager = wx.getUpdateManager()
+
     updateManager.onCheckForUpdate(function(res) {
       // 请求完新版本信息的回调
       // console.log(res.hasUpdate)
     })
+
     updateManager.onUpdateReady(function() {
       updateManager.applyUpdate()
     })
+
     updateManager.onUpdateFailed(function() {
       // 新版本下载失败
     })
@@ -280,7 +296,6 @@ App({
             that.globalData.is_android = 1
           resolve(res.windowHeight)
           that.globalData.windowHeight = res.windowHeight
-          that.globalData.windowWidth = res.windowWidth
           //获取设备顶部窗口的高度（不同设备窗口高度不一样，根据这个来设置自定义导航栏的高度）
           that.globalData.heightMt = res.statusBarHeight
         }
@@ -350,12 +365,23 @@ App({
       })
     })
   },
+  formIdSubmit: function (e) {
+    const that = this
+    request('post', 'send_template_msg.php', {
+      token: wx.getStorageSync("token"),
+      typeid: e.pid,
+      tid: e.tid,
+      type: e.type,
+      uid: e.uid || 0
+    })
+  },
   // 是否被禁言了
   canAddThread: function(e) {
     const that = this
     return new Promise(function(resolve, reject) {
       request('post', 'is_can_add_thread.php', {
-        token: wx.getStorageSync("token"),
+        token: wx.getStorageSync("token")
+        // token: ''
       }).then((res) => {
         const status = res.data.status
         if (status == 0) {
@@ -388,12 +414,10 @@ App({
   globalData: {
     shareTitle: 'E区-新能源车主社区',
     base_url: 'http://www.e-power.vip/',
-    svr_url: 'https://api.mongo123.com/',
-    // svr_url: 'https://api.e-power.vip/',
+    svr_url: 'https://api.e-power.vip/',
     userInfo: null,
     lite_switch: false,
     windowHeight: '',
-    windowWidth: '',
     share: false, //判断是否从分享过来的
     heightMt: 0,
     carType: '',

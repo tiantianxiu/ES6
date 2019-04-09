@@ -18,20 +18,20 @@
               <view class="title">热门围观</view>
               <view class="content">
                 <view class="av" bindtap="picTap" data-typeid="67" data-class_name="#315专题#">
-                  <image src=http://cdn.e-power.vip/resources/image/square/square11.jpg " mode="aspectFill "></image>
+                  <image src=http://cdn.e-power.vip/resources/image/square/square11.jpg" mode="aspectFill"></image>
               </view>
-              <view class="av " bindtap="toTopicDetail " data-fid="120 ">
-                <image src="http://www.e-power.vip/data/attachment/common/da/common_120_icon.jpg " mode="aspectFill "></image>
+              <view class="av" bindtap="toTopicDetail" data-fid="120">
+                <image src="http://www.e-power.vip/data/attachment/common/da/common_120_icon.jpg" mode="aspectFill"></image>
                 </view>
-                <view class="av " bindtap="toTopicDetail " data-fid="109 ">
-                  <image src="http://www.e-power.vip/data/attachment/common/27/common_109_icon.jpg " mode="aspectFill "></image>
+                <view class="av" bindtap="toTopicDetail" data-fid="109">
+                  <image src="http://www.e-power.vip/data/attachment/common/27/common_109_icon.jpg" mode="aspectFill"></image>
               </view>
-              <view class="av " bindtap="toTopicDetail " data-fid="99 ">
-                <image src="http://www.e-power.vip/data/attachment/common/ac/common_99_icon.png " mode="aspectFill "></image>
+              <view class="av" bindtap="toTopicDetail" data-fid="99">
+                <image src="http://www.e-power.vip/data/attachment/common/ac/common_99_icon.png" mode="aspectFill"></image>
                 </view>
               </view>
             </view>
-            <view class="li " wx:if="{{member.length>0}}">
+            <view class="li" wx:if="{{member.length > 0}}">
                     <view class="title">
                       暗中观察
                       <view class="sex">
@@ -58,7 +58,7 @@
                 <view class="list">
                   <view class="author-info" data-uid="{{item.authorid}}" bindtap="toUserDetail">
                     <view class="author">
-                      <image src="{{item.avatar}}" mode="aspectFill"  />
+                      <image src="{{item.avatar}}" mode="aspectFill" />
                     </view>
                     <image class="icon-width icon-width-l icon-v4" src="http://cdn.e-power.vip/resources/image/icon-v2.png" wx:if="{{item.level=='自媒体' || item.level=='新能源砖家' || item.is_carvip==1 || item.is_auth_car_icon==1 }}" />
                     <view class="author-name">
@@ -87,7 +87,7 @@
                       <text class="message-more" wx:if="{{item.message_more}}">全文</text>
                     </view>
 
-                    <view class="images" wx:if="{{item.image_list.length> 0}}">
+                    <view class="images images{{item.image_list.length}}" wx:if="{{item.image_list.length> 0}}">
                       <block wx:for="{{item.image_list}}" wx:for-item="images" wx:key="{{index}}">
                         <block wx:if="{{item.attachment == 1}}">
                           <view class="images-for-image images-for-video" bindtap="toDetail" data-tid="{{item.tid}}">
@@ -103,7 +103,7 @@
                             <image src="{{images}}" mode="aspectFill" ></image>
                           </view>
                           <view class="images-for" hover-stop-propagation="{{true}}" catchtap="imagesFor" data-images="{{item.image_list}}" data-url="{{images}}" wx:else>
-                            <image src="{{images}}" mode="aspectFill"></image>
+                            <image src="{{images}}"  mode="aspectFill"></image>
                           </view>
                         </block>
                       </block>

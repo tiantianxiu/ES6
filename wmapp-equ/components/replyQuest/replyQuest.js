@@ -74,16 +74,11 @@ Component({
     },
     formSubmit: function(e) { 
       const that = this
-      let form_id = e.detail.formId
-      let data = {
-        form_id: form_id
-      }
-      that.submitMessage(data)
+      app.formSubmit(e)
     },
     // 回复贴子
-    submitMessage: function(e) {
+    submitMessage: function() {
       var that = this
-      let form_id = e.form_id
       app.canAddThread(true).then((re) => {
         if (!re)
           return
@@ -115,7 +110,6 @@ Component({
               message: message,
               aidList: aidList,
               attachment: attachment,
-              form_id: form_id
             } // detail对象，提供给事件监听函数 
            
             that.triggerEvent('addPost', addPostDetail)

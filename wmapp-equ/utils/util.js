@@ -1,3 +1,4 @@
+
 function formatTime(date) {
   var year = date.getFullYear()
   var month = date.getMonth() + 1
@@ -28,7 +29,7 @@ function request(method, url, data) {
       success: function(res) {
         if (res.data.err_code == 0) {
           resolve(res.data)
-          if (url != 'get_token.php') {
+          if (url != 'get_token.php'){
             app.globalData.num = 0
           }
         }
@@ -36,21 +37,21 @@ function request(method, url, data) {
         else if (app.globalData.num < 2 && res.data.err_code == 10001 || res.data.err_code == 10003 || res.data.err_code == 10004 || res.data.err_code == 10011) {
           app.globalData.num = app.globalData.num + 1 //限制次数增加
           app.get_token().then((res) => {
-            data.token = res.token
-            request(method, url, data).then((res) => {
-              if (res.err_code == 0) {
-                app.globalData.num = 0
-                resolve(res)
-              } else {
-                resolve(res)
-                // getApp().showSvrErrModal(res)
-              }
+              data.token = res.token
+              request(method, url, data).then((res) => {
+                if (res.err_code == 0) {
+                  app.globalData.num = 0
+                  resolve(res)
+                } else {
+                  resolve(res)
+                  // getApp().showSvrErrModal(res)
+                }
+              })
             });
-          });
         } else if (app.globalData.num >= 2) {
           resolve(res)
         } else {
-
+          
           resolve(res)
           if (res.data.err_code != 10001)
             app.showSvrErrModal(res)
@@ -60,8 +61,13 @@ function request(method, url, data) {
 
         app.showErrModal("请求超时，请检查您的网络！")
           .then(() => {
-            wx.reLaunch({
-              url: '/pages/index/index'
+           
+            request(method, url, data).then((res) => {
+              if (res.err_code == 0) {
+                resolve(res)
+              } else {
+                resolve(res)
+              }
             })
           })
 
@@ -86,9 +92,9 @@ function uploadFile(method, url, filePath, name, formData) {
 
         if (res.err_code == 0) {
           resolve(res)
-          if (url != 'get_token.php')
+          if (url != 'get_token.php') 
             getApp().globalData.num = 0
-
+          
         } else if (res.err_code == 10001 && getApp().globalData.num < 2) {
           getApp().globalData.num++ //限制次数增加
 
@@ -168,7 +174,7 @@ function transformPHPTime(time) {　
       return '刚刚'
     return parseInt(disparity / 60000) + '分钟前'
   }
-  if (disparity < 86400000) {
+  if (disparity < 86400000){
     return parseInt(disparity / 3600000) + '小时前'
   }
   var date = new Date(timestime);
@@ -177,28 +183,7 @@ function transformPHPTime(time) {　
   let D = date.getDate() + ' ';　　　　
   return Y + M + D
 }
-// 倒计时
-function oldTime(timechage) {
-  var oDate = Date.parse(new Date()) /1000
-  var timechages = (parseInt(timechage) - oDate) * 1000
-  if (timechages <= 0){
-    return 0
-  }
-  var oDates = new Date(timechages)
- 
-  var oMinutes = oDates.getMinutes();
-  //获取秒数
-  var oSeconds = oDates.getSeconds();
-  //获取分钟
-  var oHours = parseInt((parseInt(timechage) - oDate - oMinutes * 60 - oSeconds) / (60 * 60))
-  //获取小时
 
-  var b = p(oHours) + ":" + p(oMinutes) + ":" + p(oSeconds);
-  return b
-}
-function p(n) {
-  return n < 10 ? '0' + n : n;
-}
 
 
 
@@ -211,6 +196,5 @@ module.exports = {
   uploadFile,
   contains,
   uTS,
-  transformPHPTime,
-  oldTime
+  transformPHPTime
 }

@@ -235,6 +235,7 @@ Page({
   },
   chooseLocation: function(res) {
     const that = this
+    console.log(res)
     if (!res.address) {
       that.setData({
         address: '',

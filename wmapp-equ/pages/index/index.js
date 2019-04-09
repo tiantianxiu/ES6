@@ -2,40 +2,9 @@ var app = getApp()
 import {
   request
 } from '../../utils/util.js'
-const winWidth = app.globalData.windowWidth
-const winHeight = app.globalData.windowHeight
 
-Page({ 
+Page({
   data: {
-    // 滑动
-    
-    currentTab: 0, //预设当前项的值
-    scrollLeft: 0, //tab标题的滚动条位置
-    expertList: [{ //假数据
-      img: "avatar.png",
-      name: "欢顔",
-      tag: "知名情感博主",
-      answer: 134,
-      listen: 2234
-    }],
-    scrollTop: 5,
-
-    // 卡片
-    x: winWidth,
-    y: winHeight,
-    distance: "",
-    animationData: {},
-    content: [{
-      "value": ''
-    }, {
-      "value": ''
-    }, {
-      "value": ''
-    }, {
-      "value": ''
-    }],
-    // 卡片end
-
     tab: 'recommend',
     loading_hidden: true,
     loading_msg: '加载中...',
@@ -96,83 +65,8 @@ Page({
       showCapsule: 0, //是否显示左上角图标,
       isIndex: 1
     }
-  },
-  loadMore() { // 触底加载更多
-    // let len = this.data.list.length,
-    //   lastItem = this.data.list[len - 1];
-    // for (let i = 0; i < len; i++) {
-    //   this.data.list.push(lastItem + i + 1)
-    //   this.setData({
-    //     'list': this.data.list
-    //   })
-    // }
-    console.log(66666)
-  },
 
-  // onPullDownRefresh() {
-  //   // 监听该页面用户下拉刷新事件
-  //   // 可以在触发时发起请求，请求成功后调用wx.stopPullDownRefresh()来结束下拉刷新
-  //   console.log('下拉拉拉')
-  // },
-  refresh() { // 函数式触发开始下拉刷新。如可以绑定按钮点击事件来触发下拉刷新
-    wx.startPullDownRefresh({
-      success(errMsg) {
-        console.log('开始下拉刷新', errMsg)
-      },
-      complete() {
-        console.log('下拉刷新完毕')
-      }
-    }) 
   },
-
-  scrollFn(e) {
-    // console.log(9999)
-    // 防抖，优化性能
-    // 当滚动时，滚动条位置距离页面顶部小于设定值时，触发下拉刷新
-    // 通过将设定值尽可能小，并且初始化scroll-view组件竖向滚动条位置为设定值。来实现下拉刷新功能，但没有官方的体验好
-    clearTimeout(this.timer)
-    const that = this
-    let scrollTop = e.detail.scrollTop
-    if(scrollTop < -50){
-      that.loadMore()
-    }
-    if (e.detail.scrollTop < this.data.scrollTop) {
-      this.timer = setTimeout(() => {
-        this.refresh()
-      }, 350)
-    }
-  },
-
-  // 滚动切换标签样式
-  switchTab: function (e) {
-    this.setData({
-      currentTab: e.detail.current
-    });
-    this.checkCor();
-  },
-  // 点击标题切换当前页时改变样式
-  swichNav: function (e) {
-    var cur = e.target.dataset.current;
-    if (this.data.currentTaB == cur) { return false; }
-    else {
-      this.setData({
-        currentTab: cur
-      })
-    }
-  },
-  //判断当前滚动超过一屏时，设置tab标题滚动条。
-  checkCor: function () {
-    if (this.data.currentTab > 4) {
-      this.setData({
-        scrollLeft: 300
-      })
-    } else {
-      this.setData({
-        scrollLeft: 0
-      })
-    }
-  },
-
   onLoad: function(options) {
     const that = this
     if (options.tab) {
@@ -180,15 +74,6 @@ Page({
         tab: options.tab,
       })
     }
-    var res = wx.getSystemInfoSync();
-    var winWidth = res.windowWidth;
-    var winHeight = res.windowHeight;
-    that.setData({
-      x: winWidth,
-      y: winHeight,
-      winHeight: winHeight
-    })
-
     that.getOnline()
     that.reloadIndex()
 
@@ -228,42 +113,11 @@ Page({
       wx.navigateTo({
         url: `/pages/${shareName}/${shareName}?id=${shareId}`
       })
+
+
     }
-   
-  },
-  tap: function(e) {
-    var that = this;
-    var distance = that.data.distance
-    let index = e.currentTarget.dataset.index
-    let imgRecommend = that.data.imgRecommend
-    let imgRecommends = that.data.imgRecommends,
-      length = imgRecommends.length
-    if (distance > (winWidth + winWidth / 5)) {
-      // app.showSelModal('dddddd').then(() => {
-        that.setData({
-          [`imgRecommends[${length - index - 1}]x`]: winWidth * 2
-        })
-      // })
-    } else if (distance < (winWidth - winWidth / 5)) {
-      // app.showSelModal('ccccccc').then(() => {
-        that.setData({
-          [`imgRecommends[${length - index -1}]x`]: 0
-        })
-      // })
-    } else {
-      that.setData({
-        [`imgRecommends[${length - index - 1}]x`]: winWidth,
-        [`imgRecommends[${length - index - 1}]y`]: winHeight
-      })
-    }
-  },
-  onChange: function(e) {
-    var that = this
-
-    that.data.distance = e.detail.x
 
   },
-
   onReachBottom: function() {
     var that = this;
     if (that.data.tab == 'recommend') {
@@ -284,6 +138,7 @@ Page({
     that.setLoding()
     that.setPageScrollToTop()
     that.setData({
+      page_index: 0,
       page_CarVipIndex: 0,
       page_userindex: 0,
       page_ForumlistIndex: 0,
@@ -539,18 +394,9 @@ Page({
       type: 1
     }).then((res) => {
       let imgRecommend = res.data.banner_data
-      let imgRecommends = []
-      for (let i in imgRecommend) {
-        imgRecommend[i].x = winWidth
-        imgRecommend[i].y = winHeight
-        imgRecommend[i].idx = i
-        imgRecommends.splice(0,0,imgRecommend[i])
-      }
-
       that.setData({
         bannerArticleList: res.data.displayorder_data,
-        imgRecommend: imgRecommend,
-        imgRecommends: imgRecommends
+        imgRecommend: imgRecommend
       })
       that.getMyMsgNum()
     });
@@ -899,16 +745,14 @@ Page({
   },
 
   /* 下拉刷新 */
-  // onPullDownRefresh: function() {
-  //   const that = this
-  //   if (that.data.tab == 'recommend') {
-  //     that.recommendPullDown()
-  //   } else {
-  //     that.reloadIndex()
-  //   }
-  //   wx.stopPullDownRefresh();
+  onPullDownRefresh: function() {
+    const that = this
 
-  // },
+    that.reloadIndex()
+
+    wx.stopPullDownRefresh()
+
+  },
 
   /* 分享 */
   onShareAppMessage: function(res) {
@@ -972,6 +816,7 @@ Page({
   },
   onNODone: function() {
     app.wxShowToast('该功能开发中...', 1500, 'none')
+    // app.wxShowToast('您不是该认证车型的车主，您可以尽快去认证', 1500, 'none')
   },
   questionTap: function() {
     wx.navigateTo({
@@ -1005,8 +850,8 @@ Page({
     //   showCoverId: pid == showCoverId ? 0 : showCoverId
     // })
   },
-  dd: function(e) {
-console.log(e)
+  dd: function() {
+
   },
   exitFullScreen: function(e) {
     const that = this

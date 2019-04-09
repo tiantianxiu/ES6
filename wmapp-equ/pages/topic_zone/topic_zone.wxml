@@ -38,7 +38,7 @@
                     <view class="images-for-image" wx:if="{{item.image_list.length==1}}">
                       <image src="{{images}}" mode="aspectFit" ></image>
                     </view>
-                    <view class="images-for " style="background-image: url({{images}})" wx:else>
+                    <view class="images-for" style="background-image: url({{images}})" wx:else>
                     </view>
                   </block>
                 </view>

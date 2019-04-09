@@ -63,7 +63,6 @@ Page({
       '30-50万',
       '50万以上'
     ],
-    showShareBox: false,
     is_share: 0, //分享页面前后，管理员按钮是否存在 1是存在 0是分享中不存在
     heightMt: app.globalData.heightMt + 20 * 2,
     navbarData: {
@@ -96,14 +95,14 @@ Page({
     if (options.reply) {
       reply = options.reply
     }
-    this.setData({
+    that.setData({
       tid: tid,
       new_reader: 1,
       reply: reply
     })
 
     if (options.messagePid) {
-      this.setData({
+      that.setData({
         messagePid: options.messagePid
       })
     }
@@ -121,13 +120,7 @@ Page({
       loading_hidden: false,
       loading_msg: '加载中...'
     })
-    that.getPostDetail()
-    wx.onUserCaptureScreen(function (res) {
-      console.log('用户截屏了')
-      that.setData({
-        showShareBox: true
-      })
-    })
+    that.getPostDetail();
   },
 
   // 管理员点开所有设置
@@ -289,7 +282,6 @@ Page({
           getTops: getTops
         })
       }
-
       that.setData({
         thread_data: thread_data,
         is_zan: thread_data.is_zan,
@@ -297,7 +289,6 @@ Page({
         authorId: thread_data.authorid,
         new_reader: 0,
         is_admin: thread_data.is_admin,
-        // is_admin: 0,
         this_moderator: thread_data.this_moderator
       })
       WxParse.wxParse('thread_data.message', 'html', thread_data.message, that, 5)
@@ -507,20 +498,16 @@ Page({
     request('post', 'add_post.php', {
       token: wx.getStorageSync("token"),
       tid: that.data.tid,
-      uppid: that.data.uppid || 0,
-      reply_pid: that.data.reply_pid || 0,
+      pid: that.data.pid,
       aid_list: aidList,
       message: message,
       attachment: attachment
     }).then((r) => {
-      if (r.err_code != 0)
-        return
       that.setData({
         textContent: '',
         loading_msg: '加载完毕...',
         loading_hidden: true,
-        uppid: 0,
-        reply_pid: 0,
+        pid: 0,
         total_num: that.data.total_num + 1
       })
       wx.showToast({
@@ -560,12 +547,10 @@ Page({
   // 评论回复
   replyComment: function(e) {
     const that = this
-    const uppid = e.currentTarget.dataset.uppid
-    const reply_pid = e.currentTarget.dataset.pid
+    const pid = e.currentTarget.dataset.pid
 
     that.setData({
-      uppid: uppid,
-      reply_pid: reply_pid
+      pid: pid
     })
     that.isShowAuthorization().then((res) => {
       if (res == true) {

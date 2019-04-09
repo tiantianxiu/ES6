@@ -23,14 +23,10 @@ Page({
     carsShow: false,
     quest_success: false,
     moneys: [0, 1, 2, 3, 5],
-    formIdString: '',
-    formIdNum: 0,
     member_tag: 0,
     cars_arr: [],
     show_clause: false,
-    clause_agree: true,
-    inputs: [],
-    sort: 1, //1：提问 2：投票
+    clause_agree: false,
     heightMt: app.globalData.heightMt + 20 * 2,
     navbarData: {
       showCapsule: 1, //是否显示左上角图标,
@@ -209,29 +205,14 @@ Page({
       message: value
     })
   },
-  // 提问
+  
+  
   formSubmit: function(e) {
     const that = this
-    that.setData({
-      loading_hidden: false
-    })
-    
-    if (e.detail.formId != 'the formId is a mock one') {
-      let formId = e.detail.formId, formIds = formId.slice(0, formId.length - 1) + '5'
-      that.setData({
-        formIdString: formId + "," + formIds,
-        
-      })
-    }
-
-    console.log(that.data.formIdString)
-    that.askQuest()
+    app.formSubmit(e)
   },
   askQuest: function() {
     const that = this
-    that.setData({
-      loading_hidden: true
-    })
     if (!that.data.message) {
       wx.showToast({
         title: '请输入您的问题',
@@ -245,51 +226,7 @@ Page({
     }
     that.payFee()
   },
-  askPoll: function(){
-    const that = this
-    that.setData({
-      loading_hidden: true
-    })
-    if (!that.data.message) {
-      wx.showToast({
-        title: '请输入您的描述',
-        icon: 'none'
-      })
-      return
-    }
-    let inputs = that.data.inputs
-    if (inputs.length < 2) {
-      wx.showToast({
-        title: '选项至少两项',
-        icon: 'none'
-      })
-      return
-    } 
-    for(let i in inputs){                                 
-    
-      if (!inputs[i]){
-        wx.showToast({
-          title: '填写选项框内容',
-          icon: 'none'
-        })
-        return
-      }
-      if (inputs[i].length > 12){
-        wx.showToast({
-          title: '投票选项字数不能超过12个字',
-          icon: 'none'
-        })
-        return
-        return
-      }
-    }
-    if (!that.data.fee) {
-      that.putPoll()
-      return
-    }
-    that.payFee(2)
-  },
-  payFee: function(e) {
+  payFee: function() {
     const that = this
     let car_2 = that.data.car_2 || 0,
       message = that.data.message,
@@ -315,41 +252,9 @@ Page({
         'signType': 'MD5',
         'paySign': res.data.paySign,
         'success': function(res) {
-          if(e == 2){
-            that.putPoll()
-            return
-          }
           that.putQuest()
         }
       })
-    })
-  },
-  putPoll: function(){
-    const that = this
-    let  message = that.data.message,
-      aid_list = that.data.aidList.join(","),
-      attachment = that.data.aidList.length > 0 ? 2 : 0,
-      polloption = that.data.inputs.join(',')
-
-    request('post', 'add_release_vote.php', {
-      token: wx.getStorageSync("token"),
-      aid_list: aid_list,
-      message: message,
-      attachment: attachment,
-      price: that.data.fee, //商品价格    
-      out_trade_no: that.data.out_trade_no || '',
-      prepay_id: that.data.prepay_id || '',
-      polloption: polloption
-    }).then((res) => {
-      if (res.err_code != 0)
-        return
-
-      that.setData({
-        sid: res.data.tid,
-        quest_success: true,
-        message: ''
-      })
-
     })
   },
   putQuest: function() { 
@@ -358,8 +263,7 @@ Page({
       message = that.data.message,
       aid_list = that.data.aidList.join(","),
       attachment = that.data.aidList.length > 0 ? 2 : 0,
-      member_tag = that.data.member_tag,
-      page = that.data.page
+      member_tag = that.data.member_tag
 
     request('post', 'add_question.php', {
       token: wx.getStorageSync("token"),
@@ -370,9 +274,7 @@ Page({
       price: that.data.fee, //商品价格    
       out_trade_no: that.data.out_trade_no || '',
       prepay_id: that.data.prepay_id || '',
-      form_id: that.data.formIdString,
-      member_tag: member_tag,
-      page: page
+      member_tag: member_tag
     }).then((res) => {
       if (res.err_code != 0)
         return
@@ -487,41 +389,12 @@ Page({
       clause_agree: !that.data.clause_agree
     })
   },
-  questTap: function(e){
+  askQuestNone: function(){
     const that = this
-    let sort = e.currentTarget.dataset.sort
-    if (sort == that.data.sort)
-      return
-    that.setData({
-      sort: sort
-    })
-  },
-  inputBind: function(e){
-    const that = this
-    let index = e.currentTarget.dataset.index
-    let value = e.detail.value
-    console.log(value)
-    that.setData({
-      [`inputs[${index}]`]: value
-    })
-  },
-  addPollInput: function(){
-    const that = this
-    let inputs = that.data.inputs
-    that.setData({
-      [`inputs[${inputs.length}]`]: ''
-    },()=>{
-      console.log(inputs)
-    })
-  },
-  delPollInput: function (e) {
-    const that = this
-    let inputs = that.data.inputs
-    let index = e.currentTarget.dataset.index
-    inputs.splice(index, 1)
-    console.log(inputs)
-    that.setData({
-      inputs: inputs
-    })
+    if(!that.data.clause_agree)
+      wx.showToast({
+        title: '请先同意用户须知',
+        icon: 'none'
+      })
   }
 })

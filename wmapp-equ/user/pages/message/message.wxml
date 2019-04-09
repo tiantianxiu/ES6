@@ -33,7 +33,7 @@
       <view class="section-wrap section-detail-wrap" wx:for="{{postList}}" wx:for-item="list" wx:key="" wx:for-index="idx" data-tid="{{list.tid}}" data-idx="{{idx}}" data-type="{{systemType}}" data-isnew="{{list.new}}" data-id="{{list.id}}" data-note="{{list.note}}"
         bindtap="toDetail" data-status="{{list.status}}" data-pid="{{list.pid}}" data-hidden="{{list.hidden}}" data-kid="{{list.kid}}">
         <view class="section-title">
-          <text class="title">{{list.hidden==1?'口碑':'帖子'}}：{{list.subject}}</text>
+          <text class="title">{{list.hidden==1?'口碑':''}}{{list.hidden==2?'问答':''}}{{list.hidden==1||list.hidden==3?'帖子':''}}：{{list.subject}}</text>
           <view class="navigator-arrow"></view>
         </view>
         <view class="section-body">

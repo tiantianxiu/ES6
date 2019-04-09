@@ -1,6 +1,7 @@
-// pages/quest_my/quest_my.js
-const app = getApp()
-import { request } from '../../../utils/util.js'
+var app = getApp()
+import {
+  request
+} from '../../../utils/util.js'
 
 Page({
 
@@ -8,9 +9,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loading_hidden: false,
+    loading_hidden: true,
     loading_msg: '加载中...',
+    budget4: [],
+    budget2: [],
+    budget3: [],
     heightMt: app.globalData.heightMt + 20 * 2,
+    wtCash: false,
     navbarData: {
       showCapsule: 1, //是否显示左上角图标,
       hideShare: 1,
@@ -28,9 +33,28 @@ Page({
     })
     that.getBudgetLog()
   },
+  companyPay: function () {
+    const that = this
+    let balance = that.data.balance
 
-  getBudgetLog: function(){
-    const  that = this
+    request('post', 'company_pay.php', {
+      token: wx.getStorageSync('token'),
+      price: balance > 200 ? 200 : balance
+    }).then((res) => {
+      that.setData({
+        loading_hidden: true
+      })
+      if (res.err_code != 0)
+        return
+      wx.showToast({
+        title: '提现成功'
+      },
+        that.getBudgetLog()
+      )
+    })
+  },
+  getBudgetLog: function () {
+    const that = this
     request('post', 'get_user_budget_log.php', {
       token: wx.getStorageSync('token')
     }).then((res) => {
@@ -40,58 +64,72 @@ Page({
         budget = res.data.budget
       that.setData({
         balance: balance,
+        budget: budget,
         loading_hidden: true
       })
     })
   },
+  budgetap: function (e) {
+    const that = this
+    let item = e.currentTarget.dataset.item,
+      id = e.currentTarget.dataset.id
+    that.setData({
+      [item]: that.data[item].length == 0 ? that.data.budget[id] : ''
+    })
+  },
+  isCashTap: function () {
+    const that = this
+    wx.showToast({
+      title: '您的余额不够两元',
+      icon: 'none'
+    })
+  },
+  cashTap: function () {
+    const that = this
+    that.setData({
+      wtCash: !that.data.wtCash
+    })
+  },
+  havCashTap: function () {
+    const that = this
+    if (that.data.balance > 200) {
+      wx.showModal({
+        title: '提示',
+        content: '您余额超过200元，点击确定您将提现200元！',
+        success(res) {
+          if (res.confirm) {
+            that.setData({
+              loading_hidden: false,
+              loading_msg: '提现中...',
+            })
+            that.companyPay()
+          }
+          that.cashTap()
+        }
+      })
+      return
+    }
+    that.setData({
+      loading_hidden: false,
+      loading_msg: '提现中...',
+    })
+    that.companyPay()
+    that.cashTap()
+  },
 
-  todetail: function(e){
+  todetail: function (e) {
     const that = this
     let item = e.currentTarget.dataset.item,
       key = e.currentTarget.dataset.key
-      if(key){
-        wx.navigateTo({
-          url: `../${item}/${item}?key=${key}`
-        })
-        return
-      }
+    if (key) {
+      wx.navigateTo({
+        url: `../${item}/${item}?key=${key}`
+      })
+      return
+    }
     wx.navigateTo({
-      url: `../${item}/${item}`,
+      url: `../${item}/${item}`
     })
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
 })

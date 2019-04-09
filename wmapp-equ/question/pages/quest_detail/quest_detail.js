@@ -49,22 +49,13 @@ Page({
     that.data.page_index = 0
     that.data.articleList = []
     that.getPostDetail()
-    that.pageUrl()
   },
-  pageUrl: function() {
-    const that = this
-    let pages = getCurrentPages() //获取加载的页面
-    let pager = pages[pages.length - 1].route
-    let pagers = pager.split('/')[2]
-    let page = '/question/pages/index/index?shareName=' + pagers + `&shareId=${that.data.tid}`
-    that.setData({
-      page: page
-    })
-  },
+ 
   getPostDetail: function() {
     var that = this
     request('post', 'get_question_detail.php', {
       token: wx.getStorageSync("token"),
+      // token: '111122dd',
       tid: that.data.tid,
     }).then((res) => {
 
@@ -84,13 +75,14 @@ Page({
           1500)
         return
       }
-      if (res.data.thread_data.is_reward == 1 || res.data.thread_data.has_reply == 1 || res.data.thread_data.is_self == 1 || res.data.thread_data.is_reply != 1)
+      let thread_data = res.data.thread_data
+      if (thread_data.is_reward == 1 || thread_data.has_reply == 1 || thread_data.is_self == 1 || thread_data.is_reply != 1)
         that.setData({
           showReply: false
         })
       res.data.thread_data.time = transformPHPTime(res.data.thread_data.dateline)
-      let thread_data = res.data.thread_data,
-        member_tag = thread_data.member_tag
+
+      let member_tag = thread_data.member_tag
       if (member_tag != 0) {
         member_tag = member_tag.split(',')
       }
@@ -125,7 +117,7 @@ Page({
         btnMsg: btnMsg,
         disableMsg: disableMsg
       })
-      if (thread_data.is_reward == 1 || thread_data.is_self == 0 || thread_data.question_price == 0.00) {
+      if (thread_data.is_reward == 1 || thread_data.is_self == 0) {
         that.setData({
           show_reward: false
         })
@@ -195,9 +187,11 @@ Page({
     that.setData({
       have_data: true
     }, that.getComment())
-   
-  },
 
+  },
+  formIdSubmit: function (e) {
+    app.formIdSubmit(e)
+  },
   toUserDetail: function(e) {
     app.toUserDetail(e)
   },
@@ -207,8 +201,6 @@ Page({
     const message = e.detail.message
     const aidList = e.detail.aidList || ''
     const attachment = e.detail.attachment || 0
-    const form_id = e.detail.form_id || 0
-    const page = that.data.page
 
     that.setData({
       loading_hidden: false,
@@ -219,9 +211,7 @@ Page({
       tid: that.data.tid,
       aid_list: aidList,
       message: message,
-      attachment: attachment,
-      form_id: form_id,
-      page: page
+      attachment: attachment
     }).then((r) => {
       if (r.err_code != 0) {
         that.setData({
@@ -255,8 +245,11 @@ Page({
       that.postSuccess()
       let datae = {
         pid: r.data.pid,
-        type: 1
+        type: 1,
+        tid: that.data.tid,
+        uid: that.data.thread_data.authorid
       }
+      
       that.formIdSubmit(datae)
     })
   },
@@ -271,16 +264,7 @@ Page({
     that.getComment()
     that.selectComponent("#reply-quest").resetData()
   },
-  formIdSubmit: function(e) {
-    const that = this
-    request('post', 'send_template_msg.php', {
-      token: wx.getStorageSync("token"),
-      typeid: e.pid,
-      tid: that.data.tid,
-      type: e.type,
-      // page: that.data.page
-    })
-  },
+
   // 是否弹出授权框
   isShowAuthorization: function() {
     const that = this
@@ -318,18 +302,26 @@ Page({
     const that = this
 
     let reward_type = e.currentTarget.dataset.reward_type,
-      pid = e.currentTarget.dataset.pid || 0
+      pid = e.currentTarget.dataset.pid || 0,
+      uid = e.currentTarget.dataset.uid || 0
 
     let data = {
       token: wx.getStorageSync("token"),
       tid: that.data.tid,
-      pid: pid,
+      pid: pid || 1,
       reward_type: reward_type,
-      type: 2
+      type: 4,
+      uid: uid
+    }
+    if (that.data.question_price) {
+      that.questReward(data)
+      return
     }
     let msg = '是否均分打赏'
-    if (pid)
+    if (pid){
       msg = '是否打赏'
+      data.type = 3
+    }
     app.showSelModal(msg, true).then((res) => {
       if (res)
         that.questReward(data)
@@ -355,7 +347,6 @@ Page({
       wx.showToast({
         title: '打赏成功'
       })
-      if (data.pid)
         that.formIdSubmit(data)
     })
   },
@@ -374,14 +365,14 @@ Page({
       path: `/pages/index/index?shareName=quest_detail&shareId=${that.data.tid}&root=question`
     }
   },
-  toSet: function(){
+  toSet: function() {
     const that = this
     that.setData({
       is_share: that.data.is_share == 1 ? 0 : 1
     })
   },
   //管理员设置精华
-  setDigest: function (e) {
+  setDigest: function(e) {
     const that = this
     let digest = parseInt(e.detail.value) + 1,
       tid = that.data.tid
@@ -404,12 +395,72 @@ Page({
     })
   },
   //管理员删帖
-  postDel: function (e) {
+  postDel: function(e) {
     var tid = e.currentTarget.dataset.tid,
       data = {
         token: wx.getStorageSync("token"),
         tid: tid
       }
     app.deleteNormal(data, 'del_thread.php', true)
-  }
+  },
+  //弹出修改管理员浏览数input
+  postViews: function(e) {
+    const that = this
+    if (that.data.editViews) {
+      that.setData({
+        editViews: false
+      })
+      return
+    }
+    that.setData({
+      editViews: true
+    })
+  },
+  inputViews: function(e) {
+    const that = this
+    that.setData({
+      views: e.detail.value //设置数
+    });
+  },
+  submitViews: function() {
+    const that = this
+    let views = that.data.views
+    let reg = "^[0-9]*[1-9][0-9]*$"
+    if (!views) {
+      app.showErrModal('设置不能为空')
+      return
+    }
+    if (!views.match(reg)) {
+      app.showErrModal('只能正整数')
+      return
+    }
+    if (views.length > 6) {
+      app.showErrModal('长度不能超过6位')
+      return
+    }
+    request('post', 'add_thread_views.php', {
+      token: wx.getStorageSync('token'),
+      tid: that.data.tid,
+      views: views
+    }).then((res) => {
+      if (res.err_code == 0) {
+        app.wxShowToast(res.data.message).then(() => {
+          if (res.data.status < 0)
+            return
+          setTimeout(() => {
+            that.setData({
+              'thread_data.views': views,
+              editViews: false
+            })
+          }, 1000)
+        })
+      } else {
+        app.wxShowToast('修改失败')
+      }
+    })
+  },
+  formSubmit: function(e) {
+    const that = this
+    app.formSubmit(e)
+  },
 })

@@ -9,7 +9,7 @@
 		"autoAudits": false
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.6.1",
+	"libVersion": "2.6.2",
 	"appid": "wxfcf3476d01ae9587",
 	"projectname": "e%E5%8C%BA",
 	"isGameTourist": false,
@@ -31,7 +31,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 39,
 			"list": [
 				{
 					"id": 0,
@@ -78,11 +78,10 @@
 					"query": ""
 				},
 				{
-					"id": 7,
+					"id": -1,
 					"name": "搜索",
-					"pathName": "praise/pages/search/search",
-					"query": "",
-					"scene": null
+					"pathName": "pages/search/search",
+					"query": ""
 				},
 				{
 					"id": 12,
@@ -270,10 +269,10 @@
 					"scene": 1001
 				},
 				{
-					"id": 38,
+					"id": 37,
 					"name": "问答详情",
-					"pathName": "pages/quest_detail/quest_detail",
-					"query": "id=11403",
+					"pathName": "question/pages/quest_detail/quest_detail",
+					"query": "id=12056",
 					"scene": 1001
 				},
 				{
@@ -284,10 +283,11 @@
 					"scene": 1001
 				},
 				{
-					"id": -1,
+					"id": 39,
 					"name": "我的问答",
-					"pathName": "pages/quest_my/quest_my",
-					"query": ""
+					"pathName": "question/pages/quest_my/quest_my",
+					"query": "",
+					"scene": null
 				},
 				{
 					"id": -1,
@@ -304,10 +304,11 @@
 					"scene": 1001
 				},
 				{
-					"id": -1,
+					"id": 42,
 					"name": "我的余额",
-					"pathName": "pages/my_money/my_money",
-					"query": ""
+					"pathName": "question/pages/my_money/my_money",
+					"query": "",
+					"scene": null
 				},
 				{
 					"id": 44,

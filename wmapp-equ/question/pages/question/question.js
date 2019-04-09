@@ -77,7 +77,10 @@ Page({
 
     })
   },
-
+  formSubmit: function (e) {
+    const that = this
+    app.formSubmit(e)
+  },
   /**
    * 页面上拉触底事件的处理函数
    */
@@ -92,7 +95,8 @@ Page({
     })
     that.setData({
       have_data: true
-    }, that.getComment())
+    }, that.getComment()
+    )
   
   },
   /* 下拉刷新 */
@@ -104,13 +108,8 @@ Page({
 
   toDetail: function(e) {
     const that = this
-    var tid = e.currentTarget.dataset.tid
-    if (e.currentTarget.dataset.item && e.currentTarget.dataset.item == 'poll'){
-      wx.navigateTo({
-        url: '../poll/poll?id=' + tid,
-      })
-      return
-    }
+    var tid = e.currentTarget.dataset.tid;
+
     wx.navigateTo({
       url: '../quest_detail/quest_detail?id=' + tid,
     })

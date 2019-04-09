@@ -13,7 +13,7 @@ Page({
     message: '',
     windowHeight: app.globalData.windowHeight,
     plid: '',
-    uid: '',
+    uid: 0,
     dialogueList: '',
     type: 2, //1:post 2:msg 3:system
     focus: false,
@@ -90,7 +90,7 @@ Page({
         lis.avatar = dialogueListamp[0].avatar
         lis.message = '问题超过3天未采纳答案，系统已自动选择最佳答案！'
         lis.time = ' '
-      } else if (res.data.reward_type == 1) {
+      } else if (res.data.reward_type == 1 && res.data.is_show_pid == 1) {
         lis.author = dialogueListamp[0].author
         lis.authorid = dialogueListamp[0].authorid
         lis.right = dialogueListamp[0].right
@@ -101,6 +101,15 @@ Page({
       if (Object.keys(lis).length != 0 ){
         dialogue.push(lis)
       }
+      for(let i in dialogue){
+        if (dialogue[i].right == 0){
+          that.setData({
+            uid: dialogue[i].authorid
+          })
+          break
+        }
+      }
+  
       that.setData({
         dialogueList: dialogue,
         is_can_reply: res.data.is_can_reply,
@@ -111,7 +120,7 @@ Page({
         that.scrollTobuttom()
     })
   },
-
+ 
   changeTab: function(e) {
     var that = this
     var type = e.currentTarget.dataset.type
@@ -132,14 +141,24 @@ Page({
       message: message,
       aid_list: aid_list || '',
       attachment: attachment || 0,
-      form_id: 0,
-
     }).then((r) => {
+      if(r.err_code != 0)
+        return
+      let data = {
+        pid: r.data.pid,
+        type: that.data.is_luozhu ? 2 : 1,
+        tid: that.data.tid,
+        uid: that.data.uid
+      }
+      that.formIdSubmit(data)
+
       that.reloadIndex('post')
       that.selectComponent("#reply-quest").resetData()
     })
   },
-
+  formIdSubmit: function (e) {
+    app.formIdSubmit(e)
+  },
   // 是否弹出授权框
   isShowAuthorization: function() {
     const that = this
@@ -181,10 +200,12 @@ Page({
   },
   acceptTaps: function() {
     const that = this
+    let pid = that.data.pid,
+      tid = that.data.tid
     request('post', 'add_question_reward.php', {
       token: wx.getStorageSync("token"),
-      tid: that.data.tid,
-      pid: that.data.pid,
+      tid: tid,
+      pid: pid,
       reward_type: 1
     }).then((res) => {
       if (res.err_code != 0)
@@ -196,9 +217,21 @@ Page({
         })
         return
       }
+      let data = {
+        tid: tid,
+        pid: pid,
+        type: 3,
+        uid: that.data.uid
+      }
       that.reloadIndex('post')
-      let message = '您的回答很棒，特此采纳！'
+      that.formIdSubmit(data)
     })
-  }
+  },
+  formIdSubmit: function (e) {
+    app.formIdSubmit(e)
+  },
+  toUserDetail: function (e) {
+    app.toUserDetail(e)
+  },
 
 })

@@ -85,6 +85,8 @@
   font-weight: 600;
   color: #a9a9a9;
   margin: 0 22rpx;
+  display:block;
+
 }
 
 .tall-input .btn {
