@@ -6,8 +6,8 @@
   position: fixed;
   width: 100%;
   top: 0;
-  background: #00c481;
-  color: #fff;
+  background: #fff;
+  color: rgb(121, 120, 120);
   z-index: 9999;
 }
 

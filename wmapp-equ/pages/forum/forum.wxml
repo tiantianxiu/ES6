@@ -45,7 +45,7 @@
             新势力
           </view>
           <view class="grey"></view>
-          <scroll-view scroll-x class="scroll-wrap-x">
+          <scroll-view scroll-x class="scroll-wrap-x ">
             <view wx:for="{{formDataSource[2]}}" wx:for-item="item" wx:key="{{item.fid}}" url="../zone/zone?fid={{fid.fid}}" data-fid="{{item.fid}}" bindtap="toZone" class="area-list">
               <view class="logo">
                 <image src="{{item.icon}}" mode="widthFix"/>

@@ -128,20 +128,5 @@ Page({
       url: '../index/index'
     })
   },
-  // 下拉刷新
-  onPullDownRefresh: function () {
-    const that = this
-    if (wx.getStorageSync("has_login") == 1) {
-      that.reloadIndex()
-    } else {
-      that.setData({
-        showAuthorization: true
-      })
-    }
-    that.setData({
-      hasLogin: wx.getStorageSync("has_login")
-    })
-    wx.stopPullDownRefresh()
-  }
-
+  
 })

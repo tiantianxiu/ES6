@@ -66,7 +66,8 @@ Page({
     const that = this
     const page_size = that.data.page_size;
     const page_index = that.data.page_index;
-    const uid = that.data.uid;
+    const uid = that.data.uid
+    console.log(uid)
     this.setData({
       loading_hidden: false,
       loading_msg: '加载中...'

@@ -109,12 +109,16 @@ Component({
     showCopy: {
       type: Boolean,
       value: false
+    },
+    showShareBox: {
+      type: Boolean,
+      value: false
     }
 
   },
   data: {
     scroll_show: false,
-    showShareBox: false,
+   
     showShareCanvasBox: false,
     showShareCanvasInner: false,
     shareImageSrc: '',

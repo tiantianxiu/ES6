@@ -11,7 +11,7 @@
 
     <view class="thread_content-cell article">
 
-      <view wx-if="{{is_admin==1 && is_share==1}}" class="section-title section-title-admin">
+      <view wx-if="{{is_admin == 1 && is_share == 1}}" class="section-title section-title-admin">
         <view class="detail-admin">
           <picker class="input-picker" range="{{digestLevel}}" bindchange="setDigest" value="{{thread_data.digest}}" mode="selector">
             <view>置顶</view>
@@ -30,9 +30,7 @@
         <view class="author-name">
           <text class="text-name">{{thread_data.author}}</text>
           <text class="tag-item tag-red">楼主</text>
-          <!-- <view wx:if="{{thread_data.level=='自媒体' || thread_data.level=='新能源砖家' || thread_data.is_carvip==1 || thread_data.is_auth_car_icon == 1}}" class="icon1">
-            <image class="icon-width icon-width-l" src="http://cdn.e-power.vip/resources/image/icon-v2.png" />
-          </view> -->
+
           <text class="tag-item tag-green" wx:if="{{thread_data.level != '车代表' && thread_data.level != ''}}">{{thread_data.level}}</text>
         </view>
         <view class="tag-item-wrap">
@@ -48,30 +46,53 @@
             <view class="du">度</view>
           </view>
         </view>
-        <view class="ext red" wx:if="{{thread_data.question_price != 0.00}}">￥{{thread_data.question_price}}</view>
       </view>
-      <view class="article-text rich-text">
-        {{thread_data.subject}}
-        <view class="images" wx:if="{{thread_data.image_list.length > 0}}">
-          <view class="li" wx:for="{{thread_data.image_list}}" wx:for-item="images" wx:key="{{index}}" style="background-image: url('{{images}}')" bindtap="wxParseImgTap" data-src="{{images}}">
-          </view>
-        </view>
-      </view>
-      <view class="dateline" wx:if="{{thread_data.show_car}}">
-        <text>咨询车型：</text>
-        <text class="cars">{{thread_data.show_car}}</text>
-        <text class="dateline-text">{{thread_data.time}}</text>
-      </view>
-      <view class="dateline datelines">
-        <text>谁可以答（车主）：</text>
-        <block wx:if="{{member_tag != 0}}">
-          <text class="cars" wx:for="{{member_tag}}" wx:key="{{index}}" wx:for-item="item">{{item}}</text>
-        </block>
-        <block wx:else>
-          <text class="cars">所有人</text>
-          <text class="dateline-text" wx:if="{{!thread_data.show_car}}">{{thread_data.time}}</text>
-        </block>
-      </view>
+          <view class="position">
+              <view class="official-text">
+              <view class="score">￥10000.00</view>
+                 【万元投票】春节猜车！答对即平分 10000元奖金~活动结束后奖金即时到账， 从首页下方点击“我的“，然后点击余额 提现。
+              </view>
+              <view class="article-text rich-text">
+                {{thread_data.subject}}
+                <view class="images" wx:if="{{thread_data.image_list.length > 0}}">
+                  <view class="li" wx:for="{{thread_data.image_list}}" wx:for-item="images" wx:key="{{index}}" style="background-image: url('{{images}}')">
+                  </view>
+                </view>
+              </view>
+              <view class="answer" wx:if="{{article.show_name}}">
+                <view class="answer-text">{{thread_data.show_name}}：</view>
+                {{thread_data.show_message}}
+              </view>
+              <view class="poll-list">
+              <view class="title">投票选项
+                <view class="text" wx:if="{{time}}">
+                距截止还有
+                  <view class="count-down">{{time}}</view>
+                </view>
+                <text wx:else>投票已结束</text>
+              </view>
+                <view class="li">
+                  北汽新能源
+                  <text>投票</text>
+                </view>
+                <view class="li">
+                  北汽新能源北汽新能源北汽新能源
+                  <text>投票</text>
+                  <image class="bingo-icon" mode="widthFix" src="http://cdn.e-power.vip/resources/image/question/bingo_icon.jpg"></image>
+                  <image class="has-poll" src="http://cdn.e-power.vip/resources/image/question/has_poll.png"></image>
+                </view>
+                <view class="li">
+                  北汽新能源
+                  <text>投票</text>
+                </view>
+              </view>
+
+              <view class="article-ext-info e-power" >
+              <text class="ext" style="position: absolute;right: 0; font-size: 22rpx;">已有1008人投票</text>
+              </view>
+            </view>
+    
+     
     </view>
 
   </view>
@@ -103,7 +124,7 @@
               <view class="author-name">
                 <text class="text-name">{{article.author}}</text>
                
-                <text class="tag-item tag-green" wx:if="{{article.level != '车代表' && article.level != ''}}">{{article.level}}</text>
+                <text class="tag-item tag-green" wx:if="{{article.is_auth_car_icon !=1 && article.level != '车代表' && article.level != ''}}">{{article.level}}</text>
                 <text class="ext">{{article.time}}</text>
               </view>
               <view class="tag-item-wrap">

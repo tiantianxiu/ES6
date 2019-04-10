@@ -91,8 +91,8 @@
                 </view>
               </view>
             </view>
-            <view wx:if="{{thread_data.fid == 130 && thread_data.class_name}}" catchtap="picTap" data-typeid="{{thread_data.typeid}}" class="pic-class-text">{{thread_data.class_name}}</view>
-            <view class="article-content-title box-wrap" wx:if="{{thread_data.fid !=130 && thread_data.subject || thread_data.fid !=130 && thread_data.stamp}}">
+            <view wx:if="{{thread_data.fid == 130}}" catchtap="picTap" data-typeid="{{thread_data.typeid}}" class="pic-class-text">{{thread_data.class_name}}</view>
+            <view class="article-content-title box-wrap">
               <view class="item">{{thread_data.subject}}</view>
               <view class="stamp" wx:if="{{thread_data.stamp}}">
                 <image src="{{thread_data.stamp}}" mode="widthFix" />
@@ -184,7 +184,7 @@
                 <view class="box-wrap article-ext-info">
                   <view style="width: 200rpx;">{{article.create_time}}</view>
                   <view class="item more-function">
-                    <view class="item-function" bindtap="replyComment" data-pid='{{article.pid}}'>
+                    <view class="item-function" bindtap="replyComment" data-pid='{{article.pid}}' data-uppid='{{article.uppid}}'>
                       <image class="icon-width" src="http://cdn.e-power.vip/resources/image/icon-text.png"></image>
                     </view>
                     <view class="item-function {{article.is_zan == 1 ? 'active':''}}" bindtap="clickZhan" data-type='1' data-iszan="{{article.is_zan}}" data-pid="{{article.pid}}" data-index="{{index}}" data-number="{{article.zan}}">
@@ -209,7 +209,7 @@
     </view>
     <moreFunctions id="moreFunctions" showGoHome="{{true}}" showToTop="{{true}}" showReplyBtn="{{true}}" showReply="{{false}}" showShare="{{true}}" showZan="{{true}}" showCai="{{true}}" zan="{{thread_data.zan}}" cai="{{thread_data.cai}}" is_zan="{{is_zan}}"
       messagePid="{{messagePid}}" shareType="{{idtype}}" showSet="{{true}}" bindtoSet="toSet" tid="{{tid}}" bindfaZan="myZan" bindfaReply="myReply" bindmoreIsZan="moreIsZan" isAdmin="{{is_admin}}" thisModerator="{{this_moderator}}" totalNum="{{total_num}}" bindgetClipboard="getClipboard"
-      showCopy="{{true}}" addPosts="{{addPosts}}" bindshowAuthorization="showAuthorization" scrollTop="{{scrollTop}}"></moreFunctions>
+      showCopy="{{true}}" addPosts="{{addPosts}}" bindshowAuthorization="showAuthorization" scrollTop="{{scrollTop}}" showShareBox="{{showShareBox}}"></moreFunctions>
     <!-- 授权登录框 -->
     <authorization showAuthorization="{{showAuthorization}}"></authorization>
 

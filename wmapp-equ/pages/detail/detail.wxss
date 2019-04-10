@@ -134,7 +134,7 @@
   padding: 20rpx 30rpx;
   position: relative;
   align-items: center;
-  background-color: white;
+  background-color: #fff;
 }
 
 .article-content {

@@ -1,5 +1,4 @@
-// pages/quest_my/quest_my.js
-const app = getApp()
+var app = getApp()
 import { request } from '../../../utils/util.js'
 
 Page({
@@ -8,13 +7,16 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loading_hidden: false,
+    loading_hidden: true,
     loading_msg: '加载中...',
+    budget1: [],
+    budget2: [],
+    budget3: [],
     heightMt: app.globalData.heightMt + 20 * 2,
     navbarData: {
       showCapsule: 1, //是否显示左上角图标,
       hideShare: 1,
-      title: '我的问答', //导航栏 中间的标题
+      title: '我的余额', //导航栏 中间的标题
     }
   },
 
@@ -28,36 +30,48 @@ Page({
     })
     that.getBudgetLog()
   },
-
   getBudgetLog: function(){
-    const  that = this
+    const that = this
     request('post', 'get_user_budget_log.php', {
       token: wx.getStorageSync('token')
-    }).then((res) => {
+    }).then((res)=>{
       if (res.err_code != 0)
         rerurn
       let balance = res.data.balance,
         budget = res.data.budget
       that.setData({
         balance: balance,
+        budget: budget,
         loading_hidden: true
-      })
+      })    
     })
   },
-
-  todetail: function(e){
+  budgetap: function(e){
     const that = this
     let item = e.currentTarget.dataset.item,
-      key = e.currentTarget.dataset.key
-      if(key){
-        wx.navigateTo({
-          url: `../${item}/${item}?key=${key}`
-        })
-        return
-      }
-    wx.navigateTo({
-      url: `../${item}/${item}`,
+      id = e.currentTarget.dataset.id
+    that.setData({
+      [item]: that.data[item].length == 0 ? that.data.budget[id] : ''
+    })  
+  },
+  cashTap: function(){
+    wx.showToast({
+      title: '2019年5月份上线提现功能',
+      icon: 'none'
     })
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+
   },
 
   /**

@@ -286,12 +286,6 @@ Page({
       })
       return
     }
-    if (hidden == 2) {
-      wx.navigateTo({
-        url: '/question/pages/quest_detail/quest_detail?id=' + tid,
-      })
-      return
-    }
     wx.navigateTo({
       url: '/pages/detail/detail?tid=' + tid + '&messagePid=' + pid,
     })

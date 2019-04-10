@@ -25,8 +25,9 @@ Page({
   },
   onLoad: function(options) {
     const that = this
-    that.reloadIndex()
+    that.reloadIndex();
   },
+
   reloadIndex: function() {
     const that = this;
     that.setData({
@@ -60,7 +61,7 @@ Page({
       for (let i in thread) {
         var extcredits2 = thread[i].extcredits2 + ''
         var extcredits2_arr = extcredits2.split('')
-        thread[i].extcredits2_arr = extcredits2_arr                                                    
+        thread[i].extcredits2_arr = extcredits2_arr
 
         thread[i].timestamped = transformPHPTime(thread[i].timestamp)
         if (thread[i].message.length > 40) {
@@ -85,13 +86,13 @@ Page({
     const that = this
     let pid = e.currentTarget.dataset.pid
     that.setData({
-      showCoverId: pid
-    }, () => {
-      that['videoContext' + pid].play()
-      that['videoContext' + pid].requestFullScreen({
-        direction: 0
+        showCoverId: pid
+      },() => {
+        that['videoContext' + pid].play()
+        that['videoContext' + pid].requestFullScreen({
+          direction: 0
+        })
       })
-    })
 
   },
   exitFullScreen: function(e) {

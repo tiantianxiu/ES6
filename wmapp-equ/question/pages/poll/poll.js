@@ -7,7 +7,8 @@ import {
 import {
   request,
   myTrim,
-  transformPHPTime
+  transformPHPTime,
+  oldTime
 } from '../../../utils/util.js'
 Page({
   /**
@@ -176,10 +177,28 @@ Page({
         loading_hidden: true,
         nomore_data: post_list_length < page_size ? true : false
       })
+      let timechage = '1553046457'
+      var oDate = Date.parse(new Date()) / 1000
+      if (parseInt(timechage) <= oDate){
+        that.setData({
+          time: 0
+        })
+        return 
+      }
+      setInterval(() => {
+        that.oldTime(timechage)
+      }, 1000)
+
 
     })
   },
-
+  oldTime: function(timechage) {
+    const that = this
+    let time = oldTime(timechage)
+    that.setData({
+      time: time
+    })
+  },
   /**
    * 页面上拉触底事件的处理函数
    */
@@ -195,7 +214,7 @@ Page({
     that.setData({
       have_data: true
     }, that.getComment())
-   
+
   },
 
   toUserDetail: function(e) {
@@ -374,14 +393,14 @@ Page({
       path: `/pages/index/index?shareName=quest_detail&shareId=${that.data.tid}&root=question`
     }
   },
-  toSet: function(){
+  toSet: function() {
     const that = this
     that.setData({
       is_share: that.data.is_share == 1 ? 0 : 1
     })
   },
   //管理员设置精华
-  setDigest: function (e) {
+  setDigest: function(e) {
     const that = this
     let digest = parseInt(e.detail.value) + 1,
       tid = that.data.tid
@@ -404,7 +423,7 @@ Page({
     })
   },
   //管理员删帖
-  postDel: function (e) {
+  postDel: function(e) {
     var tid = e.currentTarget.dataset.tid,
       data = {
         token: wx.getStorageSync("token"),
