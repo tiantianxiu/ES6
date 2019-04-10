@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "提问",
-  "usingComponents": {
-    "carModel": "/components/carModel/carModel",
-    "navBar": "/components/navBar/navBar",
-    "cars": "/components/cars/cars"
-  }
-}

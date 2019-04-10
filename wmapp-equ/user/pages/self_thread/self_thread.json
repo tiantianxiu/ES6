@@ -1,8 +1,0 @@
-{
-	"onReachBottomDistance": 50,
-	"navigationBarTitleText": "我的贴子/口碑",
-	"usingComponents": {
-    	"moreFunctions": "/components/moreFunctions/moreFunctions",
-      "navBar": "/components/navBar/navBar"
-  	}
-}

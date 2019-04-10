@@ -1,9 +1,0 @@
-{
-  "onReachBottomDistance": 50,
-  "navigationBarTitleText": "问答首页",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "navBar": "/components/navBar/navBar",
-    "replyQuest": "/components/replyQuest/replyQuest"
-  }
-}

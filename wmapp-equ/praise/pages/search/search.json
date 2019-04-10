@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "navigationBarTitleText": "搜索",
-  "usingComponents": {
-    	"moreFunctions": "/components/moreFunctions/moreFunctions",
-      "navBar": "/components/navBar/navBar"
-  	}
-}

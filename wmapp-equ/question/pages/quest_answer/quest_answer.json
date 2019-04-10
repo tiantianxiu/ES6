@@ -1,7 +1,0 @@
-{
-  "onReachBottomDistance": 50,
-  "navigationBarTitleText": "回答记录",
-  "usingComponents": {
-    "navBar": "/components/navBar/navBar"
-  }
-}

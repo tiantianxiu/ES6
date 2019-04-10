@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "发布口碑",
-  "usingComponents": {
-    "carModel": "/components/carModel/carModel",
-    "copper": "/components/copper/copper",
-    "navBar": "/components/navBar/navBar"
-  }
-}

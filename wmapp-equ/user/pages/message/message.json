@@ -1,9 +1,0 @@
-{
-  "onReachBottomDistance": 50,
-  "component": true,
-  "navigationBarTitleText": "消息通知",
-  "usingComponents": {
-    	"moreFunctions": "/components/moreFunctions/moreFunctions",
-      "navBar": "/components/navBar/navBar"
-  	}
-}

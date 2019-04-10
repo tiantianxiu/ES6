@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "navigationBarTitleText": "我的粉丝",
-  "usingComponents": {
-    	"moreFunctions": "/components/moreFunctions/moreFunctions",
-      "navBar": "/components/navBar/navBar"
-  	}
-}

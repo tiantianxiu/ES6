@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "省市",
-  "usingComponents": {
-    "navBar": "/components/navBar/navBar"
-  }
-}

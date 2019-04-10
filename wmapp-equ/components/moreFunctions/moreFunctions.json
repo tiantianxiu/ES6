@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "replyTail": "../../components/replyTail/replyTail"
-  }
-}

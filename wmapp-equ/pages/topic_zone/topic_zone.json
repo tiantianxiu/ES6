@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "navBar": "/components/navBar/navBar",
-    "authorization": "/components/authorization/authorization"
-  },
-  "navigationBarTitleText": "话题"
-}

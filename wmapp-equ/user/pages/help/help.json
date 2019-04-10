@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "navigationBarTitleText": "使用帮助",
-  "usingComponents": {
-		"moreFunctions": "/components/moreFunctions/moreFunctions",
-    "navBar": "/components/navBar/navBar"
-	}
-}
