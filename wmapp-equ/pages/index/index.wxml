@@ -1,0 +1,73 @@
+<!-- import zanui -->
+<import src="../../zanui/loadmore/index.wxml" />
+<!--index.wxml-->
+<view class="container-nopadding">
+  <loading hidden="{{loading_hidden}}">
+    {{loading_msg}}
+  </loading>
+  <authorization showAuthorization="{{showAuthorization}}" bindagreeAuthorizeFun="agreeAuthorizeFun" bindrejectAuthorizeFun="rejectAuthorizeFun"></authorization>
+  <!--  引入自定义组价。'navbar-data'中navbar是自定义名字，决定了组件中'navbarData'的名字 -->
+  <navBar navbar-data='{{navbarData}}'></navBar>
+  <view style="height: {{heightMt}}px"></view>
+  <view class="page-body">
+
+
+    <scroll-view scroll-x="true" class="tab-h" style="top: {{heightMt}}px" scroll-left="{{scrollLeft}}">
+      <view class="tab-item {{currentTab== 0?'active':''}}" data-current="0" bindtap="swichNav">兴趣</view>
+      <view class="tab-item {{currentTab== 1?'active':''}}" data-current="1" bindtap="swichNav">最新</view>
+      <view class="tab-item {{currentTab== 2?'active':''}}" data-current="2" bindtap="swichNav">视频</view>
+      <view class="tab-item {{currentTab== 3?'active':''}}" data-current="3" bindtap="swichNav">E讯</view>
+    </scroll-view>
+    <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight - 200}}px">
+
+      <swiper-item>
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
+
+          <view class="" wx:for="{{data_interest}}" wx:for-item="item" wx:key="{{index}}">
+            <view class="user-info">
+              <view class="avatar">
+                <image src="{{item.avatar}}"></image>
+              </view>
+              <text>{{item.author}}</text>
+            </view>
+          </view>
+          
+        </scroll-view>
+      </swiper-item>
+
+      <swiper-item>
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
+
+          <view class="" wx:for="{{data_interest}}" wx:for-item="item" wx:key="{{index}}">
+            <view class="user-info">
+              <view class="avatar">
+                <image src="{{item.avatar}}"></image>
+              </view>
+              <text>{{item.author}}</text>
+            </view>
+          </view>
+
+        </scroll-view>
+      </swiper-item>
+    </swiper>
+
+    <!-- <view class="section-title section-ext">
+            <text class="title">最新帖子</text>
+            <view class="navigator-arrow" bindtap="moreForum"></view>
+          </view> -->
+    <!-- <view class="section">
+      <movable-area class="area">
+        <movable-view wx:for="{{imgRecommends}}" wx:key="{{item.tid}}" x="{{item.x}}" y="{{item.y}}" damping="40" direction="all" bindchange="onChange" out-of-bounds="true" data-index="{{item.idx}}" catch:touchend="tap">
+          <image animation="{{animationData}}" src="{{item.thumbpath}}" class="image image{{item.idx}}"></image>
+        </movable-view>
+      </movable-area>
+    </view> -->
+
+    <!-- 加载更多 -->
+    <template is="zan-loadmore" data="{{ loading: have_data}}"></template>
+    <!-- 没有更多的数据了 -->
+    <template is="zan-loadmore" data="{{ nomore :nomore_data}}"></template>
+    <!-- 返回顶部 -->
+
+  </view>
+</view>

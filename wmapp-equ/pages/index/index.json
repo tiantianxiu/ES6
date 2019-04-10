@@ -1,0 +1,8 @@
+{
+  "onReachBottomDistance": 50,
+  "backgroundColor": "#f3f3f3",
+  "usingComponents": {
+    "authorization": "../../components/authorization/authorization",
+    "navBar": "../../components/navBar/navBar"
+  }
+}
