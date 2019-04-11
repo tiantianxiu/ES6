@@ -18,30 +18,15 @@
       <view class="tab-item {{currentTab== 2?'active':''}}" data-current="2" bindtap="swichNav">视频</view>
       <view class="tab-item {{currentTab== 3?'active':''}}" data-current="3" bindtap="swichNav">E讯</view>
     </scroll-view>
-    <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight - 200}}px">
+    <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight - heightMt - 40}}px">
 
       <swiper-item>
         <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
 
-          <view class="" wx:for="{{data_interest}}" wx:for-item="item" wx:key="{{index}}">
+          <view class="" wx:for="{{interest_data}}" wx:for-item="item" wx:key="{{index}}">
             <view class="user-info">
               <view class="avatar">
-                <image src="{{item.avatar}}"></image>
-              </view>
-              <text>{{item.author}}</text>
-            </view>
-          </view>
-          
-        </scroll-view>
-      </swiper-item>
-
-      <swiper-item>
-        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
-
-          <view class="" wx:for="{{data_interest}}" wx:for-item="item" wx:key="{{index}}">
-            <view class="user-info">
-              <view class="avatar">
-                <image src="{{item.avatar}}"></image>
+                <image class="img" src="{{item.avatar}}"></image>
               </view>
               <text>{{item.author}}</text>
             </view>
@@ -49,6 +34,71 @@
 
         </scroll-view>
       </swiper-item>
+
+      <!-- 最新 -->
+      <swiper-item>
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
+          <view class="container-list" wx:for="{{thread_data}}" wx:for-item="item" wx:key="{{index}}">
+            <view class="user-info">
+              <view class="avatar">
+                <image class="img" src="{{item.avatar}}"></image>
+              </view>
+              <text>{{item.author}}</text>
+            </view>
+            <view class="">
+              <view class="image-list" wx:if="{{item.image_list.length>0}}">
+                <image src="{{img}}" mode="center" wx:for="{{item.image_list}}" wx:for-item="img" wx:key="{{index}}"></image>
+              </view>
+              <view class="subject">
+                {{item.subject}}
+              </view>
+              <view class="footer">
+                <view class="time">{{item.time}}</view>
+                <view class="view-reply">
+                  <view class="views">
+                    <image src="../../resources/image/common/views.png"></image>
+                    {{item.views}}
+                  </view>
+                  <view class="replies">
+                    <image src="../../resources/image/common/replies.png"></image>
+                    {{item.replies}}
+                  </view>
+                    <view class="shares">
+                    <image src="../../resources/image/common/shares.png"></image>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+      <swiper-item>
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
+          <view class="" wx:for="{{video_data}}" wx:for-item="item" wx:key="{{index}}">
+            <view class="user-info">
+              <view class="avatar">
+                <image class="img" src="{{item.avatar}}"></image>
+              </view>
+              <text>{{item.author}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+      <swiper-item>
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}">
+          <view class="" wx:for="{{exun_data}}" wx:for-item="item" wx:key="{{index}}">
+            <view class="user-info">
+              <view class="avatar">
+                <image class="img" src="{{item.avatar}}"></image>
+              </view>
+              <text>{{item.author}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
     </swiper>
 
     <!-- <view class="section-title section-ext">

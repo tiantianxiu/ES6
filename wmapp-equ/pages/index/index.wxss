@@ -28,6 +28,8 @@
 }
 .tab-content{
   margin-top: 80rpx;
+  padding:0 30rpx;
+
 }
 .tab-item {
   display: inline-block;
@@ -64,17 +66,26 @@
   align-items: center;
   border-bottom: 1px solid #f2f2f2;
 }
-
+.user-info{
+  display: flex;
+}
+.user-info text{
+  line-height: 80rpx;
+  font-size: 26rpx;
+  letter-spacing: 2rpx;
+}
 .avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 80rpx;
+  height: 80rpx;
   position: relative;
   padding-right: 30rpx;
+  /* display: inline-block */
 }
 
 .avatar .img {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
 }
 
 .avatar .doyen {
@@ -83,6 +94,58 @@
   position: absolute;
   bottom: -2px;
   right: 20rpx;
+}
+.image-list{
+  width: 100%;
+  height: 360rpx;
+  border-radius: 26rpx;
+  overflow: hidden;
+  margin: 20rpx 0;
+}
+.image-list image{
+ 
+}
+.container-list{
+  margin-bottom: 30rpx;
+}
+.container-list .subject{
+ color: #070c29;
+ margin: 10rpx 0 16rpx;
+ font-weight: 600; 
+ font-size: 30rpx;
+}
+.container-list .footer{
+  color: #b8d8d7;
+  font-size: 20rpx;
+  display: flex;
+  position: relative;
+}
+.container-list .footer .view-reply{
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.container-list .footer .view-reply image{
+  width: 30rpx;
+  height: 30rpx;
+  align-items: center;
+  margin-right: 12rpx;
+}
+.container-list .footer .view-reply view{
+  width: 130rpx;
+  line-height: 40rpx;
+  align-items: center;
+  display: flex;
+}
+.container-list .footer .view-reply .replies{
+  width: 90rpx;
+}
+.container-list .footer .view-reply .shares{
+  width: 30rpx;
+}
+.container-list .footer .view-reply .shares image{
+  margin:0; 
 }
 
 .expertInfo {
@@ -140,7 +203,6 @@
   background-color: #fff;
   border-radius: 20rpx;
   margin-top: 20rpx;
-  border: 2rpx solid #b6b3b3;
 }
 
 .image0 {
@@ -171,4 +233,4 @@ movable-view {
   margin: 0 auto;
 }
 
-/* 选择卡 */
+/* 选择卡END */
