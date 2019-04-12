@@ -37,7 +37,7 @@
 .zan-loadmore--nodata::after, .zan-loadmore--nomore::after {
   content: '';
   position: absolute;
-  top: 0;
+  top: 20rpx;
   left: 0;
   width: 200%;
   height: 200%;
@@ -63,7 +63,7 @@
 
 .zan-loadmore--nomore .zan-loadmore__tips {
   position: relative;
-  top: -11px;
+  /* top: 0; */
   background: #f9f9f9;
   padding: 0 6px;
   z-index: 1;

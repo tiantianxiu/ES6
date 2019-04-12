@@ -2,7 +2,7 @@
   <block wx:if="{{nomore}}">
     <view class="zan-loadmore zan-loadmore--nomore">
       <view class="zan-loadmore__tips">
-        已经拉到底啦
+        没有更多了
       </view>
     </view>
   </block>

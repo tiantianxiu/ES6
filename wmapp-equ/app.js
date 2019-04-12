@@ -408,6 +408,7 @@ App({
     id: 0,
     name: ''
   },
+
   //获取用户地理位置权限
   getPermission: function(obj) {
     wx.chooseLocation({

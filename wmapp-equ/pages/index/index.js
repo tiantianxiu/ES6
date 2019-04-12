@@ -46,13 +46,18 @@ Page({
     //  最新
     page_index: 0,
     page_size: 10,
+    // 视频
+    page_video_index: 0,
+    page_video_size: 10,
     //  兴趣
     page_interest_index: 0,
     page_interest_size: 10,
+    //  E讯
+    page_exun_index: 0,
+    page_exun_size: 10,
 
     articleList: [],
     imgRecommend: [],
-
 
     members: '', //会员数
     online: '', //在线人数
@@ -120,6 +125,7 @@ Page({
   //判断当前滚动超过一屏时，设置tab标题滚动条。
   checkCor: function() {
     const that = this
+    that.bindscroll()
     if (that.data.currentTab > 4) {
       that.setData({
         scrollLeft: 300
@@ -285,6 +291,8 @@ Page({
     let pid = e.currentTarget.dataset.pid
     let showCoverId = that.data.showCoverId
 
+    that['videoContext' + pid] = wx.createVideoContext('myVideo' + pid)
+
     if (showCoverId) {
       that['videoContext' + showCoverId].stop()
     }
@@ -306,6 +314,17 @@ Page({
     that['videoContext' + pid].stop()
     that.setData({
       showCoverId: pid == showCoverId ? 0 : showCoverId
+    })
+  },
+  bindscroll(){
+    const that = this
+    let showCoverId = that.data.showCoverId
+    if (showCoverId == 0)
+      return
+    that['videoContext' + showCoverId].pause()
+    that['videoContext' + showCoverId].stop()
+    that.setData({
+      showCoverId: 0
     })
   },
   setLoding: function(t) {
@@ -338,11 +357,101 @@ Page({
       page_index: page_index,
       page_size: page_size
     }).then((res) => {
+      let interest_data = res.data.thread_data
+      for (let i in interest_data) {
+        interest_data[i].time = transformPHPTime(interest_data[i].dateline)
+      }
+      let thread_data = page_index == 0 ? interest_data : that.data.interest_data.concat(thread_data)
       that.setData({
-        interest_data: res.data.thread_data || []
+        interest_data: thread_data || [],
+        page_interest_index: that.data.page_interest_index + 1,
+        interest_have_data: false,
+        interest_nomore_data: interest_data.length < that.data.page_interest_size
       })
       that.setLoding(true)
     })
+  },
+  reachInterestBottom: function() {
+    const that = this
+    if (that.data.interest_nomore_data || that.data.interest_have_data)
+      return
+
+    that.setData({
+        interest_have_data: true,
+        page_interest_index: that.data.page_interest_index + 1
+      },
+      that.getInterest(re)
+    )
+  },
+  //视频列表
+  getVideo() {
+    const that = this
+    if (that.data.video_data && that.data.video_data.length > 0)
+      return
+    let e = {
+      page_index: that.data.page_video_index,
+      page_size: that.data.page_video_size,
+      attachment: 1,
+      type: 'video_data'
+    }
+    that.getCommon(e)
+  },
+  reachVideoBottom: function(e) {
+    const that = this
+    if (that.data.video_nomore_data || that.data.video_have_data)
+      return
+    let re = {
+      page_index: that.data.page_video_index + 1,
+      page_size: that.data.page_video_size,
+      attachment: 1,
+      type: 'video_data'
+    }
+    that.setData({
+        video_have_data: true
+      },
+      that.getCommon(re).then((res) => {
+        that.setData({
+          page_video_index: that.data.page_video_index + 1,
+          video_have_data: false,
+          video_nomore_data: res.forum_thread_data.length < that.data.page_video_size
+        })
+      })
+    )
+  },
+  //E讯列表
+  getExun() {
+    const that = this
+    if (that.data.exun_data && that.data.exun_data.length > 0)
+      return
+    let e = {
+      page_index: that.data.page_exun_index,
+      page_size: that.data.page_exun_size,
+      fup: 82,
+      type: 'exun_data'
+    }
+    that.getCommon(e)
+  },
+  reachExunBottom: function(e) {
+    const that = this
+    if (that.data.exun_nomore_data || that.data.exun_have_data)
+      return
+    let re = {
+      page_index: that.data.page_exun_index + 1,
+      page_size: that.data.page_exun_size,
+      fup: 82,
+      type: 'exun_data'
+    }
+    that.setData({
+        exun_have_data: true
+      },
+      that.getCommon(re).then((res) => {
+        that.setData({
+          page_exun_index: that.data.page_exun_index + 1,
+          exun_have_data: false,
+          exun_nomore_data: res.forum_thread_data.length < that.data.page_exun_size
+        })
+      })
+    )
   },
   //最新列表
   getThread() {
@@ -354,58 +463,59 @@ Page({
       page_size: that.data.page_size,
       type: 'thread_data'
     }
+    that.getCommon(e)
+  },
+  reachNewBottom: function(e) {
+    const that = this
+    if (that.data.new_nomore_data || that.data.new_have_data)
+      return
+    let re = {
+      page_index: that.data.page_index + 1,
+      page_size: that.data.page_size,
+      type: 'thread_data'
+    }
+    that.setData({
+        new_have_data: true
+      },
+      that.getCommon(re).then((res) => {
+        that.setData({
+          page_index: that.data.page_index + 1,
+          new_have_data: false,
+          new_nomore_data: res.forum_thread_data.length < that.data.page_size
+        })
+      })
+    )
+  },
 
-    that.getCommon(e)
-  },
-  //视频列表
-  getVideo() {
-    const that = this
-    if (that.data.video_data && that.data.video_data.length > 0)
-      return
-    let e = {
-      page_index: that.data.page_index,
-      page_size: that.data.page_size,
-      attachment: 1,
-      type: 'video_data'
-    }
-    that.getCommon(e)
-  },
-  //E讯列表
-  getExun() {
-    const that = this
-    if (that.data.exun_data && that.data.exun_data.length > 0)
-      return
-    let e = {
-      page_index: that.data.page_index,
-      page_size: that.data.page_size,
-      fup: 82,
-      type: 'exun_data'
-    }
-    that.getCommon(e)
-  },
   getCommon(e) {
     const that = this
     // fup	否	int	e讯= 82
     // fid	否	int	板块fid
     // attachment	否	int	首页视频必填 attachment: 1
-    request('post', 'get_thread.php', {
-      token: wx.getStorageSync('token'),
-      page_index: e.page_index,
-      page_size: e.page_size,
-      attachment: e.attachment || '',
-      fup: e.fup || ''
-    }).then((res) => {
-      let forum_thread_data = res.data.forum_thread_data
-      for (let i in forum_thread_data){
-        forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
-        // console.log(forum_thread_data)
-      }
-      that.setData({
-        [e.type]: forum_thread_data || []
+    return new Promise(function(resolve, reject) {
+
+      request('post', 'get_thread.php', {
+        token: wx.getStorageSync('token'),
+        page_index: e.page_index,
+        page_size: e.page_size,
+        attachment: e.attachment || '',
+        fup: e.fup || ''
+      }).then((res) => {
+        if (res.err_code == 0)
+          resolve(res.data)
+        let forum_thread_data = res.data.forum_thread_data
+        for (let i in forum_thread_data) {
+          forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
+        }
+        let thread_data = e.page_index == 0 ? forum_thread_data : that.data[e.type].concat(forum_thread_data)
+        that.setData({
+          [e.type]: thread_data || []
+        })
+        that.setLoding(true)
       })
-      that.setLoding(true)
     })
   },
+
   getOnline: function() {
     const that = this
     let getOnline = app.getSt('getOnline') //精华帖子列表详情

@@ -18,7 +18,6 @@ page {
                  "STHeiti",
                  "Droid Sans";
   /* font-family: microsoft YaHei                */
-
 }
 
 checkbox, radio {
@@ -53,13 +52,13 @@ form {
 }
 
 .section-title {
-  padding:20rpx 30rpx;
-text-align:left;
-background-color:#fff;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-font-family: 'STHeiti';
+  padding: 20rpx 30rpx;
+  text-align: left;
+  background-color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'STHeiti';
 }
 
 .section-title .title {
@@ -72,13 +71,12 @@ font-family: 'STHeiti';
   color: #070c2a;
 }
 
-
 .navigator-arrow {
   padding-right: 40rpx;
   font-size: 24rpx;
   color: #a4a4a4;
-   width: 60rpx;
-   height: 38rpx;
+  width: 60rpx;
+  height: 38rpx;
   position: absolute;
   top: 16rpx;
   right: 30rpx;
@@ -98,4 +96,14 @@ font-family: 'STHeiti';
   margin-top: -6rpx;
   right: 0;
   border-radius: 6rpx;
+}
+
+.video-icon {
+  background: url(https://e-power.oss-cn-shenzhen.aliyuncs.com/new_resources/image/common/video-icon.png);
+  background-size: 100% 100%;
+  width: 14vw;
+  height: 14vw;
+  left: 43%;
+  position: absolute;
+  top: 32%;
 }
