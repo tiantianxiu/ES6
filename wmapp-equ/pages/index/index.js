@@ -5,6 +5,7 @@ import {
 } from '../../utils/util.js'
 const winWidth = app.globalData.windowWidth
 const winHeight = app.globalData.windowHeight
+const shuaHeight = 40
 
 Page({
   data: {
@@ -29,7 +30,6 @@ Page({
       "value": ''
     }],
     // 卡片end
-
     tab: 'recommend',
     loading_hidden: true,
     loading_msg: '加载中...',
@@ -58,7 +58,7 @@ Page({
 
     articleList: [],
     imgRecommend: [],
-
+    new_text: '下拉可以刷新',
     members: '', //会员数
     online: '', //在线人数
     showCoverId: 0, //打开视频的pid
@@ -113,9 +113,16 @@ Page({
   // 点击标题切换当前页时改变样式
   swichNav: function(e) {
     const that = this
-    var cur = e.target.dataset.current;
-    if (that.data.currentTaB == cur) {
-      return false
+    var cur = e.target.dataset.current
+    if (that.data.currentTab == cur) {
+      that.setData({
+          zan_loading: true,
+          scrollToId: 'z',
+        new_text: '刷新中...'
+        },
+        that.switchTap(true)
+      )
+      return
     } else {
       that.setData({
         currentTab: cur
@@ -125,7 +132,7 @@ Page({
   //判断当前滚动超过一屏时，设置tab标题滚动条。
   checkCor: function() {
     const that = this
-    that.bindscroll()
+    that.stopVideo()
     if (that.data.currentTab > 4) {
       that.setData({
         scrollLeft: 300
@@ -134,23 +141,25 @@ Page({
       that.setData({
         scrollLeft: 0
       })
-      switch (that.data.currentTab) {
-        case 0:
-          that.getInterest()
-          break
-        case 1:
-          that.getThread()
-          break
-        case 2:
-          that.getVideo()
-          break
-        default:
-          that.getExun()
-      }
-
+      that.switchTap()
     }
   },
-
+  switchTap(t) {
+    const that = this
+    switch (that.data.currentTab) {
+      case 0:
+        that.getInterest(t)
+        break
+      case 1:
+        that.getThread(t)
+        break
+      case 2:
+        that.getVideo(t)
+        break
+      default:
+        that.getExun(t)
+    }
+  },
   onLoad: function(options) {
     const that = this
     if (options.tab) {
@@ -316,7 +325,54 @@ Page({
       showCoverId: pid == showCoverId ? 0 : showCoverId
     })
   },
-  bindscroll(){
+  bindscroll(e) {
+    const that = this
+    that.stopVideo()
+    // console.log(e.detail.scrollTop)
+    // const _pullDownStatusDic = {
+    //   invisiable: 0, //看不见
+    //   pulling: 1, //下拉时
+    //   release: 2, //可松开刷新时
+    //   refresing: 3, //正在刷新
+    //   finish: 4, //刷新完成
+    // }
+    let scrollTop = e.detail.scrollTop
+    that.shuaxin(scrollTop)
+
+  },
+  ontouchend(e) {
+    const that = this
+    if (that.data.targetStatus == 2) {
+      // that.setLoding()   
+      that.setData({
+          zan_loading: true,
+          new_text: '刷新中...'
+        },
+        that.switchTap(true)
+      )
+      return
+    }
+    that.setData({
+      zan_loading: false
+    })
+  },
+  shuaxin(scrollTop) {
+    const that = this
+    let targetStatus
+    if (scrollTop < -1 * shuaHeight) {
+      that.data.targetStatus = 2
+      that.setData({
+        new_text: '松开立即刷新',
+
+      })
+    } else if (scrollTop < 0) {
+      that.data.targetStatus = 1
+    } else {
+      that.data.targetStatus = 0
+    }
+  },
+
+  stopVideo() {
     const that = this
     let showCoverId = that.data.showCoverId
     if (showCoverId == 0)
@@ -346,11 +402,11 @@ Page({
     that.getThread()
   },
   //兴趣列表
-  getInterest() {
+  getInterest(t) {
     const that = this
-    if (that.data.interest_data && that.data.interest_data.length > 0)
+    if (that.data.interest_data && that.data.interest_data.length > 0 && !t)
       return
-    let page_index = that.data.page_interest_index,
+    let page_index = t ? 0 : that.data.page_interest_index,
       page_size = that.data.page_interest_size
     request('post', 'get_interest_thread.php', {
       token: wx.getStorageSync('token'),
@@ -369,6 +425,13 @@ Page({
         interest_nomore_data: interest_data.length < that.data.page_interest_size
       })
       that.setLoding(true)
+      setTimeout(() => {
+        that.setData({
+          new_text: '下拉可以刷新',
+          zan_loading: false
+        })
+      }, 1000)
+
     })
   },
   reachInterestBottom: function() {
@@ -384,12 +447,12 @@ Page({
     )
   },
   //视频列表
-  getVideo() {
+  getVideo(t) {
     const that = this
-    if (that.data.video_data && that.data.video_data.length > 0)
+    if (that.data.video_data && that.data.video_data.length > 0 && !t)
       return
     let e = {
-      page_index: that.data.page_video_index,
+      page_index: 0,
       page_size: that.data.page_video_size,
       attachment: 1,
       type: 'video_data'
@@ -419,12 +482,12 @@ Page({
     )
   },
   //E讯列表
-  getExun() {
+  getExun(t) {
     const that = this
-    if (that.data.exun_data && that.data.exun_data.length > 0)
+    if (that.data.exun_data && that.data.exun_data.length > 0 && !t)
       return
     let e = {
-      page_index: that.data.page_exun_index,
+      page_index: 0,
       page_size: that.data.page_exun_size,
       fup: 82,
       type: 'exun_data'
@@ -454,12 +517,12 @@ Page({
     )
   },
   //最新列表
-  getThread() {
+  getThread(t) {
     const that = this
-    if (that.data.thread_data && that.data.thread_data.length > 0)
+    if (that.data.thread_data && that.data.thread_data.length > 0 && !t)
       return
     let e = {
-      page_index: that.data.page_index,
+      page_index: 0,
       page_size: that.data.page_size,
       type: 'thread_data'
     }
@@ -512,6 +575,21 @@ Page({
           [e.type]: thread_data || []
         })
         that.setLoding(true)
+        setTimeout(() => {
+          that.setData({
+            new_text: '刷新成功'
+          })
+        }, 800)
+        setTimeout(() => {
+          that.setData({
+            zan_loading: false
+          })
+        }, 1000)
+        setTimeout(() => {
+          that.setData({
+            new_text: '下拉可以刷新',
+          })
+        }, 1500)
       })
     })
   },
