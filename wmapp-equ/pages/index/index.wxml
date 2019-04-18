@@ -11,6 +11,14 @@
   <navBar navbar-data='{{navbarData}}'></navBar>
   <view style="height: {{heightMt}}px"></view>
   <view class="page-body">
+ 
+    <view class="section">
+      <movable-area class="area">
+        <movable-view wx:for="{{digest_data}}" wx:key="{{item.tid}}" x="{{item.x}}" y="{{item.y}}" damping="40" direction="all" bindchange="onChange" out-of-bounds="true" data-index="{{item.idx}}" catch:touchend="tap">
+          <image animation="{{animationData}}" src="{{item.image_list[0]}}" class="image image{{item.idx}}"></image>
+        </movable-view>
+      </movable-area>
+    </view>
 
 
     <scroll-view scroll-x="true" class="tab-h" style="top: {{heightMt}}px" scroll-left="{{scrollLeft}}">
@@ -23,7 +31,7 @@
     <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight - heightMt - 40}}px">
 
       <swiper-item>
-        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachInterestBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}"  scroll-into-view="{{scrollToId}}">
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachInterestBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}" scroll-into-view="{{scrollToId}}">
           <view class="shua-text" id="z">
             <view class="zan-loading" wx:if="{{zan_loading}}"></view>
             {{new_text}}
@@ -148,7 +156,7 @@
 
       <!-- 视频 -->
       <swiper-item>
-        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachVideoBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}"  scroll-into-view="{{scrollToId}}">
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachVideoBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}" scroll-into-view="{{scrollToId}}">
           <view class="shua-text" id="z">
             <view class="zan-loading" wx:if="{{zan_loading}}"></view>
             {{new_text}}
@@ -199,7 +207,7 @@
 
       <!-- E讯 -->
       <swiper-item>
-        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachExunBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}"  scroll-into-view="{{scrollToId}}">
+        <scroll-view scroll-y="true" bindscroll="scrollFn" class="scoll-h" scroll-top="{{scrollTop}}" bindscrolltolower="reachExunBottom" bindscroll="bindscroll" ontouchend="ontouchend" style="{{zan_loading?'transform:translateY(0rpx)':''}}" scroll-into-view="{{scrollToId}}">
           <view class="shua-text" id="z">
             <view class="zan-loading" wx:if="{{zan_loading}}"></view>
             {{new_text}}
@@ -253,13 +261,6 @@
             <text class="title">最新帖子</text>
             <view class="navigator-arrow" bindtap="moreForum"></view>
           </view> -->
-    <!-- <view class="section">
-      <movable-area class="area">
-        <movable-view wx:for="{{imgRecommends}}" wx:key="{{item.tid}}" x="{{item.x}}" y="{{item.y}}" damping="40" direction="all" bindchange="onChange" out-of-bounds="true" data-index="{{item.idx}}" catch:touchend="tap">
-          <image animation="{{animationData}}" src="{{item.thumbpath}}" class="image image{{item.idx}}"></image>
-        </movable-view>
-      </movable-area>
-    </view> -->
 
     <!-- 加载更多 -->
     <template is="zan-loadmore" data="{{ loading: have_data}}"></template>

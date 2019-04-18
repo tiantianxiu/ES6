@@ -43,6 +43,9 @@ Page({
     swiperCurrent: 0,
     swiperCurR: 0,
     swiperIndexR: 0,
+    //  兴趣卡
+    page_digest_index: 0,
+    page_digest_size: 10,
     //  最新
     page_index: 0,
     page_size: 10,
@@ -400,6 +403,7 @@ Page({
     that.setLoding()
     that.setPageScrollToTop()
     that.getThread()
+    that.getDigest()
   },
   //兴趣列表
   getInterest(t) {
@@ -593,7 +597,33 @@ Page({
       })
     })
   },
+  getDigest(t) {
+    const that = this
+    // digest	否	首页banner栏 digest:1
+    let page_digest_index = t ? that.data.page_digest_index + 1 : that.data.page_digest_index
+    let page_digest_size = that.data.page_digest_size
 
+      request('post', 'get_thread.php', {
+        token: wx.getStorageSync('token'),
+        page_index: page_digest_index,
+        page_size: page_digest_size,
+        digest: 1
+      }).then((res) => {
+        if (res.err_code != 0)
+          return
+        let forum_thread_data = res.data.forum_thread_data
+        for (let i in forum_thread_data) {
+          forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
+        }
+        let thread_data = t ? that.data.digest_data.concat(forum_thread_data) : forum_thread_data
+        that.setData({
+          digest_data: thread_data || [],
+          page_digest_index: page_digest_index
+        })       
+        
+      })
+    
+  },
   getOnline: function() {
     const that = this
     let getOnline = app.getSt('getOnline') //精华帖子列表详情
