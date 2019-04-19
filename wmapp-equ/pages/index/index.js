@@ -30,7 +30,7 @@ Page({
       "value": ''
     }],
     // 卡片end
-    tab: 'recommend',
+    tab: 0,
     loading_hidden: true,
     loading_msg: '加载中...',
     scrollTop: '',
@@ -60,7 +60,7 @@ Page({
     page_exun_size: 10,
 
     articleList: [],
-    imgRecommend: [],
+    digest_data: [],
     new_text: '下拉可以刷新',
     members: '', //会员数
     online: '', //在线人数
@@ -116,21 +116,25 @@ Page({
   // 点击标题切换当前页时改变样式
   swichNav: function(e) {
     const that = this
+    console.log(e.timeStamp , that.data.lastTapTime)
+   
     var cur = e.target.dataset.current
     if (that.data.currentTab == cur) {
+      if (e.timeStamp - that.data.lastTapTime > 300)
       that.setData({
           zan_loading: true,
           scrollToId: 'z',
-        new_text: '刷新中...'
+          new_text: '刷新中...'
         },
         that.switchTap(true)
       )
-      return
+      
     } else {
       that.setData({
         currentTab: cur
       })
     }
+    that.data.lastTapTime = e.timeStamp
   },
   //判断当前滚动超过一屏时，设置tab标题滚动条。
   checkCor: function() {
@@ -224,25 +228,37 @@ Page({
     var that = this;
     var distance = that.data.distance
     let index = e.currentTarget.dataset.index
-    let imgRecommend = that.data.imgRecommend
-    let imgRecommends = that.data.imgRecommends,
-      length = imgRecommends.length
+    let digest_data = that.data.digest_data,
+      length = digest_data.length
     if (distance > (winWidth + winWidth / 5)) {
       // app.showSelModal('dddddd').then(() => {
       that.setData({
-        [`imgRecommends[${length - index - 1}]x`]: winWidth * 2
+        [`digest_data[${index}]x`]: winWidth * 2
       })
+      if (index == 1)
+        that.setData({
+          digest_data: []
+        },
+          that.getDigest(true)
+        )
       // })
     } else if (distance < (winWidth - winWidth / 5)) {
       // app.showSelModal('ccccccc').then(() => {
       that.setData({
-        [`imgRecommends[${length - index -1}]x`]: 0
+        [`digest_data[${index}]x`]: 0
       })
+      if (index == 1)
+        that.setData({
+          digest_data: []
+        },
+          that.getDigest(true)
+        )
+       
       // })
     } else {
       that.setData({
-        [`imgRecommends[${length - index - 1}]x`]: winWidth,
-        [`imgRecommends[${length - index - 1}]y`]: winHeight
+        [`digest_data[${index}]x`]: winWidth,
+        [`digest_data[${index}]y`]: winHeight
       })
     }
   },
@@ -250,7 +266,6 @@ Page({
     var that = this
     that.data.distance = e.detail.x
   },
-
 
   /* 分享 */
   onShareAppMessage: function(res) {
@@ -404,6 +419,7 @@ Page({
     that.setPageScrollToTop()
     that.getThread()
     that.getDigest()
+    that.getSquareClass()
   },
   //兴趣列表
   getInterest(t) {
@@ -602,27 +618,31 @@ Page({
     // digest	否	首页banner栏 digest:1
     let page_digest_index = t ? that.data.page_digest_index + 1 : that.data.page_digest_index
     let page_digest_size = that.data.page_digest_size
-
-      request('post', 'get_thread.php', {
-        token: wx.getStorageSync('token'),
-        page_index: page_digest_index,
-        page_size: page_digest_size,
-        digest: 1
-      }).then((res) => {
-        if (res.err_code != 0)
-          return
-        let forum_thread_data = res.data.forum_thread_data
-        for (let i in forum_thread_data) {
-          forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
-        }
-        let thread_data = t ? that.data.digest_data.concat(forum_thread_data) : forum_thread_data
-        that.setData({
-          digest_data: thread_data || [],
-          page_digest_index: page_digest_index
-        })       
-        
-      })
     
+    request('post', 'get_thread.php', {
+      token: wx.getStorageSync('token'),
+      page_index: page_digest_index,
+      page_size: page_digest_size,
+      digest: 1
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      let forum_thread_data = res.data.forum_thread_data
+      for (let i in forum_thread_data) {
+        forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
+        forum_thread_data[i].x = winWidth
+        forum_thread_data[i].y = winHeight
+      }
+      // let thread_data = t ? that.data.digest_data.concat(forum_thread_data) : forum_thread_data
+      let thread_data = forum_thread_data
+
+      that.setData({
+        digest_data: thread_data,
+        page_digest_index: page_digest_index
+      })
+
+    })
+
   },
   getOnline: function() {
     const that = this
@@ -650,5 +670,45 @@ Page({
         'navbarData.members': members
       })
     })
+  },
+  // get_square_class.php
+  getSquareClass(){
+    const that  = this
+    request('post', 'get_square_class.php', {
+      token: wx.getStorageSync("token"),
+      page_size: 3,
+      page_index: 0
+    }).then((res)=>{
+      let threadclass = res.data.threadclass
+      for (let i in threadclass) {
+        threadclass[i].time = transformPHPTime(threadclass[i].dateline)
+      }
+      that.setData({
+        threadclass: threadclass
+      })
+    })
+  },
+  onPageScroll(e){
+    // console.log(e)
+    // return
+    const query = wx.createSelectorQuery()
+    const that = this
+    let scrollTop = e.scrollTop
+    const heightMt = app.globalData.heightMt + 20 * 2
+    query.select('#index-list').boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec(function (res) {
+      // console.log(res) // #reply-title节点的上边界坐标
+      let contenTop =  res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
+      if (heightMt + scrollTop >= contenTop)
+        console.log(contenTop)
+    })
+    
+      // that.setData({
+
+      // })
+
+    
   }
+  
 })
