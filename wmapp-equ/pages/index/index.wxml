@@ -31,7 +31,9 @@
               </view>
               <text>{{item.author}}</text>
             </view>
-            <image class="imgs" animation="{{animationData}}" src="{{item.image_list[0]}}" mode="aspectFill"></image>
+            <image class="imgs" animation="{{animationData}}" src="{{item.image_list[0]}}" mode="aspectFill">
+            <view class="video-icon" wx:if="{{item.attachment == 1}}"></view>
+            </image>
             <view class="subject">{{item.subject}}</view>
             <view class="footer">
               <view class="time">{{item.time}}</view>
@@ -44,7 +46,6 @@
                   <image src="../../resources/image/common/white-replies.png"></image>
                   {{item.replies}}
                 </view>
-
               </view>
             </view>
           </view>
@@ -72,7 +73,11 @@
       </view>
     </scroll-view>
 
-    <view class="index-list" id="index-list">
+    <view class="index-list {{index_list?'index-list-active':''}}" id="index-list" style="top: {{heightMt}}px">
+      <view class="x" bindtap="hIndexList" wx:if="{{index_list}}">
+        <image  src="../../resources/image/common/x.png"></image>
+      </view>
+
       <scroll-view scroll-x="true" class="tab-h" style="top: {{heightMt}}px" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{currentTab== 0?'active':''}}" data-current="0" bindtap="swichNav">兴趣</view>
         <view class="tab-item {{currentTab== 1?'active':''}}" data-current="1" bindtap="swichNav">最新</view>

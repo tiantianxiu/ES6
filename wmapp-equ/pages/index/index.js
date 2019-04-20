@@ -116,19 +116,19 @@ Page({
   // 点击标题切换当前页时改变样式
   swichNav: function(e) {
     const that = this
-    console.log(e.timeStamp , that.data.lastTapTime)
-   
+    console.log(e.timeStamp, that.data.lastTapTime)
+
     var cur = e.target.dataset.current
     if (that.data.currentTab == cur) {
       if (e.timeStamp - that.data.lastTapTime > 300)
-      that.setData({
-          zan_loading: true,
-          scrollToId: 'z',
-          new_text: '刷新中...'
-        },
-        that.switchTap(true)
-      )
-      
+        that.setData({
+            zan_loading: true,
+            scrollToId: 'z',
+            new_text: '刷新中...'
+          },
+          that.switchTap(true)
+        )
+
     } else {
       that.setData({
         currentTab: cur
@@ -237,8 +237,8 @@ Page({
       })
       if (index == 1)
         that.setData({
-          digest_data: []
-        },
+            digest_data: []
+          },
           that.getDigest(true)
         )
       // })
@@ -249,11 +249,11 @@ Page({
       })
       if (index == 1)
         that.setData({
-          digest_data: []
-        },
+            digest_data: []
+          },
           that.getDigest(true)
         )
-       
+
       // })
     } else {
       that.setData({
@@ -380,8 +380,7 @@ Page({
     if (scrollTop < -1 * shuaHeight) {
       that.data.targetStatus = 2
       that.setData({
-        new_text: '松开立即刷新',
-
+        new_text: '松开立即刷新'
       })
     } else if (scrollTop < 0) {
       that.data.targetStatus = 1
@@ -447,10 +446,19 @@ Page({
       that.setLoding(true)
       setTimeout(() => {
         that.setData({
-          new_text: '下拉可以刷新',
+          new_text: '刷新成功'
+        })
+      }, 800)
+      setTimeout(() => {
+        that.setData({
           zan_loading: false
         })
       }, 1000)
+      setTimeout(() => {
+        that.setData({
+          new_text: '下拉可以刷新',
+        })
+      }, 1500)
 
     })
   },
@@ -618,7 +626,7 @@ Page({
     // digest	否	首页banner栏 digest:1
     let page_digest_index = t ? that.data.page_digest_index + 1 : that.data.page_digest_index
     let page_digest_size = that.data.page_digest_size
-    
+
     request('post', 'get_thread.php', {
       token: wx.getStorageSync('token'),
       page_index: page_digest_index,
@@ -672,13 +680,13 @@ Page({
     })
   },
   // get_square_class.php
-  getSquareClass(){
-    const that  = this
+  getSquareClass() {
+    const that = this
     request('post', 'get_square_class.php', {
       token: wx.getStorageSync("token"),
       page_size: 3,
       page_index: 0
-    }).then((res)=>{
+    }).then((res) => {
       let threadclass = res.data.threadclass
       for (let i in threadclass) {
         threadclass[i].time = transformPHPTime(threadclass[i].dateline)
@@ -688,27 +696,32 @@ Page({
       })
     })
   },
-  onPageScroll(e){
-    // console.log(e)
-    // return
+  onPageScroll(e) {
     const query = wx.createSelectorQuery()
     const that = this
     let scrollTop = e.scrollTop
     const heightMt = app.globalData.heightMt + 20 * 2
+    if (that.data.index_list)
+      return
+      console.log(12222)
     query.select('#index-list').boundingClientRect()
     query.selectViewport().scrollOffset()
-    query.exec(function (res) {
+    query.exec(function(res) {
       // console.log(res) // #reply-title节点的上边界坐标
-      let contenTop =  res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
+      let contenTop = res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
+      // console.log(contenTop)
+      // console.log(scrollTop)
       if (heightMt + scrollTop >= contenTop)
-        console.log(contenTop)
+        that.setData({
+          index_list: true
+        })
     })
-    
-      // that.setData({
-
-      // })
-
-    
+  },
+  hIndexList: function() {
+    const that = this
+    that.setData({
+      index_list: false
+    })
   }
-  
+
 })

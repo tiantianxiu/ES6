@@ -89,43 +89,7 @@
     "backgroundColor": "#00c481",
     "navigationStyle": "custom"
   },
-  "tabBar": {
-    "color": "#555",
-    "selectedColor": "#00c481",
-    "borderStyle": "white",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "resources/image/home_gray.png",
-        "selectedIconPath": "resources/image/home.png"
-      },
-      {
-        "pagePath": "pages/forum/forum",
-        "text": "论坛",
-        "iconPath": "resources/image/forum_gray.png",
-        "selectedIconPath": "resources/image/forum.png"
-      },
-      {
-        "pagePath": "pages/square/square",
-        "text": "广场",
-        "iconPath": "resources/image/square_gray.png",
-        "selectedIconPath": "resources/image/square.png"
-      },
-      {
-        "pagePath": "pages/carOwner/carOwner",
-        "text": "认证",
-        "iconPath": "resources/image/certified_gray.png",
-        "selectedIconPath": "resources/image/certified.png"
-      },
-      {
-        "pagePath": "pages/user/user",
-        "text": "我的",
-        "iconPath": "resources/image/user_gray.png",
-        "selectedIconPath": "resources/image/user.png"
-      }
-    ]
-  },
+  
   "networkTimeout": {
     "request": 10000,
     "connectSocket": 20000,

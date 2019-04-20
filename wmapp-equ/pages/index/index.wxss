@@ -1,5 +1,9 @@
 /**index.wxss**/
 
+.page-body {
+  height: 98%;
+}
+
 /* 头部 */
 
 .index-header {
@@ -153,7 +157,7 @@
   margin-bottom: 30rpx;
 }
 
- .subject {
+.subject {
   color: #070c29;
   margin: 10rpx 0 0;
   font-weight: 600;
@@ -252,8 +256,8 @@
 .area {
   top: -100vh;
   left: -100vw;
-  height: 200vh;
-  width: 200vw;
+  height: 100vh;
+  width: 190vw;
   background: rgba(0, 0, 0, 0);
 }
 
@@ -268,68 +272,78 @@
 
 .image {
   position: relative;
-  width: 600rpx;
-  height: 594rpx;
+  width: 590rpx;
+  height: 622rpx;
   border-radius: 20rpx;
-  margin-top: 20rpx;
-  /* background-color: #5ee2d4; */
+  margin-top: 38rpx;
   text-align: center;
   padding: 0 30rpx;
   box-sizing: border-box;
 }
-movable-view:nth-child(3n+1) .image{
+
+movable-view:nth-child(3n+1) .image {
   background-color: #5ee2d4;
 }
-movable-view:nth-child(3n) .image{
+
+movable-view:nth-child(3n) .image {
   background-color: #a4a8ff;
 }
-movable-view:nth-child(3n+2) .image{
+
+movable-view:nth-child(3n+2) .image {
   background-color: #ffd7f4;
 }
 
 .image .imgs {
-  height: 54%;
+  height: 55%;
   width: 100%;
   border-radius: 20rpx;
+}
+
+.image .imgs .video-icon {
+  width: 13vw;
+  height: 13vw;
+  left: 41%;
+  top: 34%;
 }
 
 .image .avatar {
   position: absolute;
   top: -30rpx;
-  left: 0;
+  left: 20rpx;
   width: 100rpx;
   height: 100rpx;
 }
-.image .avatar .img{
+
+.image .avatar .img {
   border: 6rpx solid #fff;
 }
 
 .image .user-info {
   padding-left: 144rpx;
-  margin:0 0 36rpx;
+  margin: 0 0 38rpx;
   position: relative;
 }
+
 .image .user-info text {
-  line-height:70rpx;
+  line-height: 70rpx;
   font-size: 30rpx;
 }
 
-.image .subject{
+.image .subject {
   padding: 0 10rpx;
-   word-break:keep-all;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin: 38rpx 0 16rpx;
+  margin: 6rpx 0 22rpx;
+  height: 80rpx;
+  font-size: 30rpx;
+  line-height: 44rpx;
 }
 
-.image .footer{
+.image .footer {
   color: #fff;
   font-size: 24rpx;
   padding: 0 10rpx;
 }
 
-.image .footer .replies{
+.image .footer .replies {
   text-align: right;
 }
 
@@ -373,13 +387,41 @@ movable-view {
 }
 
 .thread-class .list {
-  width: 38vw;
+  width: 36vw;
   display: inline-block;
-  height: 38vw;
+  height: 36vw;
   margin-right: 5vw;
   border-radius: 20rpx;
   overflow: hidden;
 }
-.index-list{
-  transition: all .3s;
+
+.index-list {
+  /* transition: all .3s; */
+  background: #fff;
+  position: relative;
+  z-index: 10;
+  margin-top: -118rpx;
+}
+
+.index-list-active {
+  position: fixed;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  margin-top: 0;
+}
+
+.x {
+  position: absolute;
+  right: 40rpx;
+  top: 4rpx;
+  height: 80rpx;
+  width: 150rpx;
+  text-align: right;
+}
+
+.x image {
+  margin-top: 20rpx;
+  height: 30rpx;
+  width: 30rpx;
 }
