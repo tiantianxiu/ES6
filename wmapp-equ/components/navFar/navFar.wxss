@@ -1,4 +1,3 @@
-@import "../moreFunctions/moreFunctions.wxss";
 
 /* 顶部要固定定位   标题要居中   自定义按钮和标题要和右边微信原生的胶囊上下对齐 */
 
@@ -116,8 +115,47 @@
 }
 
 .square-camera image {
-  width: 44rpx;
   height: 44rpx;
   padding-bottom: 14rpx;
   padding-left: 58rpx;
+}
+
+.nav-far {
+  display: flex;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 999999;
+  background: #fff;
+}
+
+.nav-far .list {
+  width: 20vw;
+  text-align: center;
+  padding: 12rpx 0 0;
+}
+
+.nav-far .list image {
+  width: 42rpx;
+  height: 42rpx;
+}
+.nav-far .list.center image{
+  padding: 10rpx;
+  border-radius:50%;
+  width: 86rpx;
+  height: 86rpx;
+  margin-top: -26rpx;
+  box-sizing: content-box;
+  background: #fff;
+}
+
+.nav-far .list text {
+  display: block;
+  line-height: 100%;
+  font-size: 22rpx;
+  color: #bad8d8;
+}
+.nav-far .list.active text{
+   color: #070c29;
 }

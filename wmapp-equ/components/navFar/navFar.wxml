@@ -1,0 +1,21 @@
+<view class="nav-far">
+  <view class="list active">
+    <image src="../../resources/image/homes.png"></image>
+    <text>首页</text>
+  </view>
+   <view class="list">
+    <image src="../../resources/image/shops.png"></image>
+    <text>商场</text>
+  </view>
+   <view class="list center">
+    <image src="../../resources/image/set.png"></image>
+  </view>
+   <view class="list">
+    <image src="../../resources/image/finds.png"></image>
+    <text>发现</text>
+  </view>
+   <view class="list">
+    <image src="../../resources/image/mys.png"></image>
+    <text>自己</text>
+  </view>
+</view>

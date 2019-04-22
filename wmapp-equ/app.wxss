@@ -107,3 +107,6 @@ form {
   position: absolute;
   top: 32%;
 }
+.page-body{
+  margin-bottom: 120rpx;
+}

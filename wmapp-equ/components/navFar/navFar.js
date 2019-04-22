@@ -8,12 +8,7 @@ Component({
     }
   },
   data: {
-    heightMt: '',
-    //默认值  默认显示左上角
-    navbarData: {
-      showCapsule: 1,
-    },
-    share: app.globalData.share
+   
   },
   attached: function() {
     const that = this

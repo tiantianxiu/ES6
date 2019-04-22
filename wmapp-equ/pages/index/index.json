@@ -3,6 +3,7 @@
   "backgroundColor": "#f3f3f3",
   "usingComponents": {
     "authorization": "../../components/authorization/authorization",
-    "navBar": "../../components/navBar/navBar"
+    "navBar": "../../components/navBar/navBar",
+    "navFar": "../../components/navFar/navFar"
   }
 }

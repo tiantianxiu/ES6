@@ -1,3 +1,4 @@
+
 function formatTime(date) {
   var year = date.getFullYear()
   var month = date.getMonth() + 1
@@ -17,7 +18,7 @@ function formatNumber(n) {
 function request(method, url, data) {
   const that = this
   const app = getApp()
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     wx.request({
       url: getApp().globalData.svr_url + url,
       method: method,
@@ -25,7 +26,7 @@ function request(method, url, data) {
         "content-type": "application/x-www-form-urlencoded;charset=utf-8"
       },
       data: data,
-      success: function(res) {
+      success: function (res) {
         if (res.data.err_code == 0) {
           resolve(res.data)
           if (url != 'get_token.php') {
@@ -41,12 +42,11 @@ function request(method, url, data) {
               if (res.err_code == 0) {
                 app.globalData.num = 0
                 resolve(res)
-              } 
-              // else {
-                // resolve(res)
+              } else {
+                resolve(res)
                 // getApp().showSvrErrModal(res)
-              // }
-            });
+              }
+            })
           });
         } else if (app.globalData.num >= 2) {
           resolve(res)
@@ -57,16 +57,18 @@ function request(method, url, data) {
             app.showSvrErrModal(res)
         }
       },
-      fail: function(err) {
+      fail: function (err) {
 
         app.showErrModal("请求超时，请检查您的网络！")
           .then(() => {
+
             request(method, url, data).then((res) => {
               if (res.err_code == 0) {
                 resolve(res)
-              } 
+              } else {
+                resolve(res)
+              }
             })
-
           })
 
 
@@ -78,14 +80,14 @@ function request(method, url, data) {
 
 function uploadFile(method, url, filePath, name, formData) {
   const that = this
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const uploadTask = wx.uploadFile({
       url: getApp().globalData.svr_url + url,
       method: method,
       filePath: filePath,
       name: name,
       formData: formData,
-      success: function(res) {
+      success: function (res) {
         var res = JSON.parse(res.data)
 
         if (res.err_code == 0) {
@@ -96,23 +98,22 @@ function uploadFile(method, url, filePath, name, formData) {
         } else if (res.err_code == 10001 && getApp().globalData.num < 2) {
           getApp().globalData.num++ //限制次数增加
 
-            getApp().get_token().then((res) => {
-              formData.token = res.token
-              uploadFile(method, url, filePath, name, formData).then((res) => {
-                if (res.err_code == 0) {
-                  resolve(res)
-                }
-                //  else {
-                  // resolve(res)
-                // }
-              });
+          getApp().get_token().then((res) => {
+            formData.token = res.token
+            uploadFile(method, url, filePath, name, formData).then((res) => {
+              if (res.err_code == 0) {
+                resolve(res)
+              } else {
+                resolve(res)
+              }
             });
+          });
         } else {
           getApp().showErrModal(res.err_msg || '上传失败，请重新上传');
           resolve('err')
         }
       },
-      fail: function(res) {
+      fail: function (res) {
         resolve('err')
         getApp().showErrModal('上传失败，请重新上传');
       }
@@ -164,9 +165,9 @@ function uTS(unixtimestamp) {
 }
 
 // 几个小时前的提示字样
-function transformPHPTime(time) {　
+function transformPHPTime(time) {
   var timestamp = Date.parse(new Date()); //当前时间戳
-  var timestime = time * 1000　
+  var timestime = time * 1000
   var disparity = timestamp - timestime
   if (disparity < 3600000) {
     if (parseInt(disparity / 60000) == 0)
@@ -176,34 +177,44 @@ function transformPHPTime(time) {　
   if (disparity < 86400000) {
     return parseInt(disparity / 3600000) + '小时前'
   }
-  var date = new Date(timestime);
-  let Y = date.getFullYear() + '-';　　　　
-  let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';　　　　
-  let D = date.getDate() + ' ';　　　　
+  if (disparity < 86400000 * 8 && disparity > 86400000 * 1) {
+    if (parseInt(disparity / 86400000) == 1)
+      return '昨天'
+    if (parseInt(disparity / 86400000) == 2)
+      return '前天'
+    return parseInt(disparity / 86400000) + '天前'
+  }
+  var date = new Date(timestime)
+  let Y = date.getFullYear() + '-';
+  let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+  let D = date.getDate() + ' ';
   return Y + M + D
 }
-// 倒计时
-function oldTime(timechage) {
-  var oDate = Date.parse(new Date()) /1000
-  var timechages = (parseInt(timechage) - oDate) * 1000
-  if (timechages <= 0){
-    return 0
+// 几个小时前的提示字样
+function transformPHPTimes(time) {
+  var timestamp = Date.parse(new Date()); //当前时间戳
+  var timestime = time * 1000
+  var disparity = timestamp - timestime
+  if (disparity < 3600000) {
+    if (parseInt(disparity / 60000) == 0)
+      return '刚刚'
+    return parseInt(disparity / 60000) + '分钟前'
   }
-  var oDates = new Date(timechages)
- 
-  var oMinutes = oDates.getMinutes();
-  //获取秒数
-  var oSeconds = oDates.getSeconds();
-  //获取分钟
-  var oHours = parseInt((parseInt(timechage) - oDate - oMinutes * 60 - oSeconds) / (60 * 60))
-  //获取小时
+  if (disparity < 86400000) {
+    return parseInt(disparity / 3600000) + '小时前'
+  }
+  if (disparity < 86400000 * 8 && disparity > 86400000 * 1) {
+    if (parseInt(disparity / 86400000) == 1)
+      return '昨天'
+    if (parseInt(disparity / 86400000) == 2)
+      return '前天'
+    return parseInt(disparity / 86400000) + '天前'
+  }
+  return '一周前'
+}
 
-  var b = p(oHours) + ":" + p(oMinutes) + ":" + p(oSeconds);
-  return b
-}
-function p(n) {
-  return n < 10 ? '0' + n : n;
-}
+
+
 
 
 
@@ -217,5 +228,5 @@ module.exports = {
   contains,
   uTS,
   transformPHPTime,
-  oldTime
+  transformPHPTimes
 }

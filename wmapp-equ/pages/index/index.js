@@ -1,7 +1,8 @@
 var app = getApp()
 import {
   request,
-  transformPHPTime
+  transformPHPTime,
+  transformPHPTimes
 } from '../../utils/util.js'
 const winWidth = app.globalData.windowWidth
 const winHeight = app.globalData.windowHeight
@@ -155,7 +156,7 @@ Page({
     const that = this
     switch (that.data.currentTab) {
       case 0:
-        that.getInterest(t)
+        that.getInterest()
         break
       case 1:
         that.getThread(t)
@@ -233,7 +234,7 @@ Page({
     if (distance > (winWidth + winWidth / 5)) {
       // app.showSelModal('dddddd').then(() => {
       that.setData({
-        [`digest_data[${index}]x`]: winWidth * 2
+        [`digest_data[${index}]x`]: winWidth * 2,
       })
       if (index == 1)
         that.setData({
@@ -266,7 +267,11 @@ Page({
     var that = this
     that.data.distance = e.detail.x
   },
-
+  tabNav(e) {
+    const that = this
+    let tab = e.currentTarget.dataset.tab
+    console.log(tab)
+  },
   /* 分享 */
   onShareAppMessage: function(res) {
     const shareTitle = getApp().globalData.shareTitle
@@ -285,6 +290,8 @@ Page({
     request('post', 'get_my_msg_num.php', {
       token: wx.getStorageSync("token"),
     }).then((res) => {
+      if (res.err_code != 0)
+        return
       if (res.data.notice.length == 0)
         return
       let notice = res.data.notice,
@@ -423,27 +430,31 @@ Page({
   //兴趣列表
   getInterest(t) {
     const that = this
-    if (that.data.interest_data && that.data.interest_data.length > 0 && !t)
-      return
-    let page_index = t ? 0 : that.data.page_interest_index,
+    // if (that.data.interest_data && that.data.interest_data.length > 0 && !t)
+    //   return
+    console.log(that.data.page_interest_index)
+    let page_index = t ? that.data.page_interest_index : 0,
       page_size = that.data.page_interest_size
     request('post', 'get_interest_thread.php', {
       token: wx.getStorageSync('token'),
       page_index: page_index,
       page_size: page_size
     }).then((res) => {
+      that.setLoding(true)
+      if (res.err_code != 0)
+        return
       let interest_data = res.data.thread_data
       for (let i in interest_data) {
         interest_data[i].time = transformPHPTime(interest_data[i].dateline)
       }
-      let thread_data = page_index == 0 ? interest_data : that.data.interest_data.concat(thread_data)
+      let thread_data = that.data.interest_have_data ? that.data.interest_data.concat(interest_data) : interest_data
       that.setData({
         interest_data: thread_data || [],
-        page_interest_index: that.data.page_interest_index + 1,
         interest_have_data: false,
         interest_nomore_data: interest_data.length < that.data.page_interest_size
+
       })
-      that.setLoding(true)
+       that.data.page_interest_index = page_index
       setTimeout(() => {
         that.setData({
           new_text: '刷新成功'
@@ -468,10 +479,14 @@ Page({
       return
 
     that.setData({
-        interest_have_data: true,
-        page_interest_index: that.data.page_interest_index + 1
+        interest_have_data: true
       },
-      that.getInterest(re)
+      // console.log(that.data.page_interest_index)
+      // that.getInterest(true)
+      function() {
+        that.data.page_interest_index = that.data.page_interest_index + 1
+        that.getInterest(true)
+      }
     )
   },
   //视频列表
@@ -584,7 +599,6 @@ Page({
     // fid	否	int	板块fid
     // attachment	否	int	首页视频必填 attachment: 1
     return new Promise(function(resolve, reject) {
-
       request('post', 'get_thread.php', {
         token: wx.getStorageSync('token'),
         page_index: e.page_index,
@@ -592,8 +606,10 @@ Page({
         attachment: e.attachment || '',
         fup: e.fup || ''
       }).then((res) => {
-        if (res.err_code == 0)
-          resolve(res.data)
+        that.setLoding(true)
+        if (res.err_code != 0)
+          return
+        resolve(res.data)
         let forum_thread_data = res.data.forum_thread_data
         for (let i in forum_thread_data) {
           forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
@@ -602,7 +618,7 @@ Page({
         that.setData({
           [e.type]: thread_data || []
         })
-        that.setLoding(true)
+
         setTimeout(() => {
           that.setData({
             new_text: '刷新成功'
@@ -665,9 +681,10 @@ Page({
     request('post', 'get_online.php', {
       token: wx.getStorageSync("token"),
     }).then((res) => {
+      if (res.err_code != 0)
+        return
       let online = res.data.online
       let members = res.data.members
-
       let getOnline = {
         online: online,
         members: members
@@ -687,6 +704,8 @@ Page({
       page_size: 3,
       page_index: 0
     }).then((res) => {
+      if (res.err_code != 0)
+        return
       let threadclass = res.data.threadclass
       for (let i in threadclass) {
         threadclass[i].time = transformPHPTime(threadclass[i].dateline)
@@ -703,7 +722,7 @@ Page({
     const heightMt = app.globalData.heightMt + 20 * 2
     if (that.data.index_list)
       return
-      console.log(12222)
+    console.log(12222)
     query.select('#index-list').boundingClientRect()
     query.selectViewport().scrollOffset()
     query.exec(function(res) {
@@ -722,6 +741,9 @@ Page({
     that.setData({
       index_list: false
     })
+  },
+  toUserDetail(e) {
+    app.toUserDetail(e)
   }
 
 })
