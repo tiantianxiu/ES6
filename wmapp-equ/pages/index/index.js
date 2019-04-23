@@ -71,6 +71,9 @@ Page({
     navbarData: {
       showCapsule: 0, //是否显示左上角图标,
       isIndex: 1
+    },
+    navfarData: {
+      position: 'index'
     }
   },
   loadMore() { // 触底加载更多
@@ -231,12 +234,27 @@ Page({
     let index = e.currentTarget.dataset.index
     let digest_data = that.data.digest_data,
       length = digest_data.length
+
+    let tid = e.currentTarget.dataset.tid
+    let ad = e.currentTarget.dataset.ad
+    let data = {
+      tid: tid
+    }
+
     if (distance > (winWidth + winWidth / 5)) {
+      // 感兴趣
+      data.type = 0
       // app.showSelModal('dddddd').then(() => {
       that.setData({
-        [`digest_data[${index}]x`]: winWidth * 2,
-      })
-      if (index == 1)
+          [`digest_data[${index}]x`]: winWidth * 2,
+        },
+        () => {
+          if (ad != 1)
+            that.addInterest(data)
+        }
+
+      )
+      if (index == 0)
         that.setData({
             digest_data: []
           },
@@ -244,17 +262,23 @@ Page({
         )
       // })
     } else if (distance < (winWidth - winWidth / 5)) {
+      // 不感兴趣
+      data.type = 1
       // app.showSelModal('ccccccc').then(() => {
       that.setData({
-        [`digest_data[${index}]x`]: 0
-      })
-      if (index == 1)
+          [`digest_data[${index}]x`]: 0
+        },
+        () => {
+          if (ad != 1)
+            that.addInterest(data)
+        }
+      )
+      if (index == 0)
         that.setData({
             digest_data: []
           },
           that.getDigest(true)
         )
-
       // })
     } else {
       that.setData({
@@ -262,6 +286,16 @@ Page({
         [`digest_data[${index}]y`]: winHeight
       })
     }
+  },
+  // add_interest_thread.php
+  addInterest(e) {
+    request('post', 'add_interest_thread.php', {
+      token: wx.getStorageSync("token"),
+      tid: e.tid,
+      type: e.type
+    }).then((res) => {
+      return
+    })
   },
   onChange: function(e) {
     var that = this
@@ -454,7 +488,7 @@ Page({
         interest_nomore_data: interest_data.length < that.data.page_interest_size
 
       })
-       that.data.page_interest_index = page_index
+      that.data.page_interest_index = page_index
       setTimeout(() => {
         that.setData({
           new_text: '刷新成功'
@@ -642,31 +676,25 @@ Page({
     // digest	否	首页banner栏 digest:1
     let page_digest_index = t ? that.data.page_digest_index + 1 : that.data.page_digest_index
     let page_digest_size = that.data.page_digest_size
-
-    request('post', 'get_thread.php', {
+    request('post', 'get_thread_by_card.php', {
       token: wx.getStorageSync('token'),
       page_index: page_digest_index,
-      page_size: page_digest_size,
-      digest: 1
+      page_size: page_digest_size
     }).then((res) => {
       if (res.err_code != 0)
         return
-      let forum_thread_data = res.data.forum_thread_data
-      for (let i in forum_thread_data) {
-        forum_thread_data[i].time = transformPHPTime(forum_thread_data[i].dateline)
-        forum_thread_data[i].x = winWidth
-        forum_thread_data[i].y = winHeight
+      let thread = res.data.thread
+      for (let i in thread) {
+        thread[i].time = transformPHPTime(thread[i].dateline)
+        thread[i].x = winWidth
+        thread[i].y = winHeight
       }
-      // let thread_data = t ? that.data.digest_data.concat(forum_thread_data) : forum_thread_data
-      let thread_data = forum_thread_data
 
       that.setData({
-        digest_data: thread_data,
+        digest_data: thread,
         page_digest_index: page_digest_index
       })
-
     })
-
   },
   getOnline: function() {
     const that = this
@@ -722,14 +750,11 @@ Page({
     const heightMt = app.globalData.heightMt + 20 * 2
     if (that.data.index_list)
       return
-    console.log(12222)
     query.select('#index-list').boundingClientRect()
     query.selectViewport().scrollOffset()
     query.exec(function(res) {
-      // console.log(res) // #reply-title节点的上边界坐标
+      // #reply-title节点的上边界坐标
       let contenTop = res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
-      // console.log(contenTop)
-      // console.log(scrollTop)
       if (heightMt + scrollTop >= contenTop)
         that.setData({
           index_list: true
@@ -744,6 +769,6 @@ Page({
   },
   toUserDetail(e) {
     app.toUserDetail(e)
-  }
+  },
 
 })

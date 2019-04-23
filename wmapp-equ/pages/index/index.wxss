@@ -403,9 +403,9 @@ movable-view {
 }
 
 .thread-class .list {
-  width: 36vw;
+  width: 34vw;
   display: inline-block;
-  height: 36vw;
+  height: 34vw;
   margin-right: 5vw;
   border-radius: 20rpx;
   overflow: hidden;

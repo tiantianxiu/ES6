@@ -1,21 +1,39 @@
 <view class="nav-far">
-  <view class="list active">
-    <image src="../../resources/image/homes.png"></image>
+  <view class="list {{navfarData.position == 'index'?'active':''}}">
+    <image src="{{navfarData.position == 'index'?'../../resources/image/home.png':'../../resources/image/homes.png'}}"></image>
     <text>首页</text>
   </view>
-   <view class="list">
-    <image src="../../resources/image/shops.png"></image>
+  <view class="list {{navfarData.position == 'shop'?'active':''}}">
+    <image src="{{navfarData.position == 'shop'?'../../resources/image/shop.png':'../../resources/image/shops.png'}}"></image>
     <text>商场</text>
   </view>
-   <view class="list center">
+  <view class="list center {{show_add?'center-hover':''}}" bindtap="showAdd">
     <image src="../../resources/image/set.png"></image>
+    <view class="sector">
+      <view class="li sector1" hover-class="add-hover" bindtap="dd">
+        <!-- <text>发帖</text> -->
+        <image src="../../resources/image/add/post.png"></image> 
+      </view>
+      <view class="li sector2" hover-class="add-hover"  bindtap="dd">
+        <!-- <text>广场</text>  -->
+         <image src="../../resources/image/add/square.png"></image> 
+      </view>
+      <view class="li sector3" hover-class="add-hover"  bindtap="dd">
+        <!-- <text>问答</text>  -->
+         <image src="../../resources/image/add/quest.png"></image> 
+      </view>
+      <view class="li sector4" hover-class="add-hover"  bindtap="dd">
+        <!-- <text>口碑</text> -->
+         <image src="../../resources/image/add/praise.png"></image>  
+      </view>
+    </view>
   </view>
-   <view class="list">
-    <image src="../../resources/image/finds.png"></image>
+  <view class="list {{navfarData.position == 'find'?'active':''}}" >
+    <image src="{{navfarData.position == 'find'?'../../resources/image/finds.png':'../../resources/image/finds.png'}}"></image>
     <text>发现</text>
   </view>
-   <view class="list">
-    <image src="../../resources/image/mys.png"></image>
+  <view class="list {{navfarData.position == 'my'?'active':''}}">
+    <image src="{{navfarData.position == 'my'?'../../resources/image/my.png':'../../resources/image/mys.png'}}"></image>
     <text>自己</text>
   </view>
 </view>

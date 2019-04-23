@@ -1,4 +1,3 @@
-
 /* 顶部要固定定位   标题要居中   自定义按钮和标题要和右边微信原生的胶囊上下对齐 */
 
 .nav-wrap {
@@ -128,26 +127,31 @@
   width: 100%;
   z-index: 999999;
   background: #fff;
+  box-shadow: 0 -4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .nav-far .list {
   width: 20vw;
   text-align: center;
   padding: 12rpx 0 0;
+  position: relative;
 }
 
-.nav-far .list image {
+.nav-far .list>image {
   width: 42rpx;
   height: 42rpx;
 }
-.nav-far .list.center image{
+
+.nav-far .list.center>image {
   padding: 10rpx;
-  border-radius:50%;
+  border-radius: 50%;
   width: 86rpx;
   height: 86rpx;
   margin-top: -26rpx;
   box-sizing: content-box;
   background: #fff;
+  position: relative;
+  z-index: 99999999999;
 }
 
 .nav-far .list text {
@@ -156,6 +160,94 @@
   font-size: 22rpx;
   color: #bad8d8;
 }
-.nav-far .list.active text{
-   color: #070c29;
+
+.nav-far .list.active text {
+  color: #070c29;
+}
+
+/* 扇形 */
+
+.sector {
+  position: absolute;
+  left: -93rpx;
+  overflow: hidden;
+  width: 340rpx;
+  height: 160rpx;
+  margin: 0 auto;
+  /* background-color: #ddd; */
+  border-top-left-radius: 300rpx;
+  border-top-right-radius: 300rpx;
+  z-index: -1;
+  box-shadow: 0 0 2rpx rgba(0, 0, 0, 0.1);
+  transform: rotate(180deg);
+  bottom: -53%;
+  transition: all 1s;
+  /* opacity: 0 */
+}
+
+.center-hover .sector {
+  bottom: 100%;
+  transform: rotate(0);
+   z-index: 999;
+  opacity: 1
+}
+
+.sector .li {
+  list-style: none;
+  position: absolute;
+  width: 178rpx;
+  height: 176rpx;
+  right: 50%;
+  top: 0;
+  transform-origin: 100% 100%;
+  line-height: 268rpx;
+  display: flex;
+  align-items: center;
+  /* background: rgba(255,255,255,.4); */
+  background: rgba(17, 185, 186, 0.4);
+  box-shadow: 0 0 2rpx rgba(0, 0, 0, 0.2);
+}
+
+.sector .li.add-hover {
+  background: #fff;
+}
+
+.sector .li image {
+  display: block;
+  color: #070c29;
+  width: 86rpx;
+  height: 84rpx;
+  align-items: center;
+  margin: 40rpx 0 0 26rpx;
+}
+
+.sector .li.sector2 image {
+  margin: 68rpx 0 0 22rpx;
+}
+
+.sector .li.sector3 image {
+  margin: 54rpx 0 0 18rpx;
+}
+
+.sector .li.sector4 image {
+  margin: 68rpx 0 0 20rpx;
+}
+
+.sector .li.sector1 {
+  /* background-color: #fef4ac; */
+}
+
+.sector .li.sector2 {
+  /* background-color: #f50; */
+  transform: rotate(45deg);
+}
+
+.sector .li.sector3 {
+  /* background-color: #faf2cc; */
+  transform: rotate(90deg);
+}
+
+.sector .li.sector4 {
+  /* background-color: #f00; */
+  transform: rotate(135deg);
 }
