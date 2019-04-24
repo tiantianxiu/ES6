@@ -9,20 +9,20 @@
   </view>
   <view class="list center {{show_add?'center-hover':''}}" bindtap="showAdd">
     <image src="../../resources/image/set.png"></image>
-    <view class="sector">
-      <view class="li sector1" hover-class="add-hover" bindtap="dd">
+    <view class="sector" hover-stop-propagation="true">
+      <view class="li sector1" hover-class="add-hover" catchtap="dd">
         <!-- <text>发帖</text> -->
         <image src="../../resources/image/add/post.png"></image> 
       </view>
-      <view class="li sector2" hover-class="add-hover"  bindtap="dd">
+      <view class="li sector2" hover-class="add-hover"  catchtap="dd">
         <!-- <text>广场</text>  -->
          <image src="../../resources/image/add/square.png"></image> 
       </view>
-      <view class="li sector3" hover-class="add-hover"  bindtap="dd">
+      <view class="li sector3" hover-class="add-hover"  catchtap="dd">
         <!-- <text>问答</text>  -->
          <image src="../../resources/image/add/quest.png"></image> 
       </view>
-      <view class="li sector4" hover-class="add-hover"  bindtap="dd">
+      <view class="li sector4" hover-class="add-hover"  catchtap="dd">
         <!-- <text>口碑</text> -->
          <image src="../../resources/image/add/praise.png"></image>  
       </view>

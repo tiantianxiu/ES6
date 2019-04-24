@@ -34,7 +34,7 @@ function request(method, url, data) {
           }
         }
         //限制次数大于1，就禁止
-        else if (app.globalData.num < 2 && res.data.err_code == 10001 || res.data.err_code == 10003 || res.data.err_code == 10004 || res.data.err_code == 10011) {
+        else if (app.globalData.num < 2 && res.data.err_code == 10001 || app.globalData.num < 2 && res.data.err_code == 10003 || app.globalData.num < 2 && app.globalData.num < 2 && res.data.err_code == 10004 || app.globalData.num < 2 && res.data.err_code == 10011) {
           app.globalData.num = app.globalData.num + 1 //限制次数增加
           app.get_token().then((res) => {
             data.token = res.token

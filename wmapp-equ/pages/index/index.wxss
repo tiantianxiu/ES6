@@ -1,6 +1,5 @@
 /**index.wxss**/
 
-
 /* 头部 */
 
 .index-header {
@@ -287,13 +286,11 @@ movable-view:nth-child(3n+1) .image {
 movable-view:nth-child(3n) .image {
   background-color: #a4a8ff;
   /* margin-top: 30rpx; */
-
 }
 
 movable-view:nth-child(3n+2) .image {
   background-color: #ffd7f4;
   /* margin-top: 60rpx; */
-
 }
 
 .image .imgs {
@@ -403,9 +400,9 @@ movable-view {
 }
 
 .thread-class .list {
-  width: 34vw;
+  width: 30vw;
   display: inline-block;
-  height: 34vw;
+  height: 30vw;
   margin-right: 5vw;
   border-radius: 20rpx;
   overflow: hidden;
@@ -440,4 +437,40 @@ movable-view {
   margin-top: 20rpx;
   height: 30rpx;
   width: 30rpx;
+}
+
+.square-title {
+  background: url(https://e-power.oss-cn-shenzhen.aliyuncs.com/new_resources/image/common/square-title.png) left bottom no-repeat;
+  background-size: auto 30rpx;
+  font-weight: 600;
+  font-size: 30rpx;
+  display: inline-block;
+  position: relative;
+  padding-right: 60rpx;
+}
+
+.square-title::after {
+  content: " ";
+  display: inline-block;
+  height: 14rpx;
+  width: 14rpx;
+  border-width: 0 4rpx 4rpx 0rpx;
+  border-color: #12baba;
+  border-style: solid;
+  transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+  position: absolute;
+  top: 36%;
+  margin-top: -6rpx;
+  right: 0;
+  border-radius: 6rpx;
+}
+
+.square-line {
+  width: 80%;
+  margin: 20rpx auto;
+  border-bottom: 1rpx solid #bad8d8;
+}
+
+.square-list{
+  padding: 40rpx 0; 
 }

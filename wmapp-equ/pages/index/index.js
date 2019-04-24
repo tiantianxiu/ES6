@@ -31,7 +31,7 @@ Page({
       "value": ''
     }],
     // 卡片end
-    tab: 0,
+    tab: 1,
     loading_hidden: true,
     loading_msg: '加载中...',
     scrollTop: '',
@@ -186,69 +186,81 @@ Page({
       y: winHeight,
       winHeight: winHeight
     })
+    if (app.globalData.restart == 0) {
+      app.get_token().then((res) => {
+        that.onLoad(options)
+      })
+    } else {
+      that.getOnline()
+      that.reloadIndex()
 
-    that.getOnline()
-    that.reloadIndex()
-
-    if (options.scene) {
-      const scene = decodeURIComponent(options.scene)
-      console.log(scene)
-      const tidVal = scene.split('=')
-      const shareName = tidVal[1].split('&')[0]
-      const shareId = tidVal[2]
-      if (shareId) {
-        if (shareName == 'pdetail') {
+      if (options.scene) {
+        const scene = decodeURIComponent(options.scene)
+        console.log(scene)
+        const tidVal = scene.split('=')
+        const shareName = tidVal[1].split('&')[0]
+        const shareId = tidVal[2]
+        if (shareId) {
+          if (shareName == 'pdetail') {
+            wx.navigateTo({
+              url: `/praise/pages/praise_user/praise_user?id=${shareId}`
+            })
+            return
+          }
           wx.navigateTo({
-            url: `/praise/pages/praise_user/praise_user?id=${shareId}`
+            url: `../${shareName}/${shareName}?id=${shareId}`
           })
           return
         }
         wx.navigateTo({
-          url: `../${shareName}/${shareName}?id=${shareId}`
+          url: `../${shareName}/${shareName}`
         })
         return
       }
-      wx.navigateTo({
-        url: `../${shareName}/${shareName}`
-      })
-      return
-    }
-    if (options.shareName) {
-      let shareName = options.shareName
-      let shareId = options.shareId
-      let root = options.root
-      if (root) {
+      if (options.shareName) {
+        let shareName = options.shareName
+        let shareId = options.shareId
+        let root = options.root
+        if (root) {
+          wx.navigateTo({
+            url: `/${root}/pages/${shareName}/${shareName}?id=${shareId}`
+          })
+          return
+        }
         wx.navigateTo({
-          url: `/${root}/pages/${shareName}/${shareName}?id=${shareId}`
+          url: `/pages/${shareName}/${shareName}?id=${shareId}`
         })
-        return
       }
-      wx.navigateTo({
-        url: `/pages/${shareName}/${shareName}?id=${shareId}`
-      })
     }
   },
   tap: function(e) {
     var that = this;
-    var distance = that.data.distance
+    var distance = that.data.distance || 0
     let index = e.currentTarget.dataset.index
+    let that_index = that.data.index
+    let x = e.currentTarget.dataset.x
     let digest_data = that.data.digest_data,
       length = digest_data.length
-
+    if (index != that_index){
+      // console.log(e)
+      // console.log(that_index)
+      distance = x
+    }
     let tid = e.currentTarget.dataset.tid
     let ad = e.currentTarget.dataset.ad
     let data = {
       tid: tid
     }
-
-    if (distance > (winWidth + winWidth / 5)) {
+    if (distance && distance > (winWidth + winWidth / 5)) {
       // 感兴趣
       data.type = 0
       // app.showSelModal('dddddd').then(() => {
       that.setData({
           [`digest_data[${index}]x`]: winWidth * 2,
+          
         },
         () => {
+          that.data.distance = 0
           if (ad != 1)
             that.addInterest(data)
         }
@@ -261,14 +273,15 @@ Page({
           that.getDigest(true)
         )
       // })
-    } else if (distance < (winWidth - winWidth / 5)) {
+    } else if (distance && distance < (winWidth - winWidth / 5)) {
       // 不感兴趣
       data.type = 1
       // app.showSelModal('ccccccc').then(() => {
       that.setData({
-          [`digest_data[${index}]x`]: 0
+          [`digest_data[${index}]x`]: 0,
         },
         () => {
+          that.data.distance = 0
           if (ad != 1)
             that.addInterest(data)
         }
@@ -300,11 +313,16 @@ Page({
   onChange: function(e) {
     var that = this
     that.data.distance = e.detail.x
+    that.data.index = e.currentTarget.dataset.index
   },
   tabNav(e) {
     const that = this
     let tab = e.currentTarget.dataset.tab
-    console.log(tab)
+    if (tab == that.data.tab)
+      return
+    that.setData({
+      tab: tab
+    }) 
   },
   /* 分享 */
   onShareAppMessage: function(res) {
@@ -765,6 +783,32 @@ Page({
     const that = this
     that.setData({
       index_list: false
+    })
+  },
+  toDetail: function(e) {
+    const that = this
+    var tid = e.currentTarget.dataset.tid
+    if (tid == 0)
+      return
+
+    let hidden = e.currentTarget.dataset.hidden
+    let reputation_id = e.currentTarget.dataset.reputation_id
+    if (reputation_id && hidden == 1) {
+      wx.navigateTo({
+        url: '/praise/pages/praise_user/praise_user?id=' + reputation_id,
+      })
+      return
+    }
+
+    if (hidden == 2) {
+      wx.navigateTo({
+        url: '/question/pages/quest_detail/quest_detail?id=' + tid,
+      })
+      return
+    }
+
+    wx.navigateTo({
+      url: '../detail/detail?tid=' + tid,
     })
   },
   toUserDetail(e) {

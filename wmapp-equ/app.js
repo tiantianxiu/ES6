@@ -9,15 +9,15 @@ App({
     const that = this
     that.windowHeight(options)
     that.wxGetUpdateManager() //立即更新
-    if (wx.getStorageSync('token') && wx.getStorageSync('has_login')) {
-      setTimeout(() => {
-        that.setTabBarBadge()
-      })
-      return
-    }
-    that.get_token().then(() => {
-      that.setTabBarBadge()
-    })
+    // if (wx.getStorageSync('token') && wx.getStorageSync('has_login')) {
+    //   setTimeout(() => {
+    //     that.setTabBarBadge()
+    //   })
+    //   return
+    // }
+    // that.get_token().then(() => {
+    //   that.setTabBarBadge()
+    // })
     // 获取token
   },
   // 获取token
@@ -36,6 +36,7 @@ App({
             key: 'has_login',
             data: res.data.has_login
           });
+          that.globalData.restart = 1
           resolve(res.data)
         })
       })
@@ -398,7 +399,8 @@ App({
     heightMt: 0,
     carType: '',
     num: 0, //限制访问次数 util用到
-    is_android: 0
+    is_android: 0,
+    restart: 0
   },
   getToken: {
     num: 0

@@ -17,7 +17,11 @@ page {
                  "Helvetica",
                  "STHeiti",
                  "Droid Sans";
+  color: #070c29;               
   /* font-family: microsoft YaHei                */
+}
+.container{
+  padding: 0 30rpx;
 }
 
 checkbox, radio {
@@ -87,7 +91,7 @@ form {
   display: inline-block;
   height: 18rpx;
   width: 18rpx;
-  border-width: 6rpx 6rpx 0 0;
+  border-width: 6rpx 6rpx 0rpx 0rpx;
   border-color: #12baba;
   border-style: solid;
   transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
@@ -108,5 +112,5 @@ form {
   top: 32%;
 }
 .page-body{
-  margin-bottom: 120rpx;
+  margin-bottom: 104rpx;
 }
