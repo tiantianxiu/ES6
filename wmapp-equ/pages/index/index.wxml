@@ -345,7 +345,12 @@
           <view class=""></view>
         </view>
         <view class="square-list">
-          <view class="container-list" bindtap="toDetail" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}" data-hidden="{{item.hidden}}" wx:for="{{thread_data}}" wx:for-item="item" wx:key="{{index}}">
+        <block wx:for="{{square_thread}}" wx:for-item="item" wx:key="{{index}}">
+          <view class="ad-image" wx:if="{{item.ad == 1}}">
+            <image src="{{item.data}}"></image>
+            <text>广告</text>
+          </view>
+          <view class="container-list" bindtap="toDetail" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}" data-hidden="{{item.hidden}}" wx:else>
             <view class="user-info">
               <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                 <image class="img" src="{{item.avatar}}"></image>
@@ -355,9 +360,9 @@
                 {{item.hidden == 1 ? '口碑' : ''}}
               </view>
             </view>
-            <view>
+            <view class="square-content">
               <!-- 视频 -->
-              <view class="image-list" wx:if="{{item.attachment == 1}}">
+              <view class="image-list image-list-video" wx:if="{{item.attachment == 1}}">
                 <video src="{{item.video}}" id="myVideo{{item.pid + index}}" data-pid="{{item.pid + index}}" hover-stop-propagation="{{true}}" poster="{{item.video}}" bindended="exitFullScreen" wx:if="{{showCoverId == item.pid + index}}" direction="0" wx:if="{{showCoverId == item.pid + index }}"></video>
                 <image src="{{item.image_list[0]}}" mode="aspectFill" data-pid="{{item.pid + index}}" catchtap="play" hover-stop-propagation="{{true}}" wx:else>
                   <view class="video-icon" data-pid="{{item.pid + index }}" catchtap="play" hover-stop-propagation="{{true}}"></view>
@@ -365,13 +370,13 @@
               </view>
 
               <!-- 问答或广场 - 图片单张 -->
-              <view class="image-list image-list2" wx:if="{{(item.attachment == 2 && item.image_list.length == 1 && item.hidden == 2) || (item.attachment == 2 && item.image_list.length == 1 && item.hidden == 3)}}">
+              <view class="image-list image-list1" wx:if="{{(item.attachment == 2 && item.image_list.length == 1 && item.hidden == 2) || (item.attachment == 2 && item.image_list.length == 1 && item.hidden == 3)}}">
                 <image src="{{item.image_list[0]}}" mode="aspectFill" class="lists">
                 </image>
               </view>
 
               <!-- 图片多张 -->
-              <view class="image-list image-lists" wx:if="{{item.hidden == 2 && item.attachment == 2 && item.image_list.length > 1 || item.hidden == 3 && item.attachment == 2 && item.image_list.length > 1 }}">
+              <view class="image-list image-lists {{item.image_list.length == 4?'image-list4':''}}" wx:if="{{item.hidden == 2 && item.attachment == 2 && item.image_list.length > 1 || item.hidden == 3 && item.attachment == 2 && item.image_list.length > 1 }}">
                 <block wx:for="{{item.image_list}}" wx:for-item="image" wx:key="{{index}}">
                   <image src="{{image}}" mode="aspectFill" class="lists">
                   </image>
@@ -396,17 +401,21 @@
               </view>
             </view>
           </view>
+          </block>
         </view>
       </view>
-
+    <!-- 加载更多 -->
+    <template is="zan-loadmore" data="{{ loading: have_square_data}}"></template>
+    <!-- <template is="zan-loadmore" data="{{ loading: true}}"></template> -->
+    <!-- 没有更多的数据了 -->
+    <template is="zan-loadmore" data="{{ nomore: nomore_square_data}}"></template>
+    <!-- 返回顶部 -->
     </block>
 
-    <!-- 加载更多 -->
-    <!-- <template is="zan-loadmore" data="{{ loading: have_data}}"></template> -->
-    <!-- 没有更多的数据了 -->
-    <!-- <template is="zan-loadmore" data="{{ nomore :nomore_data}}"></template> -->
-    <!-- 返回顶部 -->
+    
+    <view style="height: 104rpx"></view>
   </view>
+  
 </view>
 
 <navFar navfar-data="{{navfarData}}"></navFar>

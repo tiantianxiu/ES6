@@ -471,6 +471,63 @@ movable-view {
   border-bottom: 1rpx solid #bad8d8;
 }
 
-.square-list{
-  padding: 40rpx 0; 
+.square-list {
+  padding: 40rpx 0;
+}
+
+.square-list .image-lists {
+  display: block;
+  height: auto;
+}
+
+.square-list .image-list {
+  width: 66%;
+}
+
+.square-list .image-list.image-list1 {
+  width: 44vw;
+  height: 44vw;
+}
+
+.square-list .image-list.image-list-video {
+  width: 36vw;
+  height: 56vw;
+}
+
+.image-list-video .video-icon {
+  width: 12vw;
+  height: 12vw;
+  left: 34%;
+  position: absolute;
+  top: 41%;
+}
+
+.square-list .image-lists.image-list4 {
+  /* width: 66%; */
+  display: block;
+  height: auto;
+}
+
+.square-list .image-lists .lists {
+  width: 22vw;
+  height: 22vw;
+}
+
+.square-content {
+  padding-left: 110rpx;
+}
+
+.ad-image{
+  border-radius: 30rpx;
+  height: 280rpx;
+  position: relative;
+  overflow: hidden;
+}
+.ad-image text{
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-top-right-radius: 30rpx;
+  border-bottom-left-radius: 30rpx;
+  padding: 8rpx 20px;
 }

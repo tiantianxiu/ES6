@@ -31,7 +31,7 @@ Page({
       "value": ''
     }],
     // 卡片end
-    tab: 1,
+    tab: 0,
     loading_hidden: true,
     loading_msg: '加载中...',
     scrollTop: '',
@@ -59,9 +59,15 @@ Page({
     //  E讯
     page_exun_index: 0,
     page_exun_size: 10,
+    // 广场
+    page_square_index: 0,
+    page_square_size: 10,
+    square_type: 0,
+    square_order: 0,
 
     articleList: [],
     digest_data: [],
+    square_thread: [],
     new_text: '下拉可以刷新',
     members: '', //会员数
     online: '', //在线人数
@@ -241,7 +247,7 @@ Page({
     let x = e.currentTarget.dataset.x
     let digest_data = that.data.digest_data,
       length = digest_data.length
-    if (index != that_index){
+    if (index != that_index) {
       // console.log(e)
       // console.log(that_index)
       distance = x
@@ -257,7 +263,7 @@ Page({
       // app.showSelModal('dddddd').then(() => {
       that.setData({
           [`digest_data[${index}]x`]: winWidth * 2,
-          
+
         },
         () => {
           that.data.distance = 0
@@ -322,7 +328,10 @@ Page({
       return
     that.setData({
       tab: tab
-    }) 
+    })
+    if (tab == 1)
+      that.getSquare()
+
   },
   /* 分享 */
   onShareAppMessage: function(res) {
@@ -714,6 +723,37 @@ Page({
       })
     })
   },
+  // get_square.php
+  getSquare(b) {
+    const that = this
+    let page_index = b ? that.data.page_square_index + 1 : 0,
+      page_size = that.data.page_square_size,
+      type = that.data.square_type,
+      order = that.data.square_order
+    request('post', 'get_square.php', {
+      token: wx.getStorageSync("token"),
+      page_index: page_index,
+      page_size: page_size,
+      type: type,
+      typeid: 0,
+      order: order,
+    }).then((res) => {
+      that.setLoding(true)
+      if (res.err_code != 0)
+        return
+      let thread = res.data.thread
+      for (let i in thread){
+        thread[i].time = transformPHPTime(thread[i].dateline)
+      }
+      let square_thread = b ? that.data.square_thread.concat(thread) : thread
+
+      that.setData({
+        square_thread: square_thread
+      })
+      if (b)
+        that.data.page_square_index = page_index
+    })
+  },
   getOnline: function() {
     const that = this
     let getOnline = app.getSt('getOnline') //精华帖子列表详情
@@ -764,6 +804,8 @@ Page({
   onPageScroll(e) {
     const query = wx.createSelectorQuery()
     const that = this
+    if (that.data.tab != 0)
+      return
     let scrollTop = e.scrollTop
     const heightMt = app.globalData.heightMt + 20 * 2
     if (that.data.index_list)
@@ -814,5 +856,12 @@ Page({
   toUserDetail(e) {
     app.toUserDetail(e)
   },
+  onReachBottom() {
+    const that = this
+    let tab = that.data.tab
+    if (tab = 1) {
+      that.getSquare(true)
+    }
+  }
 
 })

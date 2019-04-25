@@ -89,7 +89,6 @@
     "backgroundColor": "#00c481",
     "navigationStyle": "custom"
   },
-  
   "networkTimeout": {
     "request": 10000,
     "connectSocket": 20000,
@@ -100,5 +99,6 @@
     "scope.userLocation": {
       "desc": "获得您当前的位置，以便查询您附近的充电桩"
     }
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }
