@@ -329,8 +329,10 @@ Page({
     that.setData({
       tab: tab
     })
-    if (tab == 1)
-      that.getSquare()
+    if (tab == 1){
+      if (that.data.square_thread.length == 0)
+        that.getSquare()
+    }
 
   },
   /* 分享 */
@@ -723,9 +725,10 @@ Page({
       })
     })
   },
-  // get_square.php
+  // 广场首页列表
   getSquare(b) {
     const that = this
+ 
     let page_index = b ? that.data.page_square_index + 1 : 0,
       page_size = that.data.page_square_size,
       type = that.data.square_type,
@@ -742,16 +745,20 @@ Page({
       if (res.err_code != 0)
         return
       let thread = res.data.thread
-      for (let i in thread){
-        thread[i].time = transformPHPTime(thread[i].dateline)
+      for (let i in thread) {
+        thread[i].time = transformPHPTime(thread[i].timestamp)
       }
       let square_thread = b ? that.data.square_thread.concat(thread) : thread
 
       that.setData({
-        square_thread: square_thread
+        square_thread: square_thread,
+        page_square_index: page_index
       })
       if (b)
-        that.data.page_square_index = page_index
+        that.setData({
+          have_square_data: false,
+          nomore_square_data: thread.length < that.data.page_size ? true : false
+        })
     })
   },
   getOnline: function() {
@@ -802,20 +809,24 @@ Page({
     })
   },
   onPageScroll(e) {
-    const query = wx.createSelectorQuery()
     const that = this
+    // if(that.data.tab != 0)
+      return
+    const query = wx.createSelectorQuery()
     if (that.data.tab != 0)
       return
     let scrollTop = e.scrollTop
-    const heightMt = app.globalData.heightMt + 20 * 2
+    const heightMt = app.globalData.heightMt + 20 * 2 
     if (that.data.index_list)
       return
     query.select('#index-list').boundingClientRect()
     query.selectViewport().scrollOffset()
     query.exec(function(res) {
       // #reply-title节点的上边界坐标
+      console.log(res[0].top , res[1].scrollTop)
       let contenTop = res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
-      if (heightMt + scrollTop >= contenTop)
+      // if (heightMt + scrollTop >= contenTop)
+      if (res[0].top < 100)
         that.setData({
           index_list: true
         })
@@ -856,12 +867,29 @@ Page({
   toUserDetail(e) {
     app.toUserDetail(e)
   },
+  // 上拉加载
   onReachBottom() {
     const that = this
     let tab = that.data.tab
     if (tab = 1) {
-      that.getSquare(true)
+      if (that.data.nomore_square_data || that.data.have_square_data)
+        return
+      that.setData({
+          have_square_data: true
+        },
+        that.getSquare(true)
+      )
     }
-  }
+  },
+  /* 下拉刷新 */
+  onPullDownRefresh: function () {
+    const that = this
+    let tab = that.data.tab
+    if (tab = 1) 
+      that.getSquare()
+
+    wx.stopPullDownRefresh()
+
+  },
 
 })

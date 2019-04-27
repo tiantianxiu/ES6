@@ -11,7 +11,7 @@
   <navBar navbar-data='{{navbarData}}'></navBar>
   <view style="height: {{heightMt + 5}}px"></view>
   <view class="page-body">
-    <view>
+    <view class="index-title" style="top: {{heightMt}}px">
       <scroll-view scroll-x="true" class="tab-h tab-head" style="top: {{heightMt}}px" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{tab== 0?'active':''}}" data-tab="0" bindtap="tabNav">社群</view>
         <view class="tab-item {{tab== 1?'active':''}}" data-tab="1" bindtap="tabNav">广场</view>
@@ -20,6 +20,7 @@
       </scroll-view>
     </view>
 
+    <view class="index-content">
     <block wx:if="{{tab == 0}}">
       <view class="section">
         <movable-area class="area">
@@ -29,6 +30,7 @@
               <view class="user-info">
                 <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                   <image class="img" src="{{item.avatar}}"></image>
+                  <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
                 </view>
                 <text>{{item.author}}</text>
               </view>
@@ -91,6 +93,7 @@
                 <view class="user-info">
                   <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                     <image class="img" src="{{item.avatar}}"></image>
+                     <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
                   </view>
                   <text>{{item.author}}</text>
                 </view>
@@ -120,7 +123,9 @@
                       </image>
                     </block>
                   </view>
-                  <view class="subject">{{item.subject}}
+                  <view class="subject" wx:if="{{item.hidden != 3}}">{{item.subject}}
+                  </view>
+                  <view class="message" wx:if="{{item.hidden == 3}}">{{item.message}}
                   </view>
                   <view class="footer">
                     <view class="time">{{item.time}}</view>
@@ -161,6 +166,7 @@
                 <view class="user-info">
                   <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                     <image class="img" src="{{item.avatar}}"></image>
+                     <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
                   </view>
                   <text>{{item.author}}</text>
                   <view class="hidden-text">
@@ -236,6 +242,7 @@
                 <view class="user-info">
                   <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                     <image class="img" src="{{item.avatar}}"></image>
+                     <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
                   </view>
                   <text>{{item.author}}</text>
                 </view>
@@ -287,6 +294,7 @@
                 <view class="user-info">
                   <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                     <image class="img" src="{{item.avatar}}"></image>
+                     <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
                   </view>
                   <text>{{item.author}}</text>
                 </view>
@@ -329,6 +337,7 @@
     </block>
 
     <block wx:elif="{{tab == 1}}">
+ 
       <view class="section-title section-ext">
         <text class="title">热门围观</text>
         <view class="navigator-arrow" bindtap="moreForum"></view>
@@ -339,6 +348,7 @@
         </view>
       </scroll-view>
       <view class="square-line"></view>
+
       <view class="container">
         <view class="square-title">
           最新
@@ -354,6 +364,7 @@
             <view class="user-info">
               <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                 <image class="img" src="{{item.avatar}}"></image>
+                 <view class="user-v"  wx:if="{{item.level=='自媒体' || item.level=='新能源砖家'  || item.is_carvip == 1 || item.is_auth_car_icon == 1}}" ></view>
               </view>
               <text>{{item.author}}</text>
               <view class="hidden-text">
@@ -411,7 +422,7 @@
     <template is="zan-loadmore" data="{{ nomore: nomore_square_data}}"></template>
     <!-- 返回顶部 -->
     </block>
-
+    </view>
     
     <view style="height: 104rpx"></view>
   </view>

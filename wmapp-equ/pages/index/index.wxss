@@ -5,6 +5,15 @@
 .index-header {
 }
 
+.index-title {
+  position: fixed;
+  left: 0;
+  top: 100rpx;
+  width: 100%;
+  z-index: 9;
+  background-color: #fff;
+}
+
 .index-header .tab-item {
   color: #bad8d8;
 }
@@ -151,7 +160,7 @@
 }
 
 .container-list {
-  margin-bottom: 30rpx;
+  margin-bottom: 42rpx;
 }
 
 .subject {
@@ -172,6 +181,7 @@
 .container-list .message {
   margin: 6rpx 0 0;
   line-height: 146%;
+  font-size: 32rpx;
 }
 
 .footer {
@@ -275,7 +285,7 @@
   text-align: center;
   padding: 0 30rpx;
   box-sizing: border-box;
-  margin: 144rpx auto 0;
+  margin: 160rpx auto 0;
 }
 
 movable-view:nth-child(3n+1) .image {
@@ -360,10 +370,14 @@ movable-view {
   z-index: 1;
 }
 
+.index-content{
+  margin-top: 80rpx;
+}
+
 .section {
   height: 680rpx;
   width: 600rpx;
-  margin: 0 auto;
+  margin: 0 auto 0;
 }
 
 /* .bookmark{
@@ -426,15 +440,15 @@ movable-view {
 
 .x {
   position: absolute;
-  right: 40rpx;
-  top: 4rpx;
-  height: 80rpx;
-  width: 150rpx;
+  right: 0;
+  top: 0;
+  height: 120rpx;
+  width: 200rpx;
   text-align: right;
 }
 
 .x image {
-  margin-top: 20rpx;
+  margin: 20rpx 40rpx 0 0;
   height: 30rpx;
   width: 30rpx;
 }
@@ -455,7 +469,7 @@ movable-view {
   height: 14rpx;
   width: 14rpx;
   border-width: 0 4rpx 4rpx 0rpx;
-  border-color: #12baba;
+  border-color: #11b9ba;
   border-style: solid;
   transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
   position: absolute;
@@ -517,17 +531,22 @@ movable-view {
   padding-left: 110rpx;
 }
 
-.ad-image{
+.ad-image {
   border-radius: 30rpx;
   height: 280rpx;
   position: relative;
   overflow: hidden;
+  margin: 48rpx 0;
 }
-.ad-image text{
+
+.ad-image text {
   position: absolute;
   right: 0;
   top: 0;
   border-top-right-radius: 30rpx;
   border-bottom-left-radius: 30rpx;
-  padding: 8rpx 20px;
+  padding: 0 10px;
+  background-color: #11b9ba;
+  color: #fff;
+  font-size: 24rpx;
 }

@@ -17,11 +17,12 @@ page {
                  "Helvetica",
                  "STHeiti",
                  "Droid Sans";
-  color: #070c29;               
+  color: #070c29;
   /* font-family: microsoft YaHei                */
 }
-.container{
-  padding: 0 30rpx;
+
+.container {
+  padding: 0 30rpx 0;
 }
 
 checkbox, radio {
@@ -111,6 +112,24 @@ form {
   position: absolute;
   top: 32%;
 }
-.page-body{
+
+.page-body {
   margin-bottom: 104rpx;
+}
+
+.user-v {
+  position: absolute;
+  bottom: -2rpx;
+  right: 24rpx;
+  width: 26rpx;
+  height: 26rpx;
+  background: url(https://e-power.oss-cn-shenzhen.aliyuncs.com/new_resources/image/common/vip.png) center center no-repeat;
+  background-size: 100% 100%;
+}
+
+movable-view .user-v {
+  bottom: -10rpx;
+  right: 20rpx;
+  width: 30rpx;
+  height: 30rpx;
 }
