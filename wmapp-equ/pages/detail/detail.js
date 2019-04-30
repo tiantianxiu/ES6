@@ -4,7 +4,8 @@ var app = getApp()
 import {
   request,
   myTrim,
-  contains
+  contains,
+  transformPHPTime
 } from '../../utils/util.js'
 Page({
   data: { 
@@ -69,6 +70,7 @@ Page({
     navbarData: {
       shareImg: 1,
       showCapsule: 1, //是否显示左上角图标,
+      transparent: 1,
       title: '帖子详情', //导航栏 中间的标题
     }
   },
@@ -280,8 +282,10 @@ Page({
       let thread_data = res.data.thread_data
 
       let extcredits2 = thread_data.extcredits2 + ''
+
       thread_data.extcredits2_arr = extcredits2.split('')
 
+      thread_data.time = transformPHPTime(thread_data.dateline)
       if (!thread_data.is_admin && thread_data.this_moderator) {
         that.data.getTops.splice(2, 2)
         let getTops = that.data.getTops
@@ -289,8 +293,10 @@ Page({
           getTops: getTops
         })
       }
+      console.log(thread_data)
 
       that.setData({
+        cover: res.data.cover,
         thread_data: thread_data,
         is_zan: thread_data.is_zan,
         is_favorite: thread_data.is_favorite,
@@ -355,7 +361,6 @@ Page({
       if (that.data.reply == 1) {
         that.scrollToBottom()
       }
-
       if (that.data.action && that.data.action == 'reply') {
         that.selectComponent('#replyTail').showreplyFormFun()
         that.setData({
@@ -364,18 +369,23 @@ Page({
       }
       let post_list = res.data.post_list
       let post_list_length = post_list.length
+
+      if (post_list.length > 0)
       for (let i in post_list) {
-        var extcredits2 = post_list[i].extcredits2 + ''
-        post_list[i].extcredits2_arr = extcredits2.split('')
+        post_list[i].time = transformPHPTime(post_list[i].dateline)
       }
+      let selected = res.data.selected
+      if (selected.length > 0)
+        for (let i in selected) {
+          selected[i].time = transformPHPTime(selected[i].dateline)
+        }
       that.setData({
-        articleList: res.data.post_list,
+        articleList: post_list,
+        selected: selected,
         total_num: res.data.total_num,
         have_data: post_list_length < page_size ? false : true,
         nomore_data: post_list_length < page_size ? true : false
       })
-
-
     })
   },
   // 投票
@@ -702,16 +712,18 @@ Page({
       tid: that.data.tid,
       page_size: page_size,
       page_index: page_index
-    }).then((res) => {
 
+    }).then((res) => {
+      let post_list = res.data.post_list;
       let tmpArticleList = that.data.articleList;
-      let respArticleList = res.data.post_list;
-      for (let i in respArticleList) {
-        var extcredits2 = respArticleList[i].extcredits2 + ''
-        respArticleList[i].extcredits2_arr = extcredits2.split('')
-      }
-      let newArticleList = tmpArticleList.concat(respArticleList)
+      
+      if (post_list.length > 0)
+        for (let i in post_list) {
+          post_list[i].time = transformPHPTime(post_list[i].dateline)
+        }
+      let newArticleList = tmpArticleList.concat(post_list)
       let post_list_length = res.data.post_list.length
+      
       that.setData({
         have_data: post_list_length < page_size ? false : true,
         articleList: newArticleList,

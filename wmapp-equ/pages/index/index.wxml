@@ -26,7 +26,7 @@
         <movable-area class="area">
           <movable-view wx:for="{{digest_data}}" wx:key="{{item.tid}}" x="{{item.x}}" y="{{item.y}}" damping="40" direction="all" bindchange="onChange" out-of-bounds="true" data-index="{{index}}" data-x="{{item.x}}" bindtap="toDetail" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}"
             data-hidden="{{item.hidden}}" data-ad="{{item.ad}}" data-attachment="{{item.attachment}}" catch:touchend="tap" animation="true">
-            <view class="image">
+            <view class="image big">
               <view class="user-info">
                 <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                   <image class="img" src="{{item.avatar}}"></image>
@@ -248,10 +248,11 @@
                 </view>
                 <view>
                   <view class="image-list" wx:if="{{item.attachment == 1}}">
-                    <video src="{{item.video}}" id="myVideo{{item.pid + index}}" data-pid="{{item.pid + index}}" hover-stop-propagation="{{true}}" poster="{{item.video}}" bindended="exitFullScreen" wx:if="{{showCoverId == item.pid + index}}" direction="0" wx:if="{{showCoverId == item.pid + index}}"></video>
-                    <image src="{{item.image_list[0]}}" mode="aspectFill" data-pid="{{item.pid + index}}" catchtap="play" hover-stop-propagation="{{true}}" wx:else>
+                    <video src="{{item.video}}" id="myVideo{{item.pid + index}}" data-pid="{{item.pid + index}}" hover-stop-propagation="{{true}}" bindtimeupdate="aaa" poster="{{item.video}}" bindended="exitFullScreen"  direction="0" wx:if="{{showCoverId == item.pid + index}}"></video>
+                    <!-- wx:if="{{showCoverId == item.pid + index}}" -->
+                    <!-- <image src="{{item.image_list[0]}}" mode="aspectFit" data-pid="{{item.pid + index}}" catchtap="play" hover-stop-propagation="{{true}}" wx:else>
                       <view class="video-icon" data-pid="{{item.pid + index}}" catchtap="play" hover-stop-propagation="{{true}}"></view>
-                    </image>
+                    </image> -->
                   </view>
 
                   <view class="subject">{{item.subject}}

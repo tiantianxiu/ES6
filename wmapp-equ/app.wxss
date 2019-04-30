@@ -18,7 +18,17 @@ page {
                  "STHeiti",
                  "Droid Sans";
   color: #070c29;
+  
   /* font-family: microsoft YaHei                */
+}
+.blue{
+  color: #444cf0
+}
+.light {
+  color: #bad8d8;
+}
+.size22{
+  font-size: 22rpx !important;
 }
 
 .container {

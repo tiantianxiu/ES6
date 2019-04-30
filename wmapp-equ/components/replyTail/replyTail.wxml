@@ -6,7 +6,7 @@
 <view wx:if="{{!showreplyForm}}" class="page-tail">
   <view class="resp-input-cell">
     <input wx:if="{{!isShowReplyForm}}" class="resp-input" type="text" bindinput="inputMessage" data-pid='0' value="{{message}}" placeholder="说点什么吧..." confirm-type="send" bindconfirm="submitMessage" confirm-hold="true" focus="{{focus}}" type='text' />
-    <view bindtap="showreplyFormFun" wx:else class="resp-input">说点什么吧...</view>
+    <view bindtap="showreplyFormFun" wx:else class="resp-input">我也来说 ~</view>
   </view>
   <block wx:if="{{message != null && message != undefined && message != '' || !showReplies && !showZhan &&!showCai && !showFavorite}}">
     <view class="resp-btn2" bindtap="submitMessage">发送</view>
@@ -14,11 +14,15 @@
   <block wx:else>
 
     <view class="resp-btn" bindtap="clickFollow" wx:if="{{showFavorite}}" style="width: 9%">
-      <!-- 没有收藏过-->
-      <image wx:if="{{is_favorite == 0}}" class="ib-width" src="http://cdn.e-power.vip/resources/image/ib-star.png"></image>
-      <!-- 已经收藏-->
-      <image wx:else class="ib-width" src="http://cdn.e-power.vip/resources/image/ib-star-gray.png"></image>
+      <image  class="ib-width" src="http://cdn.e-power.vip/resources/image/ib-star.png"></image>
     </view>
+      <view class="resp-btn" bindtap="clickFollow" wx:if="{{showFavorite}}" style="width: 9%">
+      <image  class="ib-width" src="http://cdn.e-power.vip/resources/image/ib-star.png"></image>
+    </view>
+      <view class="resp-btn" bindtap="clickFollow" wx:if="{{showFavorite}}" style="width: 9%">
+      <image  class="ib-width" src="http://cdn.e-power.vip/resources/image/ib-star.png"></image>
+    </view>
+     
   </block>
 </view>
 

@@ -242,7 +242,7 @@ image {
 .sharetail {
   display: flex;
   align-items: center;
-  padding: 30rpx;
+  padding: 30rpx 0;
   background: #fff;
 }
 

@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 10,
 			"list": [
 				{
 					"id": 0,
@@ -103,7 +103,7 @@
 					"id": 10,
 					"name": "贴子详情",
 					"pathName": "pages/detail/detail",
-					"query": "tid=10085",
+					"query": "tid=11700",
 					"scene": 1001
 				},
 				{

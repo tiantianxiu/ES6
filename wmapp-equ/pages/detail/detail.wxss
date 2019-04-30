@@ -1,5 +1,6 @@
 /* detail.wxss */
 @import "/wxParse/wxParse.wxss";
+@import "../index/index.wxss";
 
 .container-nopadding {
   padding-bottom: 100rpx;
@@ -12,6 +13,18 @@
   background-color: white;
   display: felx;
   flex: row nowrap;
+}
+
+/* 头像 */
+
+.big .user-info {
+  top: -20rpx;
+}
+
+.big .user-info text {
+  line-height:54rpx;
+  margin-top: 8rpx;
+  font-size: 26rpx;
 }
 
 .thread_data-title {
@@ -53,9 +66,24 @@
 }
 
 .thread_content-cell {
-  padding: 20rpx 30rpx;
+  padding: 20rpx 20rpx;
   background-color: white;
   border-radius: 5rpx;
+  margin: -30rpx 4% 0;
+  width: 92%;
+  box-sizing: border-box;
+  border-top-left-radius: 30rpx;
+  border-top-right-radius: 30rpx;
+}
+
+
+/* 帖子详情封面图 */
+.detail-cover {
+  width: 100vw;
+  height: 60vw;
+  overflow: hidden;
+  position: relative;
+  z-index: -1;
 }
 
 .new-post {
@@ -130,11 +158,13 @@
 
 .article {
   border-radius: 5rpx;
-  border-bottom: 3rpx solid #eee;
-  padding: 20rpx 30rpx;
+  padding: 20rpx 0;
   position: relative;
   align-items: center;
   background-color: #fff;
+}
+.article .user-info text {
+  line-height: 40rpx;
 }
 
 .article-content {
@@ -241,8 +271,9 @@
   overflow: visible;
   margin: 6px auto 20rpx;
 }
-.zan-loadmore--nomore .zan-loadmore__tips{
-  top:0;
+
+.zan-loadmore--nomore .zan-loadmore__tips {
+  top: 0;
 }
 
 .article-text .wx-image {
@@ -308,10 +339,15 @@
   font-family: Optima-Regular, PingFangTC-light;
   margin: 0 0 30rpx;
 }
+.article-content-title .item{
+  margin-bottom: 30rpx;
+}
+
 .pic-class-text {
   margin-top: 30rpx;
   font-size: 36rpx;
 }
+
 .stamp {
   width: 150rpx;
   height: 150rpx;
@@ -417,7 +453,7 @@
 .poll {
   border: 2rpx solid #e0e0e0;
   background: #fff;
-  border-radius:8rpx;
+  border-radius: 8rpx;
 }
 
 .poll .title {
@@ -442,58 +478,71 @@
   line-height: 0;
   margin-right: 16rpx;
 }
+
 .polloption text {
   font-size: 28rpx;
-  letter-spacing: 2rpx
+  letter-spacing: 2rpx;
 }
-.polloption.polloption-radio .check-box{
+
+.polloption.polloption-radio .check-box {
   border-radius: 50%;
 }
 
-.radioed{
- width:56%;
- height:56%;
- margin:23%;
+.radioed {
+  width: 56%;
+  height: 56%;
+  margin: 23%;
   box-sizing: border-box;
   border-radius: 100%;
-  background: #00c481
+  background: #00c481;
 }
 
-.poll-btn{
+.poll-btn {
   background: #a0e7cc;
   color: #00c481;
   text-align: center;
   padding: 14rpx 0;
 }
+
 .poll-btn.disabled {
-  color: #707070
+  color: #707070;
 }
-.is-vote{
+
+.is-vote {
   margin: 14rpx 8rpx 30rpx;
 }
 
-.is-vote .progress{
+.is-vote .progress {
   display: flex;
 }
+
 .is-vote .progress text {
   font-size: 22rpx;
   width: 24%;
   text-align: right;
-  color: #bfbfbf
+  color: #bfbfbf;
 }
+
 .is-vote progress {
   width: 76%;
 }
-.get-clip{
+
+.get-clip {
   padding: 20rpx 20rpx;
 }
-.animated{
-  animation-iteration-count:3;
+
+.animated {
+  animation-iteration-count: 3;
 }
-.active-class-tag{
+
+.active-class-tag {
   position: fixed;
   right: 8rpx;
   width: 150rpx;
   height: 310rpx;
   z-index: 10;
+}
+/* title头部 */
+.detail-title {
+  margin-bottom: 30rpx;
 }

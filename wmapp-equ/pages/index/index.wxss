@@ -1,5 +1,6 @@
 /**index.wxss**/
 
+
 /* 头部 */
 
 .index-header {
@@ -157,6 +158,7 @@
 
 .image-list image {
   position: relative;
+  background-color: #000;
 }
 
 .container-list {
@@ -191,37 +193,55 @@
   position: relative;
   margin: 6rpx 0 0;
 }
+.view-reply {
+  display: flex;
+  font-weight: 300;
+}
 
 .footer .view-reply {
-  display: flex;
   position: absolute;
   right: 0;
   top: 0;
 }
 
-.footer .view-reply image {
+.view-reply image {
   width: 34rpx;
   height: 34rpx;
   align-items: center;
   margin-right: 8rpx;
 }
 
-.footer .view-reply view {
+.image .view-reply view {
+  color:#fff;
+}
+
+.view-reply view {
   width: 130rpx;
   line-height: 40rpx;
   align-items: center;
   display: flex;
+  font-size:24rpx;
+  color:#b8d8d7;
 }
 
-.footer .view-reply .replies {
+.footers{
+  position: relative;
+}
+.footers .view-reply .time{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.view-reply .replies {
   width: 100rpx;
 }
 
-.footer .view-reply .shares {
+.view-reply .shares {
   width: 34rpx;
 }
 
-.footer .view-reply .shares image {
+.view-reply .shares image {
   margin: 0;
 }
 
@@ -316,7 +336,7 @@ movable-view:nth-child(3n+2) .image {
   top: 34%;
 }
 
-.image .avatar {
+.big .avatar {
   position: absolute;
   top: -30rpx;
   left: 20rpx;
@@ -324,22 +344,22 @@ movable-view:nth-child(3n+2) .image {
   height: 100rpx;
 }
 
-.image .avatar .img {
+.big .avatar .img {
   border: 6rpx solid #fff;
 }
 
-.image .user-info {
+.big .user-info {
   padding-left: 144rpx;
   margin: 0 0 38rpx;
   position: relative;
 }
 
-.image .user-info text {
+.big .user-info text {
   line-height: 70rpx;
   font-size: 30rpx;
 }
 
-.image .subject {
+.big .subject {
   padding: 0 10rpx;
   margin: 6rpx 0 22rpx;
   height: 80rpx;
@@ -428,6 +448,7 @@ movable-view {
   position: relative;
   z-index: 10;
   margin-top: -118rpx;
+  /* margin-top: 80rpx; */
 }
 
 .index-list-active {

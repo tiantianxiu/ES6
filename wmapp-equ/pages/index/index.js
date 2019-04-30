@@ -1,8 +1,7 @@
 var app = getApp()
 import {
   request,
-  transformPHPTime,
-  transformPHPTimes
+  transformPHPTime
 } from '../../utils/util.js'
 const winWidth = app.globalData.windowWidth
 const winHeight = app.globalData.windowHeight
@@ -177,6 +176,7 @@ Page({
         that.getExun(t)
     }
   },
+  
   onLoad: function(options) {
     const that = this
     if (options.tab) {
@@ -808,6 +808,11 @@ Page({
       })
     })
   },
+  aaa(e){
+    const that = this
+    console.log(e)
+  },
+  // 滚动
   onPageScroll(e) {
     const that = this
     // if(that.data.tab != 0)
@@ -825,11 +830,16 @@ Page({
       // #reply-title节点的上边界坐标
       console.log(res[0].top , res[1].scrollTop)
       let contenTop = res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
-      // if (heightMt + scrollTop >= contenTop)
-      if (res[0].top < 100)
+      if (heightMt + scrollTop >= contenTop){
+      // if (res[0].top < 100)
         that.setData({
           index_list: true
         })
+      }else{
+        that.setData({
+          index_list: false
+        })
+      }
     })
   },
   hIndexList: function() {
