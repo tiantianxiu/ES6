@@ -23,7 +23,8 @@ function request(method, url, data) {
       url: getApp().globalData.svr_url + url,
       method: method,
       header: {
-        "content-type": "application/x-www-form-urlencoded;charset=utf-8"
+        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        // "version": "1"
       },
       data: data,
       success: function (res) {
@@ -95,7 +96,7 @@ function uploadFile(method, url, filePath, name, formData) {
           if (url != 'get_token.php')
             getApp().globalData.num = 0
 
-        } else if (res.err_code == 10001 && getApp().globalData.num < 2) {
+        } else if (res.err_code == 10001 && getApp().globalData.num < 2 || res.err_code == 10003 && getApp().globalData.num < 2) {
           getApp().globalData.num++ //限制次数增加
 
           getApp().get_token().then((res) => {

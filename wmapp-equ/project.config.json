@@ -9,7 +9,7 @@
 		"autoAudits": false
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.6.6",
+	"libVersion": "2.7.0",
 	"appid": "wxfcf3476d01ae9587",
 	"projectname": "e%E5%8C%BA",
 	"isGameTourist": false,
@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 10,
+			"current": 49,
 			"list": [
 				{
 					"id": 0,
@@ -103,7 +103,7 @@
 					"id": 10,
 					"name": "贴子详情",
 					"pathName": "pages/detail/detail",
-					"query": "tid=11700",
+					"query": "tid=11886",
 					"scene": 1001
 				},
 				{
@@ -351,6 +351,13 @@
 					"name": "发布朋友圈",
 					"pathName": "pages/add_square/add_square",
 					"query": "",
+					"scene": null
+				},
+				{
+					"id": 49,
+					"name": "广场详情",
+					"pathName": "pages/square_detail/square_detail",
+					"query": "tid=11930",
 					"scene": null
 				}
 			]

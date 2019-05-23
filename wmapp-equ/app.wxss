@@ -9,8 +9,8 @@
 page {
   background-color: #fff;
   height: 100%;
-  font-size: 28rpx;
-  line-height: 1.6;
+  font-size: 30rpx;
+  line-height: 1.4;
   font-family: "PingFangSC-Regular",
                  "\5FAE\8F6F\96C5\9ED1",
                  "Helvetica Neue",
@@ -18,21 +18,38 @@ page {
                  "STHeiti",
                  "Droid Sans";
   color: #070c29;
-  
   /* font-family: microsoft YaHei                */
 }
-.blue{
-  color: #444cf0
+
+.blue {
+  color: #444cf0 !important;
 }
+
 .light {
-  color: #bad8d8;
+  color: #bad8d8 !important;
 }
-.size22{
+
+.size22 {
   font-size: 22rpx !important;
+}
+
+.grey {
+  color: #cecfd3 !important;
 }
 
 .container {
   padding: 0 30rpx 0;
+}
+
+.img-minus {
+  position: absolute;
+  top: -4rpx;
+  right: -4rpx;
+  width: 36rpx;
+  height: 36rpx;
+  background: url('http://cdn.e-power.vip/resources/image/question/minus.png') no-repeat;
+  background-size: 100%;
+  z-index: 2;
 }
 
 checkbox, radio {
@@ -74,6 +91,7 @@ form {
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'STHeiti';
+  margin-right: 30rpx;
 }
 
 .section-title .title {
@@ -94,7 +112,7 @@ form {
   height: 38rpx;
   position: absolute;
   top: 16rpx;
-  right: 30rpx;
+  right: 6rpx;
 }
 
 .navigator-arrow::after {
@@ -142,4 +160,167 @@ movable-view .user-v {
   right: 20rpx;
   width: 30rpx;
   height: 30rpx;
+}
+
+.page-tail {
+  left: 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: -2rpx -2rpx 2rpx rgba(0, 0, 0, 0.2);
+  padding: 0 6.8vw;
+  box-sizing: border-box;
+}
+
+.page-tail .li {
+  padding: 20rpx 0;
+}
+
+.page-tail .li image {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.page-tail .li image.keyboard {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.mask-transparent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  opacity: 0;
+}
+
+.li-hover {
+  background-color: #d2d3d8;
+}
+
+.hidden-text {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: right;
+}
+
+.hidden-text .text1 {
+  color: #434cef;
+  display: inline-block;
+  padding: 0 8rpx 0 26rpx;
+  border-radius: 30rpx;
+  background-color: #ddf1f2;
+  font-size: 22rpx;
+  font-weight: 600;
+  position: relative;
+  line-height:36rpx;
+}
+
+.hidden-text .text1::after {
+  content: ' ';
+  position: absolute;
+  height: 10rpx;
+  width: 10rpx;
+  background: #11b9ba;
+  border-radius: 50%;
+  left: 10rpx;
+  top: 12rpx;
+}
+
+.hidden-text image {
+  width: 34rpx;
+  height: 34rpx;
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 11;
+}
+
+/* 灰色回复 */
+
+.post-reply-list {
+  background-color: #f0f0f0;
+  border-radius: 16rpx;
+  padding: 12rpx 18rpx;
+  margin-top: 14rpx;
+  font-size: 26rpx;
+}
+
+.post-reply-list text {
+  font-size: 24rpx;
+}
+
+.post-reply-list > text {
+  font-size: 22rpx;
+}
+
+.post-reply-list > view {
+  margin-bottom: 6rpx;
+  word-wrap: break-word;
+  word-break: normal;
+}
+
+.post-reply-list text {
+  color: #cdced2;
+}
+
+.level {
+  position: absolute;
+  bottom: -60%;
+  left: 140rpx;
+  display: flex;
+  font-size: 24rpx;
+}
+
+.level>view {
+  border: 2rpx solid #11b9ba;
+  color: #11b9ba;
+  line-height: 32rpx;
+  height: 30rpx;
+  padding: 0 8rpx;
+  border-radius: 16rpx;
+  margin-right: 10rpx;
+}
+
+.level>view image {
+  height: 24rpx;
+  width: 24rpx;
+  vertical-align: middle;
+  margin-bottom: 4rpx;
+  margin-right: -6rpx;
+}
+
+.add-friend {
+  position: absolute;
+  top: 30rpx;
+  right: 30rpx;
+  border-radius: 30rpx;
+  background-color: #ddf1f2;
+  padding: 2rpx 10rpx;
+  color: #444cf0;
+}
+
+.add-friend image {
+  width: 24rpx;
+  height: 24rpx;
+  vertical-align: middle;
+  margin: 0 0 6rpx 2rpx;
 }

@@ -8,7 +8,7 @@ import {
   transformPHPTime
 } from '../../utils/util.js'
 Page({
-  data: { 
+  data: {
     loading_hidden: true,
     loading_msg: '加载中...',
 
@@ -33,6 +33,7 @@ Page({
     // 显示评论数
     showReplies: true,
     showCai: true,
+    showZan: true,
     reply: 0,
     stamp_index: 0, //图章index
     focus: false,
@@ -64,6 +65,7 @@ Page({
       '30-50万',
       '50万以上'
     ],
+    thread_data: '',
     showShareBox: false,
     is_share: 0, //分享页面前后，管理员按钮是否存在 1是存在 0是分享中不存在
     heightMt: app.globalData.heightMt + 20 * 2,
@@ -116,6 +118,17 @@ Page({
     that.reloadIndex()
 
   },
+  onShow: function() {
+    const that = this
+    if (that.data.thread_data) {
+      that.scrollToBottom({
+        detail: {
+          id: '#articleWrap'
+        }
+      })
+      that.getComment()
+    }
+  },
 
   reloadIndex: function() {
     var that = this
@@ -124,7 +137,7 @@ Page({
       loading_msg: '加载中...'
     })
     that.getPostDetail()
-    wx.onUserCaptureScreen(function (res) {
+    wx.onUserCaptureScreen(function(res) {
       console.log('用户截屏了')
       that.setData({
         showShareBox: true
@@ -254,6 +267,37 @@ Page({
 
     })
   },
+  // 关注与取消关注
+  followBtn: function() {
+    const that = this
+    that.isShowAuthorization().then((res) => {
+      if (!res)
+        return
+      let followStatus = that.data.thread_data.is_follow //0未关注 1已关注 2互相关注
+      let e = {
+        followuid: that.data.thread_data.authorid
+      }
+      app.followBtn(e).then((r) => {
+        if (followStatus == 0) {
+          wx.showToast({
+            title: '关注成功',
+            icon: 'success',
+          })
+          that.setData({
+            ['thread_data.is_follow']: 1
+          })
+        } else {
+          wx.showToast({
+            title: '已取消关注',
+            icon: 'success',
+          })
+          that.setData({
+            ['thread_data.is_follow']: 0
+          })
+        }
+      })
+    })
+  },
   // 获取帖子信息
   getPostDetail: function() {
     var that = this
@@ -293,7 +337,6 @@ Page({
           getTops: getTops
         })
       }
-      console.log(thread_data)
 
       that.setData({
         cover: res.data.cover,
@@ -304,7 +347,8 @@ Page({
         new_reader: 0,
         is_admin: thread_data.is_admin,
         // is_admin: 0,
-        this_moderator: thread_data.this_moderator
+        this_moderator: thread_data.this_moderator,
+        'navbarData.transparent': res.data.cover ? 1 : 0
       })
       WxParse.wxParse('thread_data.message', 'html', thread_data.message, that, 5)
       let share_img = 'http://cdn.e-power.vip/default_logo_none.jpg'
@@ -316,7 +360,7 @@ Page({
       that.setData({
         share_img: share_img
       })
-
+      that.getComment()
       if (res.data.poll) {
         let expiration = res.data.poll.expiration,
           timestamp = Date.parse(new Date()) / 1000,
@@ -342,10 +386,10 @@ Page({
           optionids: []
         })
       }
-      if (that.data.messagePid) {
+      if (that.data.messagePid)
         that.selectComponent('#moreFunctions').toReply()
-      }
-      that.getComment()
+
+
     });
   },
   getComment: function() {
@@ -356,11 +400,8 @@ Page({
       tid: that.data.tid,
       page_size: page_size,
       page_index: 0,
-      pid: 0
     }).then((res) => {
-      if (that.data.reply == 1) {
-        that.scrollToBottom()
-      }
+
       if (that.data.action && that.data.action == 'reply') {
         that.selectComponent('#replyTail').showreplyFormFun()
         that.setData({
@@ -371,9 +412,9 @@ Page({
       let post_list_length = post_list.length
 
       if (post_list.length > 0)
-      for (let i in post_list) {
-        post_list[i].time = transformPHPTime(post_list[i].dateline)
-      }
+        for (let i in post_list) {
+          post_list[i].time = transformPHPTime(post_list[i].dateline)
+        }
       let selected = res.data.selected
       if (selected.length > 0)
         for (let i in selected) {
@@ -383,6 +424,7 @@ Page({
         articleList: post_list,
         selected: selected,
         total_num: res.data.total_num,
+        page_index: 0,
         have_data: post_list_length < page_size ? false : true,
         nomore_data: post_list_length < page_size ? true : false
       })
@@ -517,7 +559,7 @@ Page({
     request('post', 'add_post.php', {
       token: wx.getStorageSync("token"),
       tid: that.data.tid,
-      uppid: that.data.uppid || 0,
+      uppid: 0,
       reply_pid: that.data.reply_pid || 0,
       aid_list: aidList,
       message: message,
@@ -529,12 +571,11 @@ Page({
         textContent: '',
         loading_msg: '加载完毕...',
         loading_hidden: true,
-        uppid: 0,
         reply_pid: 0,
         total_num: that.data.total_num + 1
       })
       wx.showToast({
-        title: r.data.credits ? '已评价，电量+' + r.data.credits : '评价成功！',
+        title: r.data.credits ? '已评论，电量+' + r.data.credits : '评论成功！',
         icon: 'success',
         duration: 2000,
       })
@@ -558,28 +599,62 @@ Page({
           'articleList[0]is_add_post': 0
         })
       }, 3000)
-      that.scrollToBottom()
-      that.setData({
-        addPosts: add_post_reply
+      that.scrollToBottom({
+        detail: {
+          id: '#articleWrap'
+        }
       })
-      that.selectComponent("#moreFunctions").addPost()
+
       that.selectComponent("#replyTail").resetData()
     });
   },
+  onPageScroll(e) {
+    const that = this
+    const scrollTop = e.scrollTop
+    if (!that.data.cover)
+      return
+    if (that.data.res_top_scroll < scrollTop && that.data.navbarData.transparent == 0)
+      return
+    if (that.data.res_top_scroll > scrollTop && that.data.navbarData.transparent == 1)
+      return
 
+    const query = wx.createSelectorQuery()
+    query.select("#thread-content-cell").boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec(function(res) {
+      let res_top = res[0].top // #the-id节点的上边界坐标
+      let res_scrollTop = res[1].scrollTop // 显示区域的竖直滚动位置
+      that.data.res_top_scroll = res_top + res_scrollTop - that.data.heightMt
+      if (res_top + res_scrollTop - that.data.heightMt < scrollTop) {
+        that.setData({
+          'navbarData.transparent': 0
+        })
+      } else {
+        that.setData({
+          'navbarData.transparent': 1
+        })
+      }
+
+    })
+  },
   // 评论回复
   replyComment: function(e) {
     const that = this
-    const uppid = e.currentTarget.dataset.uppid
-    const reply_pid = e.currentTarget.dataset.pid
-
-    that.setData({
-      uppid: uppid,
-      reply_pid: reply_pid
-    })
+    const pid = e.currentTarget.dataset.pid
+    const focus = e.currentTarget.dataset.focus
+    const tid = that.data.tid
     that.isShowAuthorization().then((res) => {
       if (res == true) {
-        that.selectComponent("#replyTail").showreplyFormFun()
+        if (focus) {
+          wx.navigateTo({
+            url: `../replyForm/replyForm?pid=${pid}&tid=${tid}&focus=${focus}`
+          })
+        } else {
+          wx.navigateTo({
+            url: `../replyForm/replyForm?pid=${pid}&tid=${tid}`
+          })
+        }
+
       }
     })
   },
@@ -668,35 +743,24 @@ Page({
     app.toUserDetail(e)
   },
 
-  scrollToBottom: function() {
+  scrollToBottom: function(e) {
     const that = this
     setTimeout(function() {
-      wx.createSelectorQuery().select('#articleWrap').boundingClientRect(function(rect) {
-        const pageH = rect.height
-        const st = pageH
+      const query = wx.createSelectorQuery()
+      query.select(e.detail.id).boundingClientRect()
+      query.selectViewport().scrollOffset()
+      query.exec(function(res) {
+
         wx.pageScrollTo({
-          scrollTop: st,
+          scrollTop: res[0].top + res[1].scrollTop - (app.globalData.heightMt + 20 * 2),
+          duration: 0
         })
-      }).exec()
-    }, 500);
+      })
+    }, 500)
   },
 
-  // 当前发布的时间
-  getNowFormatDate: function() {
-    var date = new Date();
-    var seperator1 = "-";
-    var seperator2 = ":";
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-      month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-      strDate = "0" + strDate;
-    }
-    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
-    return currentdate
-  },
+  
+
   onReachBottom: function() {
     const that = this
     that.setData({
@@ -716,14 +780,14 @@ Page({
     }).then((res) => {
       let post_list = res.data.post_list;
       let tmpArticleList = that.data.articleList;
-      
+
       if (post_list.length > 0)
         for (let i in post_list) {
           post_list[i].time = transformPHPTime(post_list[i].dateline)
         }
       let newArticleList = tmpArticleList.concat(post_list)
       let post_list_length = res.data.post_list.length
-      
+
       that.setData({
         have_data: post_list_length < page_size ? false : true,
         articleList: newArticleList,
@@ -751,46 +815,41 @@ Page({
     })
   },
   // 点赞
-  clickZhan: function(e) {
+  clickZan: function(e) {
     const that = this
     const type = e.currentTarget.dataset.type //1赞 2踩
     const is_zan = e.currentTarget.dataset.iszan
     const pid = e.currentTarget.dataset.pid
     const index = e.currentTarget.dataset.index
-    const number = e.currentTarget.dataset.number
+    const zan = e.currentTarget.dataset.zan
+    const cai = e.currentTarget.dataset.cai
+    const cate = e.currentTarget.dataset.cate
+
     that.isShowAuthorization().then((res) => {
       if (res == true) {
-        if (is_zan == 0) {
-          request('post', 'add_zan_post.php', {
-            token: wx.getStorageSync("token"),
-            tid: that.data.tid,
-            type: type,
-            pid: pid
-          }).then((res) => {
-            let articleListIndex, indexNum,
-              artIndexIs = 'articleList[' + index + '].is_zan'
-            if (type == 1) {
-              articleListIndex = 'articleList[' + index + '].zan'
-              indexNum = 1
-            } else {
-              articleListIndex = 'articleList[' + index + '].cai'
-              indexNum = 2
-            }
+        request('post', 'add_zan_post.php', {
+          token: wx.getStorageSync("token"),
+          tid: that.data.tid,
+          type: type,
+          pid: pid
+        }).then((res) => {
+          let indexNum = type
+          if (cate == 'selected') {
             that.setData({
-              [artIndexIs]: indexNum,
-              [articleListIndex]: parseInt(number) + parseInt(1)
+              ['selected[' + index + '].is_zan']: is_zan == indexNum ? 0 : indexNum,
+              ['selected[' + index + '].zan']: is_zan == 1 ? parseInt(zan) - parseInt(1) : indexNum == 1 ? parseInt(zan) + parseInt(1) : cai,
+              ['selected[' + index + '].cai']: is_zan == 2 ? parseInt(cai) - parseInt(1) : indexNum == 2 ? parseInt(cai) + parseInt(1) : cai
             })
-            wx.showToast({
-              title: res.data.credits ? '已评价，电量+' + res.data.credits : '评价成功！',
-              icon: 'success',
+          } else {
+            that.setData({
+              ['articleList[' + index + '].is_zan']: is_zan == indexNum ? 0 : indexNum,
+              ['articleList[' + index + '].zan']: is_zan == 1 ? parseInt(zan) - parseInt(1) : indexNum == 1 ? parseInt(zan) + parseInt(1) : cai,
+              ['articleList[' + index + '].cai']: is_zan == 2 ? parseInt(cai) - parseInt(1) : indexNum == 2 ? parseInt(cai) + parseInt(1) : cai
             })
-          })
-        } else {
-          wx.showToast({
-            title: '你已经评价过啦！',
-            icon: 'none',
-          })
-        }
+          }
+
+        })
+
       }
     })
   },
@@ -866,19 +925,8 @@ Page({
       url: url || `/pages/square_pic/square_pic?id=${typeid}&subject=${subject}`
     })
   },
-  /* 返回顶 */
-  onPageScroll: function(e) {
-    const that = this
-    let eScrollTop = e.scrollTop
-    let dataScrollTop = that.data.scrollTop
-    if (e.scrollTop >= 300 && dataScrollTop < 300) {
-      this.setData({
-        scrollTop: eScrollTop
-      })
-    } else if (eScrollTop < 300 && dataScrollTop >= 300) {
-      this.setData({
-        scrollTop: eScrollTop
-      })
-    }
+  previewImage(e) {
+    app.previewImage(e)
   }
+
 })

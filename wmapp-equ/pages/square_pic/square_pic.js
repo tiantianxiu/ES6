@@ -12,11 +12,12 @@ Page({
     nomore_data: false,
     page_size: 9,
     page_index: 0,
-    showCoverId: 0,
+    order: 0,
     heightMt: app.globalData.heightMt + 20 * 2,
     navbarData: {
+      transparent: 1,
       showCapsule: 1, //是否显示左上角图标,
-      title: '广场专题', //导航栏 中间的标题
+      title: '#广场专题#', //导航栏 中间的标题
     }
   },
   onLoad: function(options) {
@@ -59,30 +60,35 @@ Page({
     that.setData({
       loading_hidden: false,
       loading_msg: '加载中...'
-    });
+    })
     request('post', 'get_square.php', {
       token: wx.getStorageSync("token"),
       page_size: page_size,
       page_index: page_index,
-      typeid: that.data.id
+      typeid: that.data.id,
+      order: that.data.order,
+      type: 0,
+
     }).then((res) => {
       if (res.err_code != 0)
         return
       let thread = res.data.thread
-      for (let i in thread) {
-        var extcredits2 = thread[i].extcredits2 + ''
-        var extcredits2_arr = extcredits2.split('')
-        thread[i].extcredits2_arr = extcredits2_arr
-        thread[i].timestamped = transformPHPTime(thread[i].timestamp)
-        if (thread[i].message.length > 40) {
-          thread[i].message_more = thread[i].message.substring(0, 40) + '...'
+      if (thread.length > 1)
+        for (let i in thread) {
+          if (!thread[i].ad) {
+
+            thread[i].time = transformPHPTime(thread[i].timestamp)
+            if (thread[i].message && thread[i].message.length > 100)
+              thread[i].mes_more = thread[i].message.substr(0, 100)
+
+          }
         }
-        if (thread[i].video) {
-          that['videoContext' + thread[i].pid] = wx.createVideoContext('myVideo' + thread[i].pid)
-        }
-      }
       that.setData({
+        replies: res.data.replies,
+        views: res.data.views,
         banner: res.data.banner,
+        class_name: res.data.name,
+        description: res.data.description,
         thread: thread,
         page_topicIndex: page_index,
         loading_hidden: true,
@@ -92,8 +98,21 @@ Page({
       })
     })
   },
-  dd: function() {
-
+  moreDown(e) {
+    const that = this
+    let index = e.currentTarget.dataset.index
+    let more = e.currentTarget.dataset.more
+    let mores = e.currentTarget.dataset.mores
+    let message = e.currentTarget.dataset.message
+    if (mores) {
+      that.setData({
+        ['thread[' + index + '].mes_mores']: ''
+      })
+      return
+    }
+    that.setData({
+      ['thread[' + index + '].mes_mores']: message
+    })
   },
 
   onReachBottom: function() {
@@ -172,47 +191,44 @@ Page({
   // 点赞文章
   toZan: function(e) {
     const that = this
-    const i = e.currentTarget.dataset.index //1赞 2踩
     const type = e.currentTarget.dataset.type //1赞 2踩
-    const tid = e.currentTarget.dataset.tid //1赞 2踩
-    const is_zan = e.currentTarget.dataset.is_zan
-
+    const index = e.currentTarget.dataset.index //index
+    const is_zan = e.currentTarget.dataset.is_zan //index
+    const tid = e.currentTarget.dataset.tid //index
+    const zan = e.currentTarget.dataset.zan //index
+    const cai = e.currentTarget.dataset.cai //index
     that.isShowAuthorization().then((res) => {
       if (res == true) {
 
-        if (is_zan == 0) {
-          request('post', 'add_zan.php', {
-            token: wx.getStorageSync("token"),
-            tid: tid,
-            type: type
-          }).then((res) => {
-            if (res.err_code != 0)
-              return
+        request('post', 'add_zan.php', {
+          token: wx.getStorageSync("token"),
+          tid: tid,
+          type: type
+        }).then((res) => {
+          if (res.err_code != 0)
+            return
 
-            if (type == 1) {
-              this.setData({
-                [`thread[${i}]is_zan`]: 1,
-                [`thread[${i}]zan`]: parseInt(that.data.thread[i].zan) + parseInt(1)
-              })
-            } else {
-              this.setData({
-                [`thread[${i}]is_zan`]: 2,
-                [`thread[${i}]cai`]: parseInt(that.data.thread[i].cai) + parseInt(1)
-              })
-            }
-            wx.showToast({
-              title: res.data.credits ? '已评价，电量+' + res.data.credits : '评价成功！',
-              icon: 'success',
+          if (type == 1) {
+            that.setData({
+              ['thread[' + index + '].is_zan']: is_zan == type ? 0 : 1,
+              ['thread[' + index + '].zan']: is_zan == type ? parseInt(zan) - 1 : parseInt(zan) + 1,
+              ['thread[' + index + '].cai']: is_zan == 2 ? parseInt(cai) - 1 : cai
             })
-          })
-        } else {
-          wx.showToast({
-            title: '你已经评价过啦！',
-            icon: 'none',
-          })
-        }
+          } else {
+            that.setData({
+              ['thread[' + index + '].is_zan']: is_zan == type ? 0 : 2,
+              ['thread[' + index + '].cai']: is_zan == type ? parseInt(cai) - 1 : parseInt(cai) + 1,
+              ['thread[' + index + '].zan']: is_zan == 1 ? parseInt(zan) - 1 : zan
+            })
+          }
+
+        })
+
       }
     })
+  },
+  previewImage(e) {
+    app.previewImage(e)
   },
   toZone: function(e) {
     var fid = e.currentTarget.dataset.fid;
@@ -315,6 +331,113 @@ Page({
           that.setData({
             witchAdd: false
           })
+        })
+      }
+    })
+  },
+  isFollow() {
+    const that = this
+    request('post', 'is_follow.php', {
+      token: wx.getStorageSync('token'),
+      uid: that.data.uid
+    }).then((res) => {
+      if (!res || res.err_code != 0)
+        return
+      if (res.data.status == 1)
+        that.setData({
+          follow_text: '已'
+        })
+      if (res.data.status == 2)
+        that.setData({
+          follow_text: '互相'
+        })
+      if (res.data.status == 0)
+        that.setData({
+          follow_text: ''
+        })
+    })
+  },
+  operationTap(e) {
+    const that = this
+    if (e && e.currentTarget.dataset.uid) {
+      let uid = e.currentTarget.dataset.uid
+      let idx = e.currentTarget.dataset.index + 1
+      that.data.idx = idx
+      that.setData({
+        show_opera: true,
+        uid: uid
+      })
+      that.isFollow()
+    } else {
+      that.setData({
+        show_opera: false,
+        uid: 0,
+        index: 0
+      })
+    }
+  },
+  addFollow(e) {
+    const that = this
+    let uid = that.data.uid
+    if (e && e.currentTarget.dataset.uid)
+      uid = e.currentTarget.dataset.uid
+    request('post', 'add_follow.php', {
+      token: wx.getStorageSync('token'),
+      followuid: uid
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      that.operationTap()
+      wx.showToast({
+        title: res.data.msg,
+        icon: 'none'
+      })
+      if (res.data.status == 1) {
+        that.getWxUser()
+      } else if (e.currentTarget.dataset.uid) {
+        that.getWxUser()
+      } else {
+        that.setData({
+          idx: 0
+        })
+      }
+    })
+  },
+  getWxUser() {
+    const that = this
+    request('post', 'get_wx_user.php', {
+      token: wx.getStorageSync('token')
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      that.setData({
+        member: res.data.member,
+        idx: that.data.idx
+      })
+    })
+  },
+  onPageScroll(e) {
+    const that = this
+    const scrollTop = e.scrollTop
+    
+    if (that.data.res_top_scroll < scrollTop && that.data.navbarData.transparent == 0)
+      return
+    if (that.data.res_top_scroll > scrollTop && that.data.navbarData.transparent == 1)
+      return
+    const query = wx.createSelectorQuery()
+    query.select("#thread-content-cell").boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec(function (res) {
+      let res_top = res[0].top // #the-id节点的上边界坐标
+      let res_scrollTop = res[1].scrollTop // 显示区域的竖直滚动位置
+      that.data.res_top_scroll = res_top + res_scrollTop - that.data.heightMt
+      if (res_top + res_scrollTop - that.data.heightMt < scrollTop) {
+        that.setData({
+          'navbarData.transparent': 0
+        })
+      } else {
+        that.setData({
+          'navbarData.transparent': 1
         })
       }
     })

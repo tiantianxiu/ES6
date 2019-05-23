@@ -1,51 +1,88 @@
 <loading hidden="{{loading_hidden}}">
   {{loading_msg}}
 </loading>
+<import src="../../zanui/loadmore/index.wxml" />
 <navBar navbar-data="{{navbarData}}"></navBar>
-<view class="add-square-container">
-<view style="height:{{heightMt}}px"></view>
+<view class="add-square-container" bindtap="focusTap">
+  <view style="height:{{heightMt}}px"></view>
   <view class="add-aqu-header">
-  <text class="pic-class-text">{{pic_text}}</text>
-    <view class="btn" bindtap="addSquare">发表</view>
+    <text class="blue">{{pic_text}}</text>
+    <view class="btn" bindtap="addSquare">发布</view>
   </view>
-  <view>
-    <textarea placeholder="这一刻的想法..." maxlength="-1" bindinput="inputContent"></textarea>
+  <view class="textarea">
+    <textarea hover-stop-propagation='true' wx:if="{{!topic_list}}" catchtap="focusTaps" placeholder="这一刻的想法..." maxlength="-1" bindinput="inputContent" value="{{message}}" focus="{{focus}}"></textarea>
   </view>
-  <view class="images" wx:if="{{type == 2}}">
+  <view class="images">
     <block wx:for="{{image_list}}" wx:for-item="item" wx:key="{{index}}">
       <view class="li">
         <image src="{{item}}" mode="aspectFill"></image>
         <view class="img-minus" data-idx="{{index}}" bindtap="imageDel"></view>
       </view>
     </block>
-    <view class="li add-image" bindtap="imageTap" wx:if="{{image_list.length < 9}}">
-      <image src="http://cdn.e-power.vip/resources/image/add.png"></image>
+    <view class="li add-image" bindtap="imageTap" wx:if="{{image_list.length < 9 && !video}}">
+      <image src="../../resources/image/common/add_image.png" wx:if="{{image_list.length == 0}}"></image>
+      <image src="../../resources/image/common/add.png" wx:else></image>
+    </view>
+
+    <video wx:if="{{video && !topic_list}}" class="" src="{{video}}" object-fit="cover" style="width:{{v_height - v_width >= 0 ? 120 : 120 * v_width / v_height}}px;height:{{v_height - v_width < 0 ? 120 : 120 * v_height / v_width}}px" direction="0">
+    </video>
+    <view class="li add-image add-video" bindtap="videoTap" wx:elif="{{!video && image_list.length == 0}}">
+      <image src="../../resources/image/common/add_video.png"></image>
+    </view>
+    <view class="li add-image" bindtap="videoMinusTap" wx:if="{{video && image_list.length ==0}}">
+      <image src="../../resources/image/common/minus_video.png"></image>
     </view>
   </view>
-  <view class="videos images" wx:if="{{type == 1}}">
-    <video wx:if="{{video}}" class="" src="{{video}}" object-fit="cover" style="width:{{100}}px;height:{{100 * v_height / v_width}}px">
-    </video>
-
-    <view class="li add-image" bindtap="videoTap" wx:if="{{!video}}">
-      <image src="http://cdn.e-power.vip/resources/image/add.png"></image>
-    </view>
+  <!-- <view class="videos images">
     <view class="li add-image" bindtap="videoMinusTap" wx:if="{{video}}">
       <image src="http://cdn.e-power.vip/resources/image/minus.png"></image>
     </view>
 
-  </view>
+  </view> -->
 
   <view class="locals" bindtap="localTap" wx:if="{{!address}}">
+    <image src="../../resources/image/common/map.png"></image>
     显示位置
   </view>
   <view class="locals" bindtap="chooseLocation" wx:if="{{address}}">
+    <image src="../../resources/image/common/map.png"></image>
     {{address}}
     <text></text>
-    <image src="http://cdn.e-power.vip/resources/image/local_del.png"></image>
+    <image src="http://cdn.e-power.vip/resources/image/local_del.png" class="local-del"></image>
   </view>
 </view>
 
-<view class="square-pic" wx:if="{{thread.length > 0}}">
+<view class="page-tail">
+  <view class="li" bindtap="topicTap">
+    <image src="../../resources/image/common/topic.png"></image>
+  </view>
+  <view class="li" bindtap="focusTaps">
+    <image src="../../resources/image/common/keyboard.png" class="keyboard"></image>
+  </view>
+</view>
+
+<view class="topics-list add-square-container {{topic_list ? 'active' : ''}} " style="height: calc(100% - {{heightMt}}px);">
+  <view class="title">
+    <text># 你的话题</text>
+    <text class="cancle" bindtap="topicTap">取消</text>
+  </view>
+  <scroll-view scroll-y bindscrolltolower="scrolltolower" style="height: {{height - heightMt - 60}}px">
+    <block wx:for="{{thread}}" wx:key="{{index}}" wx:for-item="item">
+      <view class="li {{typeid == item.typeid ? 'lihover':''}}" hover-class="li-hover" bindtap="addPic" data-id="{{item.typeid}}" data-name="{{item.name}}">
+        {{item.name}}
+        <text>{{item.join}}人参与</text>
+      </view>
+    </block>
+    <block wx:if="{{thread.length > 0}}">
+      <!-- 加载更多 -->
+      <template is="zan-loadmore" data="{{ loading: have_data}}"></template>
+      <!-- 没有更多的数据了 -->
+      <!-- <template is="zan-loadmore" data="{{ nomore: nomore_data}}"></template> -->
+    </block>
+  </scroll-view>
+</view>
+
+<!-- <view class="square-pic" wx:if="{{thread.length > 0}}">
   <view class="pic-title">
     <text># </text> 热门话题
   </view>
@@ -54,4 +91,4 @@
       <view class="li {{typeid==item.typeid ? 'active':''}}" bindtap="addPic" data-id="{{item.typeid}}" data-name="{{item.name}}">{{item.name}}</view>
     </block>
   </view>
-</view>
+</view> -->

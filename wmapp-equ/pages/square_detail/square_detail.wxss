@@ -1,0 +1,19 @@
+@import "../detail/detail.wxss";
+
+.square-content.square-contents{
+  padding: 0;
+}
+
+.square-content .message {
+  margin-bottom: 24rpx;
+  letter-spacing: 2rpx;
+}
+
+.image-list.image-lists{
+  display: block;
+  height: auto;
+  overflow: visible;
+}
+.image-list{
+  margin-top: 20rpx;
+}

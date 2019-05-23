@@ -64,7 +64,8 @@ function wxParseImgTap(e) {
   if(e.urls){
     tagFrom = e.urls
   }else{
-    tagFrom.push(nowImgUrl)
+    tagFrom = that.data.thread_data.message.imageUrls
+    // tagFrom.push(nowImgUrl)
   }
   if (typeof (tagFrom) != 'undefined' && tagFrom.length > 0) {
     wx.previewImage({

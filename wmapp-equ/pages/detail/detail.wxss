@@ -6,6 +6,7 @@
   padding-bottom: 100rpx;
 }
 
+
 .thread_title-cell {
   border-radius: 10rpx;
   margin: 0 0 20rpx 0;
@@ -22,9 +23,9 @@
 }
 
 .big .user-info text {
-  line-height:54rpx;
-  margin-top: 8rpx;
-  font-size: 26rpx;
+  line-height: 50rpx;
+  margin-top: 6rpx;
+  font-size: 30rpx;
 }
 
 .thread_data-title {
@@ -67,7 +68,7 @@
 
 .thread_content-cell {
   padding: 20rpx 20rpx;
-  background-color: white;
+  background-color: #fff;
   border-radius: 5rpx;
   margin: -30rpx 4% 0;
   width: 92%;
@@ -76,11 +77,11 @@
   border-top-right-radius: 30rpx;
 }
 
-
 /* 帖子详情封面图 */
+
 .detail-cover {
   width: 100vw;
-  height: 60vw;
+  height: 55vw;
   overflow: hidden;
   position: relative;
   z-index: -1;
@@ -158,11 +159,12 @@
 
 .article {
   border-radius: 5rpx;
-  padding: 20rpx 0;
+  margin: 54rpx 0;
   position: relative;
   align-items: center;
   background-color: #fff;
 }
+
 .article .user-info text {
   line-height: 40rpx;
 }
@@ -296,7 +298,10 @@
 .section-detail-wrap .rich-text {
   line-height: 1.8;
   font-family: Optima-Regular, PingFangTC-light;
-  font-size: 32rpx;
+  font-size: 28rpx;
+  color: #373b52;
+  word-wrap: break-word;
+  word-break: normal;
 }
 
 .article-detail-text .WxEmojiView {
@@ -339,7 +344,8 @@
   font-family: Optima-Regular, PingFangTC-light;
   margin: 0 0 30rpx;
 }
-.article-content-title .item{
+
+.article-content-title .item {
   margin-bottom: 30rpx;
 }
 
@@ -386,7 +392,7 @@
 }
 
 .article-text .textbox-wrap {
-  border-radius: 4px;
+  border-radius: 20rpx;
   margin: 15rpx 0;
   overflow: hidden;
 }
@@ -537,12 +543,52 @@
 
 .active-class-tag {
   position: fixed;
-  right: 8rpx;
-  width: 150rpx;
-  height: 310rpx;
+  right: -24rpx;
+  width: 136rpx;
+  height: 290rpx;
   z-index: 10;
 }
+
 /* title头部 */
+
 .detail-title {
   margin-bottom: 30rpx;
+  font-size: 22rpx;
+}
+
+.no-reply {
+  width: 50vw;
+  height: 50vw;
+  display: block;
+  margin: 50rpx auto;
+}
+
+.zan-cai {
+  position: absolute;
+  right: 0;
+  top: 2rpx;
+  display: flex;
+  color: #bad8d8;
+}
+
+.zan-cai > view {
+  width: 36rpx;
+  text-align: center;
+  margin-left: 54rpx;
+  line-height: 28rpx;
+}
+
+.zan-cai image {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.image-lists {
+  margin-top: 28rpx;
+}
+
+.image-lists .lists {
+  width: 27vw;
+  height: 27vw;
+  border-radius: 20rpx;
 }

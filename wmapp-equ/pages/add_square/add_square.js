@@ -18,10 +18,14 @@ Page({
     type: 0, //视频1 图片2 文字0
     progress: 0,
     pic: 0,
-    
+    focus: false,
     pic_text: '',
+    page_index: 0,
+    page_size:  10,
+    thread: [],
     showProgress: false,
     heightMt: app.globalData.heightMt + 20 * 2,
+    height: app.globalData.windowHeight,
     navbarData: {
       showCapsule: 1, //是否显示左上角图标,
       hideShare: 1, //隐藏分享键
@@ -34,33 +38,44 @@ Page({
    */
   onLoad: function(options) {
     const that = this
-    if (options.type)
-      that.setData({
-        type: options.type
-      })
+
     if (options.typeid) {
       that.setData({
         typeid: options.typeid
       })
-    } 
-    that.getsClass() 
+    }
   },
-  // get_square_class.php
-  getsClass: function(){
+  
+  // 获取话题
+  // fid	否	int	0：默认全部广场分类 130：广场专题 133：直播专题
+  getsClass: function(e) {
     const that = this
+    let page_size = that.data.page_size
+    if (that.data.nomore_data)
+      return
+    let page_index = e ? that.data.page_index + 1 : 0
+  
     request('post', 'get_square_class.php', {
-      token: wx.getStorageSync('token')
-    }).then((res)=>{
-      if(res.err_code != 0)
+      token: wx.getStorageSync('token'),
+      fid: 130,
+      page_size: page_size,
+      page_index: e ? 0 : page_index
+    }).then((res) => {
+      if (res.err_code != 0)
         return
-      let thread = res.data.threadclass  
+      let res_thread = res.data.threadclass
+      let that_thread = that.data.thread
+      let thread = that_thread.length == 0 ? res_thread : that_thread.concat(res_thread)
       that.setData({
-        thread: thread
+        thread: thread,
+        page_index: page_index,
+        have_data: false,
+        nomore_data: thread.length < page_size ? true : false
       })
       let typeid = that.data.typeid
-      if (typeid) 
+      if (typeid)
         for (let i in thread) {
-          if(typeid == thread[i].typeid){
+          if (typeid == thread[i].typeid) {
             that.setData({
               pic_text: thread[i].name
             })
@@ -68,8 +83,38 @@ Page({
         }
     })
   },
+  scrolltolower(e) {
+    const that = this
+    if (that.data.have_data || that.data.nomore_data)
+      return
+    that.setData({
+      have_data: true
+    },
+      that.getsClass(true)
+    )
+    
+  },
+  topicTap(){
+    const that = this
+    that.setData({
+      topic_list: !that.data.topic_list
+    },()=>{
+      if(that.data.topic_list)
+        that.getsClass()
+    })
+  },
+  focusTap() {
+    this.setData({
+      focus: false
+    })
+  },
+  focusTaps(){
+    this.setData({
+      focus: true
+    })
+  },
   
-  addPic: function(e){
+  addPic: function(e) {
     const that = this
     let id = e.currentTarget.dataset.id
     let name = e.currentTarget.dataset.name
@@ -77,6 +122,7 @@ Page({
       typeid: id == that.data.typeid ? 0 : id,
       pic_text: id == that.data.typeid ? '' : name
     })
+    that.topicTap()
   },
   imageTap: function() {
     const that = this
@@ -86,9 +132,10 @@ Page({
       count: 9 - image_list.length,
       success(res) {
         let paths = res.tempFilePaths
-
+        that.setData({
+          loading_hidden: false
+        })
         for (let i in paths) {
-
           uploadFile('post', 'add_image.php', paths[i], 'myfile', {
             token: wx.getStorageSync("token")
           }).then((re) => {
@@ -103,6 +150,12 @@ Page({
             })
           })
         }
+        setTimeout(() => { 
+          that.setData({
+            loading_hidden: true
+          })
+        }, 120 * paths.length)
+       
       }
     })
   },
@@ -111,69 +164,93 @@ Page({
     const that = this
     let aid_list = []
     let video = ''
-  
+
     wx.chooseVideo({
       maxDuration: 20,
-      success(res) {
-       
-        let path = res.tempFilePath
-        let v_height = res.height
-        let v_width = res.width
-        const uploadTask = wx.uploadFile({
-          url: app.globalData.svr_url + 'add_video.php',
-          filePath: path,
-          name: 'myfile',
-          method: 'POST',
-          formData: {
-            token: wx.getStorageSync("token"),
-          },
-          success: function(resp) {
-            var resp_dict = JSON.parse(resp.data)
-            if (resp_dict.err_code == 0) {
+      success(re) {
 
-              let code = resp_dict.data.code
-              let url = resp_dict.data.read_file_url
-              aid_list.push(resp_dict.data.aid)
-            
-              that.setData({
-                aid_list: aid_list,
-                video: url,
-                v_height: v_height,
-                v_width: v_width,
-                loading_hidden: true
-              })
-            } else {
-              app.showErrModal('上传失败，请重新上传');
-              that.setData({
-                loading_hidden: true
-              })
-              uploadTask.abort()
-            }
-          },
-          fail: function(resp) {
-            app.showErrModal('上传失败，请重新上传');
-            that.setData({
-              loading_hidden: true,
-              showE: 0,
-            })
-            uploadTask.abort()
-          }
+        let path = re.tempFilePath
+        let v_height = re.height
+        let v_width = re.width
+        that.setData({
+          loading_hidden: false
         })
+        
+        uploadFile('post', 'add_video.php', path, 'myfile', {
+          token: wx.getStorageSync("token")
+        }).then((res) => {
+          if (res.err_code != 0)
+            return
+          let code = res.data.code
+          let url = res.data.read_file_url
+          aid_list.push(res.data.aid)
 
-        uploadTask.onProgressUpdate((res) => {
-          if (res.progress == 100) {
-            that.setData({
-              loading_hidden: true
-            })
-          } else{
-            that.setData({
-              loading_hidden: false
-            })
-          }
+          that.setData({
+            aid_list: aid_list,
+            video: url,
+            v_height: v_height,
+            v_width: v_width,
+            loading_hidden: true
+          })
+
         })
-
       }
     })
+    //     const uploadTask = wx.uploadFile({
+    //       url: app.globalData.svr_url + 'add_video.php',
+    //       filePath: path,
+    //       name: 'myfile',
+    //       method: 'POST',
+    //       formData: {
+    //         token: '69fdpj4qAftzUxFIl5PqKJDQNqkPqcQFumTOt4h6/WH5GhxTEmUeDf/27SJsaycH21MCpDVkRa6411d12g3Hc7H36XoOMIIS2BkJ3wGdqzjrgQUprmE9/DGBeW20b6Y7lXpeFEJGxLQVT8AEpzC6WD0PENLzsPJa/JS/3G1Rvhxm',
+    //       },
+    //       success: function(resp) {
+    //         var resp_dict = JSON.parse(resp.data)
+    //         if (resp_dict.err_code == 0) {
+
+    //           let code = resp_dict.data.code
+    //           let url = resp_dict.data.read_file_url
+    //           aid_list.push(resp_dict.data.aid)
+
+    //           that.setData({
+    //             aid_list: aid_list,
+    //             video: url,
+    //             v_height: v_height,
+    //             v_width: v_width,
+    //             loading_hidden: true
+    //           })
+    //         } else {
+    //           app.showErrModal('上传失败，请重新上传');
+    //           that.setData({
+    //             loading_hidden: true
+    //           })
+    //           uploadTask.abort()
+    //         }
+    //       },
+    //       fail: function(resp) {
+    //         app.showErrModal('上传失败，请重新上传');
+    //         that.setData({
+    //           loading_hidden: true,
+    //           showE: 0,
+    //         })
+    //         uploadTask.abort()
+    //       }
+    //     })
+
+    //     uploadTask.onProgressUpdate((res) => {
+    //       if (res.progress == 100) {
+    //         that.setData({
+    //           loading_hidden: true
+    //         })
+    //       } else{
+    //         that.setData({
+    //           loading_hidden: false
+    //         })
+    //       }
+    //     })
+
+    //   }
+    // })
   },
   videoMinusTap: function() {
     const that = this
@@ -291,9 +368,9 @@ Page({
     } else if (video) {
       attachment = 1
     }
-    if(aid_list_arr.length > 0)
+    if (aid_list_arr.length > 0)
       aid_list = aid_list_arr.join(',')
-    
+   
     request('post', 'add_square.php', {
       token: wx.getStorageSync('token'),
       message: message,
@@ -315,7 +392,7 @@ Page({
     })
   },
 
-  imageDel: function(e){
+  imageDel: function(e) {
     const that = this
     let index = e.currentTarget.dataset.idx
     let image_list = that.data.image_list

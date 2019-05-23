@@ -79,13 +79,13 @@ App({
                     iv: iv,
                     gender: gender
                   }).then((res) => {
-                    if(res.err_code != 0)
+                    if (res.err_code != 0)
                       return
                     wx.setStorage({
                       key: 'token',
                       data: res.data.token,
                     });
-                    
+
                     wx.setStorageSync('has_login', 1)
                     setTimeout(() => {
                       that.getUserInfo().then((res) => {
@@ -231,7 +231,7 @@ App({
       return def;
     }
   },
- 
+
   setTabBarBadge: function() {
     const that = this
     if (wx.getStorageSync("has_login") == 1) {
@@ -251,6 +251,17 @@ App({
         }
       })
     }
+  },
+  // 关注
+  followBtn: function(e) {
+    return new Promise(function(resolve, reject) {
+      request('post', 'add_follow.php', {
+        token: wx.getStorageSync("token"),
+        followuid: e.followuid,
+      }).then((res) => {
+        resolve(res)
+      })
+    })
   },
   wxGetUpdateManager: function() {
     const updateManager = wx.getUpdateManager()
@@ -380,16 +391,34 @@ App({
       })
     })
   },
+  previewImage(e) {
+    const that = this
+    let current = e.currentTarget.dataset.current
+    let list = e.currentTarget.dataset.list
+    wx.previewImage({
+      current: current, // 当前显示图片的http链接
+      urls: list // 需要预览的图片http链接列表
+    })
+  },
   toUserDetail: function(e) { //跳转到用户界面
     let uid = e.currentTarget.dataset.uid
     wx.navigateTo({
       url: `/user/pages/user_detail/user_detail?id=${uid}`,
     })
   },
+  picTap: function (e) {
+    const that = this
+    let id = e.currentTarget.dataset.typeid
+    let subject = e.currentTarget.dataset.class_name
+    let fid = e.currentTarget.dataset.fid
+    wx.navigateTo({
+      url: `/pages/square_pic/square_pic?id=${id}&subject=${subject}&fid=${fid}`
+    })
+  },
   globalData: {
     shareTitle: 'E区-新能源车主社区',
     base_url: 'http://www.e-power.vip/',
-    svr_url: 'https://api.mongo123.com/',
+    svr_url: 'https://api.mongo123.com/v1/',
     // svr_url: 'https://api.e-power.vip/',
     userInfo: null,
     lite_switch: false,

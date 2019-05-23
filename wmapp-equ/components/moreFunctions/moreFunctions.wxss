@@ -183,8 +183,8 @@ image {
 }
 
 .share-item image {
-  width: 104rpx;
-  height: 154rpx;
+  width: 84rpx;
+  height: 124rpx;
 }
 
 .btn-text {

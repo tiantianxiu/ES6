@@ -58,9 +58,7 @@ Page({
     //  E讯
     page_exun_index: 0,
     page_exun_size: 10,
-    // 广场
-    page_square_index: 0,
-    page_square_size: 10,
+   
     square_type: 0,
     square_order: 0,
 
@@ -176,7 +174,7 @@ Page({
         that.getExun(t)
     }
   },
-  
+
   onLoad: function(options) {
     const that = this
     if (options.tab) {
@@ -321,19 +319,26 @@ Page({
     that.data.distance = e.detail.x
     that.data.index = e.currentTarget.dataset.index
   },
+  // tabNav(e) {
+  //   const that = this
+  //   let tab = e.currentTarget.dataset.tab
+  //   if (tab == that.data.tab)
+  //     return
+  //   that.setData({
+  //     tab: tab
+  //   })
+  //   if (tab == 1){
+  //     if (that.data.square_thread.length == 0)
+  //       that.getSquare()
+  //   }
+  // },
   tabNav(e) {
     const that = this
     let tab = e.currentTarget.dataset.tab
-    if (tab == that.data.tab)
-      return
-    that.setData({
-      tab: tab
-    })
-    if (tab == 1){
-      if (that.data.square_thread.length == 0)
-        that.getSquare()
-    }
-
+    if (tab == 1)
+      wx.navigateTo({
+        url: '/pages/square/square'
+      })
   },
   /* 分享 */
   onShareAppMessage: function(res) {
@@ -402,7 +407,7 @@ Page({
     })
 
   },
-  dd: function(e) {},
+  // dd: function(e) {},
   exitFullScreen: function(e) {
     const that = this
     let pid = e.currentTarget.dataset.pid
@@ -726,41 +731,41 @@ Page({
     })
   },
   // 广场首页列表
-  getSquare(b) {
-    const that = this
- 
-    let page_index = b ? that.data.page_square_index + 1 : 0,
-      page_size = that.data.page_square_size,
-      type = that.data.square_type,
-      order = that.data.square_order
-    request('post', 'get_square.php', {
-      token: wx.getStorageSync("token"),
-      page_index: page_index,
-      page_size: page_size,
-      type: type,
-      typeid: 0,
-      order: order,
-    }).then((res) => {
-      that.setLoding(true)
-      if (res.err_code != 0)
-        return
-      let thread = res.data.thread
-      for (let i in thread) {
-        thread[i].time = transformPHPTime(thread[i].timestamp)
-      }
-      let square_thread = b ? that.data.square_thread.concat(thread) : thread
+  // getSquare(b) {
+  //   const that = this
 
-      that.setData({
-        square_thread: square_thread,
-        page_square_index: page_index
-      })
-      if (b)
-        that.setData({
-          have_square_data: false,
-          nomore_square_data: thread.length < that.data.page_size ? true : false
-        })
-    })
-  },
+  //   let page_index = b ? that.data.page_square_index + 1 : 0,
+  //     page_size = that.data.page_square_size,
+  //     type = that.data.square_type,
+  //     order = that.data.square_order
+  //   request('post', 'get_square.php', {
+  //     token: wx.getStorageSync("token"),
+  //     page_index: page_index,
+  //     page_size: page_size,
+  //     type: type,
+  //     typeid: 0,
+  //     order: order,
+  //   }).then((res) => {
+  //     that.setLoding(true)
+  //     if (res.err_code != 0)
+  //       return
+  //     let thread = res.data.thread
+  //     for (let i in thread) {
+  //       thread[i].time = transformPHPTime(thread[i].timestamp)
+  //     }
+  //     let square_thread = b ? that.data.square_thread.concat(thread) : thread
+
+  //     that.setData({
+  //       square_thread: square_thread,
+  //       page_square_index: page_index
+  //     })
+  //     if (b)
+  //       that.setData({
+  //         have_square_data: false,
+  //         nomore_square_data: thread.length < that.data.page_size ? true : false
+  //       })
+  //   })
+  // },
   getOnline: function() {
     const that = this
     let getOnline = app.getSt('getOnline') //精华帖子列表详情
@@ -808,7 +813,7 @@ Page({
       })
     })
   },
-  aaa(e){
+  aaa(e) {
     const that = this
     console.log(e)
   },
@@ -816,26 +821,26 @@ Page({
   onPageScroll(e) {
     const that = this
     // if(that.data.tab != 0)
-      return
+    return
     const query = wx.createSelectorQuery()
     if (that.data.tab != 0)
       return
     let scrollTop = e.scrollTop
-    const heightMt = app.globalData.heightMt + 20 * 2 
+    const heightMt = app.globalData.heightMt + 20 * 2
     if (that.data.index_list)
       return
     query.select('#index-list').boundingClientRect()
     query.selectViewport().scrollOffset()
     query.exec(function(res) {
       // #reply-title节点的上边界坐标
-      console.log(res[0].top , res[1].scrollTop)
+      console.log(res[0].top, res[1].scrollTop)
       let contenTop = res[0].top + res[1].scrollTop // 显示区域的竖直滚动位置
-      if (heightMt + scrollTop >= contenTop){
-      // if (res[0].top < 100)
+      if (heightMt + scrollTop >= contenTop) {
+        // if (res[0].top < 100)
         that.setData({
           index_list: true
         })
-      }else{
+      } else {
         that.setData({
           index_list: false
         })
@@ -850,7 +855,8 @@ Page({
   },
   toDetail: function(e) {
     const that = this
-    var tid = e.currentTarget.dataset.tid
+    let tid = e.currentTarget.dataset.tid
+    let fid = e.currentTarget.dataset.fid
     if (tid == 0)
       return
 
@@ -869,7 +875,12 @@ Page({
       })
       return
     }
-
+    if (fid == 130) {
+      wx.navigateTo({
+        url: '../square_detail/square_detail?tid=' + tid,
+      })
+      return
+    }
     wx.navigateTo({
       url: '../detail/detail?tid=' + tid,
     })
@@ -881,22 +892,13 @@ Page({
   onReachBottom() {
     const that = this
     let tab = that.data.tab
-    if (tab = 1) {
-      if (that.data.nomore_square_data || that.data.have_square_data)
-        return
-      that.setData({
-          have_square_data: true
-        },
-        that.getSquare(true)
-      )
-    }
+    
   },
   /* 下拉刷新 */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
     const that = this
     let tab = that.data.tab
-    if (tab = 1) 
-      that.getSquare()
+    
 
     wx.stopPullDownRefresh()
 

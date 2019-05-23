@@ -1,159 +1,180 @@
 <import src="/zanui/loadmore/index.wxml" />
 
+<!-- 授权登录框 -->
+<authorization showAuthorization="{{showAuthorization}}"></authorization>
 <view class="container-nopadding">
   <loading hidden="{{loading_hidden}}">
     {{loading_msg}}
   </loading>
   <navBar navbar-data="{{navbarData}}" bindsquareTap="squareTap" bindsquareLong="squareLong"></navBar>
-  <view class="page-body" style="margin-top:{{heightMt}}px">
+  <view class="page-bodys" style="margin-top:{{heightMt}}px">
 
-    <!-- 授权登录框 -->
-    <authorization showAuthorization="{{showAuthorization}}"></authorization>
 
-    <view class="slide-image-wrap slide-image-wrap-radius" id="topic-body-titel">
-      <view class="section-wrap">
-        <view class="topic-body-content">
-          <view class="square-header">
-            <view class="li">
-              <view class="title">热门围观</view>
-              <view class="content">
-                <view class="av" bindtap="picTap" data-typeid="67" data-class_name="#315专题#">
-                  <image src=http://cdn.e-power.vip/resources/image/square/square11.jpg " mode="aspectFill "></image>
+    <view class="section-title section-ext">
+      <text class="title">热门围观</text>
+      <view class="navigator-arrow" bindtap="moreForum"></view>
+    </view>
+    <scroll-view scroll-x="{{true}}" class="thread-class">
+      <view class="list" bindtap="picTap" data-typeid="{{item.typeid}}" data-class_name="{{item.name}}" wx:for="{{threadclass}}" data-fid="{{item.fid}}" wx:for-item="item" wx:key="{{index}}">
+        <image src="{{item.pic}}"></image>
+      </view>
+    </scroll-view>
+    <view class="square-line"></view>
+    <view class="container">
+      <view class="square-title {{showCate?'active':''}}" bindtap="cateTap">
+        {{square_name}}
+        <view class="square-cate light {{showCate?'active':''}}">
+          <block wx:for="{{cates}}" wx:for-item="cate" wx:key="{{index}}" wx:if="{{cate.type > 0}}">
+            <view class="li" hover-class="li-hover" bindtap="selectedCate" data-type="{{cate.type}}" data-name="{{cate.name}}">
+              {{cate.name}}
+            </view>
+          </block>
+        </view>
+      </view>
+      <view class="square-list">
+        <block wx:for="{{square_thread}}" wx:for-item="item" wx:key="{{index}}">
+          <view class="ad-image" wx:if="{{item.ad == 1}}" bindtap="previewImage" data-current="{{item.data}}" data-list="{{[item.data]}}">
+            <image src="{{item.data}}"></image>
+            <text>广告</text>
+          </view>
+          <view wx:else class="container-list" bindtap="toDetail" data-fid="{{item.fid}}" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}">
+            <view class="user-info">
+              <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
+                <image class="img" src="{{item.avatar}}"></image>
+                <view class="user-v" wx:if="{{item.is_auth_car_icon == 1}}"></view>
               </view>
-              <view class="av " bindtap="toTopicDetail " data-fid="120 ">
-                <image src="http://www.e-power.vip/data/attachment/common/da/common_120_icon.jpg " mode="aspectFill "></image>
-                </view>
-                <view class="av " bindtap="toTopicDetail " data-fid="109 ">
-                  <image src="http://www.e-power.vip/data/attachment/common/27/common_109_icon.jpg " mode="aspectFill "></image>
-              </view>
-              <view class="av " bindtap="toTopicDetail " data-fid="99 ">
-                <image src="http://www.e-power.vip/data/attachment/common/ac/common_99_icon.png " mode="aspectFill "></image>
-                </view>
+              <text>{{item.author}}</text>
+              <view class="hidden-text" hover-stop-propagation='ture' catchtap="operationTap" data-uid="{{item.authorid}}" data-index="{{index}}" wx:if="{{item.is_self != 1}}">
+                <image src="../../resources/image/common/third_point.png"></image>
               </view>
             </view>
-            <view class="li " wx:if="{{member.length>0}}">
-                    <view class="title">
-                      暗中观察
-                      <view class="sex">
-                        <image src="http://cdn.e-power.vip/resources/image/square/male.png" wx:if="{{gender==1 }}"></image>
-                        <image src="http://cdn.e-power.vip/resources/image/square/male_grey.png" wx:if="{{gender==2 }}" bindtap="setGender" data-gender="1"></image>
-                      </view>
-                      <view class="sex female">
-                        <image src="http://cdn.e-power.vip/resources/image/square/female.png" wx:if="{{gender==2 }}"></image>
-                        <image src="http://cdn.e-power.vip/resources/image/square/female_grey.png" wx:if="{{gender==1 }}" bindtap="setGender" data-gender="2"></image>
-                      </view>
-                      <view class="round" bindtap="setUserIndex" data-user_index="1">换一批</view>
-                    </view>
-                    <view class="content content-per">
+            <view class="square-content">
+              <!-- 视频 -->
+              <view class="image-list image-list-video {{item.video_heng_shu == 0 ? 'heng':''}}" wx:if="{{item.attachment == 1}}">
 
-                      <view class="av" wx:for="{{member}}" wx:for-item="item" wx:key="{{index}}">
-                        <image src="{{item.avatar}}" bindtap="toUserDetail" data-uid="{{item.uid}}" mode="aspectFill"></image>
-                      </view>
+                <image src="{{item.image_list[0]}}" mode="aspectFill" data-pid="{{item.pid + index}}">
+                  <view class="video-icon"></view>
+                </image>
+              </view>
 
-                    </view>
+              <!-- 问答或广场 - 图片单张 -->
+              <view class="image-list image-list1" wx:if="{{item.attachment == 2 && item.image_list.length == 1}}" catchtap="previewImage" data-current="{{item.image_list[0]}}" data-list="{{item.image_list}}" hover-stop-propagation='true'>
+                <image src="{{item.image_list[0]}}" mode="aspectFill" class="lists">
+                </image>
+              </view>
+
+              <!-- 图片多张 -->
+              <view class="image-list image-lists {{item.image_list.length == 4?'image-list4':''}}" wx:if="{{item.attachment == 2 && item.image_list.length > 1}}">
+                <block wx:for="{{item.image_list}}" wx:for-item="image" wx:key="{{index}}">
+                  <image src="{{image}}" mode="aspectFill" class="lists" hover-stop-propagation='true' catchtap="previewImage" data-current="{{image}}" data-list="{{item.image_list}}">
+                  </image>
+                </block>
+              </view>
+              <view class="message">
+                <view class='class-name' hover-stop-propagation='true' catchtap='picTap' data-fid="{{item.fid}}"  wx:if="{{item.class_name}}" data-typeid="{{item.typeid}}" data-class_name="{{item.class_name}}">{{item.class_name}}</view>
+                <rich-text nodes="{{item.mes_mores || item.mes_more || item.message}}"></rich-text>
+                <view class="more" wx:if="{{!item.mes_mores && item.mes_more}}"></view>
+              </view>
+              <view class="more-down" hover-stop-propagation='true' data-more="{{item.mes_more}}" data-message="{{item.message}}" data-index="{{index}}" catchtap="moreDown" wx:if="{{!item.mes_mores && item.mes_more}}">
+                <image src="../../resources/image/common/down.png"></image>
+              </view>
+              <view class="more-down" hover-stop-propagation='true' data-mores="{{item.mes_mores}}" data-more="{{item.more}}" data-index="{{index}}" catchtap="moreDown" wx:if="{{item.mes_mores}}">
+                <image src="../../resources/image/common/up.png"></image>
+              </view>
+
+              <view class="footer">
+                <view class="time">{{item.time}}</view>
+                <view class="view-reply">
+                  <view class="views">
+                    <image src="../../resources/image/common/replies.png"></image>
+                    <text>{{item.replies}}</text>
+                  </view>
+                  <view class="replies" hover-stop-propagation='true' catchtap="toZan" data-type="1" data-index="{{index}}" data-is_zan="{{item.is_zan}}" data-tid="{{item.tid}}" data-zan="{{item.zan}}" data-cai="{{item.cai}}">
+                    <image src="../../resources/image/common/zan_icons.png" wx:if="{{item.is_zan == 1}}"></image>
+                    <image src="../../resources/image/common/zan_grey.png" wx:else></image>
+                    <text>{{item.zan}}</text>
+                  </view>
+                  <view class="replies" hover-stop-propagation='true' catchtap="toZan" data-type="2" data-index="{{index}}" data-is_zan="{{item.is_zan}}" data-tid="{{item.tid}}" data-zan="{{item.zan}}" data-cai="{{item.cai}}">
+                    <image src="../../resources/image/common/cai_icons.png" wx:if="{{item.is_zan == 2}}"></image>
+                    <image src="../../resources/image/common/cai_grey.png" wx:else></image>
+                    <text>{{item.cai}}</text>
+                  </view>
                 </view>
               </view>
 
-              <block wx:for="{{thread}}" wx:for-item="item" wx:key="{{index}}">
-                <view class="list">
-                  <view class="author-info" data-uid="{{item.authorid}}" bindtap="toUserDetail">
-                    <view class="author">
-                      <image src="{{item.avatar}}" mode="aspectFill"  />
-                    </view>
-                    <image class="icon-width icon-width-l icon-v4" src="http://cdn.e-power.vip/resources/image/icon-v2.png" wx:if="{{item.level=='自媒体' || item.level=='新能源砖家' || item.is_carvip==1 || item.is_auth_car_icon==1 }}" />
-                    <view class="author-name">
-                      <text class="text-name">{{item.author}}</text>
-                      <text class="tag-item tag-green" wx:if="{{item.level !='车代表' && item.level !='' }}">{{item.level}}</text>
-                    </view>
-                    <view class="tag-item-wrap">
-                      <view wx:if="{{item.is_carvip==1 }}" class="tag-item tag-green">
-                        <image class="icon-v" src="http://cdn.e-power.vip/resources/image/icon-v.png" />车代表</view>
-
-                      <view wx:if="{{item.is_auth_car}}" class="tag-item tag-green">{{item.is_auth_car}}</view>
-                      <view class="e-power">
-                        <image src="http://cdn.e-power.vip/resources/image/e_power2.png" />
-                        <view class="exts">
-                          <text wx:for="{{item.extcredits2_arr}}" wx:for-item="ext_item" wx:key="{{index}}" class="index{{ext_item}}"></text>
-                        </view>
-                        <view class="du">度</view>
-                      </view>
-                    </view>
-                  </view>
-
-                  <view class="contents">
-
-                    <view class="message" bindtap="toDetail" data-tid="{{item.tid}}">
-                      <text wx:if="{{item.class_name}}" class="pic-class-text" hover-stop-propagation="{{true}}" catchtap="picTap" data-class_name="{{item.class_name}}" data-typeid="{{item.typeid}}">{{item.class_name}}</text> {{item.message_more || item.message}}
-                      <text class="message-more" wx:if="{{item.message_more}}">全文</text>
-                    </view>
-
-                    <view class="images" wx:if="{{item.image_list.length> 0}}">
-                      <block wx:for="{{item.image_list}}" wx:for-item="images" wx:key="{{index}}">
-                        <block wx:if="{{item.attachment == 1}}">
-                          <view class="images-for-image images-for-video" bindtap="toDetail" data-tid="{{item.tid}}">
-                            <image if="{{item.video}}" src="{{item.video}}"  data-pid="{{item.pid}}"></image>
-                            <view class="video-icon" wx:if="{{item.attachment == 1}}" data-pid="{{item.pid}}" ></view>
-                            <video id="myVideo{{item.pid}}" data-pid="{{item.pid}}" src="{{images}}" style=" z-index: 0;" autoplay="{{false}}" bindpause="pauseTap"  poster="{{item.video}}" bindended="exitFullScreen" enable-play-gesture="{{true}}"
-                              bindfullscreenchange="fullscreenchange" wx:if="{{showCoverId == item.pid}}">
-                            </video>
-                          </view>
-                        </block>
-                        <block wx:else>
-                          <view class="images-for-image" hover-stop-propagation="{{true}}" catchtap="imagesFor" data-image="{{images}}" wx:if="{{item.image_list.length==1}}">
-                            <image src="{{images}}" mode="aspectFill" ></image>
-                          </view>
-                          <view class="images-for" hover-stop-propagation="{{true}}" catchtap="imagesFor" data-images="{{item.image_list}}" data-url="{{images}}" wx:else>
-                            <image src="{{images}}" mode="aspectFill"></image>
-                          </view>
-                        </block>
-                      </block>
-                    </view>
-                    <view class="square-address" wx:if="{{item.address}}">{{item.address}}</view>
-                    <view class="topic-icon">
-                      <view class="square-address">
-                        <view wx:if="{{item.displayorder > 0}}" class="tag-top">置顶</view>
-                        {{item.timestamped}}
-                      </view>
-                      <image class="tozans" src="http://cdn.e-power.vip/resources/image/detail/tozans.png" bindtap="toZan" wx:if="{{item.is_zan==0 || item.is_zan==2}}" data-index="{{index}}" data-type="1" data-tid="{{item.tid}}" data-is_zan="{{item.is_zan}}">
-                        <text>{{item.zan}}</text>
-                      </image>
-                      <image class="tozans" src="http://cdn.e-power.vip/resources/image/detail/tozaneds.png" bindtap="toZan" wx:else data-index="{{index}}" data-type="1" data-tid="{{item.tid}}" data-is_zan="{{item.is_zan}}">
-                        <text>{{item.zan}}</text>
-                      </image>
-                      <image class="tozans" src="http://cdn.e-power.vip/resources/image/detail/tocais.png" bindtap="toZan" wx:if="{{item.is_zan==0 || item.is_zan==1}}" data-index="{{index}}" data-type="2" data-tid="{{item.tid}}" data-is_zan="{{item.is_zan}}">
-                        <text>{{item.cai}}</text>
-                      </image>
-                      <image class="tozans" src="http://cdn.e-power.vip/resources/image/detail/tocaieds.png" bindtap="toZan" wx:else data-index="{{index}}" data-type="2" data-tid="{{item.tid}}" data-is_zan="{{item.is_zan}}">
-                        <text>{{item.cai}}</text>
-                      </image>
-                      <image class="tozans" src="http://cdn.e-power.vip/resources/image/detail/toreplys.png" bindtap="toDetail" data-tid="{{item.tid}}">
-                        <text>{{item.replies}}</text>
-                      </image>
-                    </view>
-                    <view class="post" wx:if="{{item.post.length > 0}}" bindtap="toDetail" data-tid="{{item.tid}}">
-                      <view wx:for="{{item.post}}" wx:for-item="post" wx:key="{{index}}">
-                        <text>{{post.username}}： </text>{{post.message}}
-                      </view>
-                      <view class="message-more" wx:if="{{item.replies > 3}}">查看其他{{item.replies - 3}}条评论</view>
-                    </view>
-                  </view>
+              <view class="post-reply-list" wx:if="{{item.post.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}">
+                <view wx:for="{{item.post}}" wx:for-item="post" wx:key="{{index}}" wx:if="{{index < 3}}">
+                  <text>{{post.author}}：</text> {{post.message}}
                 </view>
-              </block>
+                <text>查看全部回复{{item.replies}}条</text>
+              </view>
+
             </view>
           </view>
-        </view>
+          <!-- idx - 1 ==index?'active':'' -->
+          <view class="interests {{idx - 1 ==index?'active':''}}">
+            <view class="square-line"></view>
+            <view class="section-title section-ext">
+              <text class="title">您可能感兴趣的人</text>
+              <view class="navigator-arrow" bindtap="moreForum"></view>
+            </view>
+            <!-- avatar : "https://api.mongo123.com//get_image.php?type=avatar&file_url=data/avatar/000/00/16/44_avatar_big.jpg" extcredits2 : "747" gender : "1" is_carvip : 1 is_follow : 0 is_ident_icon : 1 level : "宝马X1新能源" uid : "1644" username : "特仑姝" -->
+            <scroll-view scroll-x="{{true}}" class="thread-class">
+              <view class="list" wx:for="{{member}}" wx:for-item="item" wx:key="{{index}}">
 
-        <!-- 加载更多 -->
-        <template is="zan-loadmore" data="{{ loading: have_data}}"></template>
-        <!-- 没有更多的数据了 -->
-        <template is="zan-loadmore" data="{{ nomore :nomore_data}}"></template>
-        <!-- 返回顶部 -->
+                <view class="user-info">
+                  <image class="gender" wx:if="{{item.gender == 1}}" src="../../resources/image/common/male.png"></image>
+                  <image class="gender" wx:if="{{item.gender == 2}}" src="../../resources/image/common/female.png"></image>
+                  <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.uid}}">
+                    <image class="img" src="{{item.avatar}}"></image>
+                    <view class="user-v" wx:if="{{item.is_ident_icon == 1}}"></view>
+                  </view>
+                  <text>{{item.username}}</text>
+                  <view class="level">
+                    <view class="level-car">
+                      <image src="../../resources/image/common/car_vip.png" wx:if="{{item.is_carvip == 1}}"></image>
+                      {{item.is_auth_car || item.level}}
+                    </view>
+                  </view>
+                  <!-- is_follow 0:未关注 1：已关注 2：互相关注 3：自己 -->
+                  <view class="add-friend" hover-stop-propagation='true' data-uid="{{item.uid}}"  catchtap="addFollow" wx:if="{{item.is_follow != 3}}">
+                    <block wx:if="{{item.is_follow == 0}}">
+                      <image src="../../resources/image/common/add_friend.png" />关注
+                    </block>
+                    <block wx:elif="{{item.is_follow == 1}}">
+                      已关注
+                    </block>
+                     <block wx:else>
+                      互相关注
+                    </block>
+                  </view>
+                </view>
+
+              </view>
+            </scroll-view>
+            <view class="square-line"></view>
+          </view>
+        </block>
       </view>
     </view>
-    <view bindtap="squareTap" class="mask" wx:if="{{witchAdd}}">
-      <view class="add-list add-image" hover-stop-propagation="{{true}}" catchtap="squareLong" data-type="2">
-        <text>+</text> 添加图片</view>
-      <view class="add-list add-video" hover-stop-propagation="{{true}}" catchtap="squareLong" data-type="1">
-        <text>+</text> 添加视频</view>
+
+    <!-- 加载更多 -->
+    <template is="zan-loadmore" data="{{ loading: have_square_data}}"></template>
+    <!-- <template is="zan-loadmore" data="{{ loading: true}}"></template> -->
+    <!-- 没有更多的数据了 -->
+    <template is="zan-loadmore" data="{{ nomore: nomore_square_data}}"></template>
+    <!-- 返回顶部 -->
+    <view class="mask-transparent" bindtap="cateTap" wx:if="{{showCate}}"></view>
+    <view class="mask" wx:if="{{show_opera}}" bindtap="operationTap"></view>
+    <!--  -->
+    <view class="opera-list {{show_opera ? 'active':''}}">
+      <view class="li">
+        <view>私聊</view>
+        <view bindtap="addFollow">{{follow_text}}关注</view>
+        <view>不喜欢</view>
+      </view>
+      <view class="ol"></view>
+      <view class="li" bindtap="operationTap">取消</view>
     </view>
-    <squareRight bindsquareTap="squareTap" bindsquareLong="squareLong"></squareRight>
+  </view>
+</view>

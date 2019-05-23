@@ -6,10 +6,12 @@
     "pages/carOwner/carOwner",
     "pages/user/user",
     "pages/detail/detail",
+    "pages/replyForm/replyForm",
     "pages/topic_zone/topic_zone",
     "pages/dialogue/dialogue",
     "pages/add_square/add_square",
-    "pages/square_pic/square_pic"
+    "pages/square_pic/square_pic",
+    "pages/square_detail/square_detail"
   ],
   "subPackages": [
     {
@@ -82,11 +84,11 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#00c481",
+    "navigationBarBackgroundColor": "#b8d8d7",
     "navigationBarTitleText": "E区-新能源车主社区",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": false,
-    "backgroundColor": "#00c481",
+    "backgroundColor": "#b8d8d7",
     "navigationStyle": "custom"
   },
   "networkTimeout": {

@@ -3,250 +3,197 @@ import {
   request,
   transformPHPTime
 } from '../../utils/util.js'
+var Dec = require('../../utils/public.js');
 
 Page({
   data: {
 
     loading_hidden: true,
     loading_msg: '加载中...',
-    nomore_data: false,
-    page_size: 9,
-    page_index: 0,
-    user_size: 8,
-    user_index: 0,
-    witchAdd: false, //添加视频或者图片
-    showCoverId: 0,
+ 
+    square_thread: [],
+    // 广场
+    page_square_index: 0,
+    page_square_size: 10,
+
+    square_order: 0,
+    cates: [{
+        name: '最新',
+        type: 0
+      },
+      {
+        name: '关注',
+        type: 1
+      },
+      {
+        name: '美女',
+        type: 3
+      },
+      {
+        name: '帅哥',
+        type: 2
+      }
+    ],
+    follow_text: '',
     heightMt: app.globalData.heightMt + 20 * 2,
     navbarData: {
-      showCapsule: 0, //是否显示左上角图标,
+      shareImg: 1,
+      showCapsule: 1, //是否显示左上角图标,
       square: 1,
       title: '广场', //导航栏 中间的标题
     }
   },
   onLoad: function(options) {
     const that = this
-    that.reloadIndex();
+    that.reloadIndex()
+    Dec.Encrypt("需要加密的字符串")
+    Dec.Decrypt("KrzX7PeB5iUk6JKBUMR9eW6ai3Kd25Gl3JkQ==")
   },
 
   reloadIndex: function() {
     const that = this;
     that.setData({
-      loading_hidden: false
-    })
-    that.data.page_index = 0
-    that.data.user_index = 0
-    that.getSquare()
-    that.getWXUser()
-  },
-
-  //最新贴子
-  getSquare: function() {
-    const that = this
-    let fid = that.data.fid,
-      page_size = that.data.page_size,
-      page_index = 0
-    that.setData({
       loading_hidden: false,
-      loading_msg: '加载中...'
-    });
+      square_type: 0,
+      square_name: '最新'
+    })
+    that.data.page_square_index = 0
+    that.getSquareClass()
+  },
+  // 热门围观
+  getSquareClass() {
+    const that = this
+    request('post', 'get_square_class.php', {
+      token: wx.getStorageSync("token"),
+      page_size: 3,
+      page_index: 0
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      that.getSquare()
+      let threadclass = res.data.threadclass
+      for (let i in threadclass) {
+        threadclass[i].time = transformPHPTime(threadclass[i].dateline)
+      }
+      that.setData({
+        threadclass: threadclass
+      })
+    })
+  },
+  // 广场首页列表
+  getSquare(b) {
+    const that = this
+    let page_index = b ? that.data.page_square_index + 1 : 0,
+      page_size = that.data.page_square_size,
+      type = that.data.square_type,
+      order = that.data.square_order
     request('post', 'get_square.php', {
       token: wx.getStorageSync("token"),
-      page_size: page_size,
       page_index: page_index,
-      typeid: 0
+      page_size: page_size,
+      type: type,
+      typeid: 0,
+      order: order
     }).then((res) => {
       if (res.err_code != 0)
         return
       let thread = res.data.thread
       for (let i in thread) {
-        var extcredits2 = thread[i].extcredits2 + ''
-        var extcredits2_arr = extcredits2.split('')
-        thread[i].extcredits2_arr = extcredits2_arr
-
-        thread[i].timestamped = transformPHPTime(thread[i].timestamp)
-        if (thread[i].message.length > 40) {
-          thread[i].message_more = thread[i].message.substring(0, 40) + '...'
-        }
-        if (thread[i].video) {
-          that['videoContext' + thread[i].pid] = wx.createVideoContext('myVideo' + thread[i].pid)
-        }
+        thread[i].time = transformPHPTime(thread[i].timestamp)
+        if (thread[i].message && thread[i].message.length > 108)
+          thread[i].mes_more = thread[i].message.substr(0, 108)
 
       }
+      let square_thread = b ? that.data.square_thread.concat(thread) : thread
+
       that.setData({
-        thread: thread,
-        page_topicIndex: page_index,
-        loading_hidden: true,
-        loading_msg: '加载完毕',
-        have_data: thread.length < page_size ? false : true,
-        nomore_data: thread.length < page_size ? true : false
+        square_thread: square_thread,
+        page_square_index: page_index,
+        loading_hidden: true
       })
-    })
-  },
-  play: function(e) {
-    const that = this
-    let pid = e.currentTarget.dataset.pid
-    that.setData({
-        showCoverId: pid
-      },() => {
-        that['videoContext' + pid].play()
-        that['videoContext' + pid].requestFullScreen({
-          direction: 0
+      if (b)
+        that.setData({
+          have_square_data: false,
+          nomore_square_data: thread.length < that.data.page_size ? true : false
         })
-      })
-
+    })
   },
-  exitFullScreen: function(e) {
+  moreDown(e) {
     const that = this
-    // that.setData({
-    //   showCoverId: 0
-    // })
-    let pid = e.currentTarget.dataset.pid
-    if (e.detail.fullScreen != true) {
-      that['videoContext' + pid].stop()
+    let index = e.currentTarget.dataset.index
+    let more = e.currentTarget.dataset.more
+    let mores = e.currentTarget.dataset.mores
+    let message = e.currentTarget.dataset.message
+    if (mores) {
+      that.setData({
+        ['square_thread[' + index + '].mes_mores']: ''
+      })
       return
     }
-    that['videoContext' + pid].stop()
-    that['videoContext' + pid].exitFullScreen()
-  },
-  fullscreenchange: function(e) {
-    const that = this
-    let pid = e.currentTarget.dataset.pid
-    if (e.detail.fullScreen != true) {
-      that.setData({
-        showCoverId: 0
-      })
-      that['videoContext' + pid].stop()
-    }
-  },
-  picTap: function(e) {
-    const that = this
-    let id = parseInt(e.currentTarget.dataset.typeid)
-    let subject = e.currentTarget.dataset.class_name
-    wx.navigateTo({
-      url: `/pages/square_pic/square_pic?id=${id}&subject=${subject}`
-    })
-  },
-  // get_wx_user
-  getWXUser: function() {
-    const that = this
-    let user_index = that.data.user_index,
-      gender = that.data.gender || 2,
-      page_size = that.data.user_size
-
-    request('post', 'get_wx_user.php', {
-      token: wx.getStorageSync("token"),
-      gender: gender,
-      page_size: page_size,
-      page_index: user_index
-    }).then((res) => {
-      if (res.err_code != 0)
-        return
-      if (res.data.member.length == 0) {
-        that.data.user_index = 0
-        that.getWXUser()
-      }
-      that.setData({
-        member: res.data.member,
-        user_index: user_index,
-        gender: gender
-      })
-    })
-  },
-  setUserIndex: function(e) {
-    const that = this
-    that.data.user_index = that.data.user_index + 1
-    that.getWXUser()
-  },
-  setGender: function(e) {
-    const that = this
-    let gender = e.currentTarget.dataset.gender
     that.setData({
-      user_index: 0,
-      gender: gender
+      ['square_thread[' + index + '].mes_mores']: message
     })
-    that.getWXUser()
   },
-  onReachBottom: function() {
+  // 上拉加载
+  onReachBottom() {
     const that = this
-
-    let page_size = that.data.page_size
-    let page_index = that.data.page_index + 1
-
-    if (that.data.nomore_data == true)
-      return
-    request('post', 'get_square.php', {
-      token: wx.getStorageSync("token"),
-      page_size: page_size,
-      page_index: page_index
-
-    }).then((res) => {
-      let tmpThread = that.data.thread
-      let thread = res.data.thread
-      for (let i in thread) {
-        thread[i].timestamped = transformPHPTime(thread[i].timestamp)
-        var extcredits2 = thread[i].extcredits2 + ''
-        var extcredits2_arr = extcredits2.split('')
-        thread[i].extcredits2_arr = extcredits2_arr
-        if (thread[i].video) {
-          that['videoContext' + thread[i].pid] = wx.createVideoContext('myVideo' + thread[i].pid)
-        }
-        if (thread[i].message.length > 40) {
-          thread[i].message_more = thread[i].message.substring(0, 40) + '...'
-        }
-      }
-      let newThread = tmpThread.concat(thread)
+    let tab = that.data.tab
+    if (tab = 1) {
+      if (that.data.nomore_square_data || that.data.have_square_data)
+        return
       that.setData({
-        have_data: thread.length < page_size ? false : true,
-        thread: newThread,
-        page_index: page_index,
-        nomore_data: thread.length < page_size ? true : false,
-      })
-    })
+          have_square_data: true
+        },
+        that.getSquare(true)
+      )
+    }
   },
-
   // 点赞文章
   toZan: function(e) {
     const that = this
-    const i = e.currentTarget.dataset.index //1赞 2踩
     const type = e.currentTarget.dataset.type //1赞 2踩
-    const tid = e.currentTarget.dataset.tid //1赞 2踩
-    const is_zan = e.currentTarget.dataset.is_zan
-
+    const index = e.currentTarget.dataset.index //index
+    const is_zan = e.currentTarget.dataset.is_zan //index
+    const tid = e.currentTarget.dataset.tid //index
+    const zan = e.currentTarget.dataset.zan //index
+    const cai = e.currentTarget.dataset.cai //index
     that.isShowAuthorization().then((res) => {
       if (res == true) {
 
-        if (is_zan == 0) {
-          request('post', 'add_zan.php', {
-            token: wx.getStorageSync("token"),
-            tid: tid,
-            type: type
-          }).then((res) => {
-            if (res.err_code != 0)
-              return
+        request('post', 'add_zan.php', {
+          token: wx.getStorageSync("token"),
+          tid: tid,
+          type: type
+        }).then((res) => {
+          if (res.err_code != 0)
+            return
 
-            if (type == 1) {
-              this.setData({
-                [`thread[${i}]is_zan`]: 1,
-                [`thread[${i}]zan`]: parseInt(that.data.thread[i].zan) + parseInt(1)
-              })
-            } else {
-              this.setData({
-                [`thread[${i}]is_zan`]: 2,
-                [`thread[${i}]cai`]: parseInt(that.data.thread[i].cai) + parseInt(1)
-              })
-            }
-            wx.showToast({
-              title: res.data.credits ? '已评价，电量+' + res.data.credits : '评价成功！',
-              icon: 'success',
+          if (type == 1) {
+            that.setData({
+              ['square_thread[' + index + '].is_zan']: is_zan == type ? 0 : 1,
+              ['square_thread[' + index + '].zan']: is_zan == type ? parseInt(zan) - 1 : parseInt(zan) + 1,
+              ['square_thread[' + index + '].cai']: is_zan == 2 ? parseInt(cai) - 1 : cai
             })
-          })
-        } else {
-          wx.showToast({
-            title: '你已经评价过啦！',
-            icon: 'none',
-          })
-        }
+          } else {
+            that.setData({
+              ['square_thread[' + index + '].is_zan']: is_zan == type ? 0 : 2,
+              ['square_thread[' + index + '].cai']: is_zan == type ? parseInt(cai) - 1 : parseInt(cai) + 1,
+              ['square_thread[' + index + '].zan']: is_zan == 1 ? parseInt(zan) - 1 : zan
+            })
+          }
+
+        })
+
       }
+    })
+  },
+  picTap: function(e) {
+    const that = this
+    let id = e.currentTarget.dataset.typeid
+    let subject = e.currentTarget.dataset.class_name
+    let fid = e.currentTarget.dataset.fid
+    wx.navigateTo({
+      url: `/pages/square_pic/square_pic?id=${id}&subject=${subject}&fid=${fid}`
     })
   },
   toZone: function(e) {
@@ -260,14 +207,11 @@ Page({
     if (tid == 0) {
       return
     }
-    if (e.currentTarget.dataset.action)
-      wx.navigateTo({
-        url: `../detail/detail?tid=${tid}&action=reply`,
-      })
-
     wx.navigateTo({
-      url: `../detail/detail?tid=${tid}`,
+      url: `../square_detail/square_detail?tid=${tid}`
     })
+
+
   },
   /* 下拉刷新 */
   onPullDownRefresh: function() {
@@ -363,5 +307,117 @@ Page({
       }
     })
   },
+  previewImage(e) {
+    app.previewImage(e)
+  },
+  cateTap() {
+    const that = this
+    that.setData({
+      showCate: !that.data.showCate
+    })
+  },
+  selectedCate(e) {
+    const that = this
+    let type = e.currentTarget.dataset.type
+    let name = e.currentTarget.dataset.name
+    let square_type = that.data.square_type
+    if (type == square_type)
+      return
+    that.setData({
+        square_type: type,
+        square_name: name
+      },
+      () => {
+
+        that.setData({
+          loading_hidden: false
+        })
+        that.data.page_square_index = 0
+        that.getSquare()
+      }
+    )
+  },
+  isFollow() {
+    const that = this
+    request('post', 'is_follow.php', {
+      token: wx.getStorageSync('token'),
+      uid: that.data.uid
+    }).then((res) => {
+      if (!res || res.err_code != 0)
+        return
+      if (res.data.status == 1)
+        that.setData({
+          follow_text: '已'
+        })
+      if (res.data.status == 2)
+        that.setData({
+          follow_text: '互相'
+        })
+      if (res.data.status == 0)
+        that.setData({
+          follow_text: ''
+        })
+    })
+  },
+  operationTap(e) {
+    const that = this
+    if (e && e.currentTarget.dataset.uid) {
+      let uid = e.currentTarget.dataset.uid
+      let idx = e.currentTarget.dataset.index + 1
+      that.data.idx = idx
+      that.setData({
+        show_opera: true,
+        uid: uid
+      })
+      that.isFollow()
+    } else {
+      that.setData({
+        show_opera: false,
+        uid: 0,
+        index: 0
+      })
+    }
+  },
+  addFollow(e) {
+    const that = this
+    let uid = that.data.uid
+    if(e && e.currentTarget.dataset.uid)
+      uid = e.currentTarget.dataset.uid
+    request('post', 'add_follow.php', {
+      token: wx.getStorageSync('token'),
+      followuid: uid
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      that.operationTap()
+      wx.showToast({
+        title: res.data.msg,
+        icon: 'none'
+      })
+      if (res.data.status == 1){
+        that.getWxUser()
+      } else if (e.currentTarget.dataset.uid){
+        that.getWxUser()
+      }else{
+        that.setData({
+          idx: 0
+        })
+      }
+    })
+  },
+  getWxUser() {
+    const that = this
+    request('post', 'get_wx_user.php', {
+      token: wx.getStorageSync('token')
+    }).then((res) => {
+      if (res.err_code != 0)
+        return
+      that.setData({
+        member: res.data.member,
+        idx: that.data.idx
+      })
+    })
+  },
+  
 
 })

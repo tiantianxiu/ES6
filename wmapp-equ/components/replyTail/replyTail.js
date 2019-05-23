@@ -14,24 +14,19 @@ Component({
       type: Boolean,
       value: false
     },
-    articleId: {
+    
+    tid: { //文章tid
       type: String,
-      value: 0,
-    },
-
-    // 是否显示收藏
-    showFavorite: {
-      type: Boolean,
-      value: false
+      value: '',
     },
     idtype: {
       type: String,
       value: 'tid',
     },
-    is_favorite: { //收藏状态
-      type: String,
-      value: 0,
-    },
+   isreplyPost:{
+     type: Boolean,
+     value: false
+   },
     //点击回复是否显示另外一个回复框 
     isShowReplyForm: {
       type: Boolean,
@@ -51,26 +46,29 @@ Component({
       type: Number,
       value: 0,
     },
-
-    //是否显示回复条数
-    showReplies: {
-      type: Boolean,
-      value: false
+    cai: {
+      type: Number,
+      value: 0,
     },
     replies: {
       type: Number,
       value: 0,
     },
-
+    //是否显示回复条数
+    showReplies: {
+      type: Boolean,
+      value: false
+    },
+    showZan:{
+      type: Boolean,
+      value: false
+    },
     //是否显示踩  
     showCai: {
       type: Boolean,
       value: false
     },
-    cai: {
-      type: Number,
-      value: 0,
-    },
+    
     replyTop: {
       type: Number,
       value: 0
@@ -82,6 +80,10 @@ Component({
     hideSmiley: {  //是否隐藏表情
       type: Boolean,
       value: false
+    },
+    to_author:{
+      type: String,
+      value: ''
     }
   },
   data: {
@@ -91,7 +93,7 @@ Component({
     imageUrls: [],
     textContent: '',
     aidList: [],
-    vedioList: [],
+    bigCode: [],
     // 这里是一些组件内部数据
     loading_hidden: true,
     loading_msg: '加载中...',
@@ -153,48 +155,56 @@ Component({
                 focus: true,
                 message: ''
               })
-              return;
+              return
             }
+            let bigCode = that.data.bigCode
+            if(bigCode.length > 0)
+              for (let i in bigCode){
+                message += bigCode[i].code
+              }
+            
             var addPostDetail = {
               message: message,
               aidList: aidList,
               attachment: attachment
             } // detail对象，提供给事件监听函数 
-            this.triggerEvent('addPost', addPostDetail)
+            that.triggerEvent('addPost', addPostDetail)
           }
         })
       })
     },
-    // 收藏
-    clickFollow: function() {
-      var that = this
+    // 点赞文章
+    toZan: function (e) {
+      const that = this
+      const type = e.currentTarget.dataset.type //1赞 2踩
       that.isShowAuthorization().then((res) => {
         if (res == true) {
-          request('post', 'add_favorite.php', {
-            token: wx.getStorageSync("token"),
-            idtype: that.data.idtype,
-            id: that.data.articleId,
-            description: ''
-          }).then((r) => {
-            if (that.data.is_favorite == 0) {
-              wx.showToast({
-                title: '收藏成功！',
-                icon: 'success',
-              })
-              that.setData({
-                is_favorite: 1
-              })
-            } else {
-              wx.showToast({
-                title: '已取消收藏！',
-                icon: 'none',
-              })
-              that.setData({
-                is_favorite: 0
-              })
-            }
-            // that.reloadIndex()
-          });
+          var is_zan = that.data.is_zan
+
+            request('post', 'add_zan.php', {
+              token: wx.getStorageSync("token"),
+              tid: that.data.tid,
+              type: type
+            }).then((res) => {
+              if (res.err_code != 0)
+                return
+
+              if (type == 1) {
+                that.setData({
+                  is_zan: is_zan == type ? 0 : 1,
+                  zan: is_zan == type ? parseInt(that.data.zan) - 1 : parseInt(that.data.zan) + 1,
+                  cai: is_zan == 2 ? parseInt(that.data.cai) - 1 : that.data.cai
+                })
+              } else {
+                that.setData({
+                  is_zan: is_zan == type ? 0 : 2,
+                  cai: is_zan == type ? parseInt(that.data.cai) - 1 : parseInt(that.data.cai) + 1,
+                  zan: is_zan == 1 ? parseInt(that.data.zan) - 1 : that.data.zan
+                })
+              }
+             
+            })
+         
         }
       })
     },
@@ -249,18 +259,29 @@ Component({
           })
         }
       })
-
+    },
+    delSmil(e){
+      const  that = this
+      let index = e.currentTarget.dataset.index
+      // let code = e.currentTarget.dataset.code
+      let bigCode = this.data.bigCode
+      if (index < bigCode.length) 
+        bigCode.splice(index, 1)
+      that.setData({
+        bigCode: bigCode
+      })
+      console.log(bigCode)
     },
     delImg: function(e) {
-      var index = e.currentTarget.dataset.index;
-      var code = e.currentTarget.dataset.code;
-      var imageList = this.data.imageList;
-      var aidList = this.data.aidList;
+      var index = e.currentTarget.dataset.index
+      var code = e.currentTarget.dataset.code
+      var imageList = this.data.imageList
+      var aidList = this.data.aidList
       var imageUrls = this.data.imageUrls
       if (index < imageList.length) {
-        imageList.splice(index, 1);
-        aidList.splice(index, 1);
-        imageUrls.splice(index, 1);
+        imageList.splice(index, 1)
+        aidList.splice(index, 1)
+        imageUrls.splice(index, 1)
       }
       this.setData({
         imageList: imageList,
@@ -270,8 +291,16 @@ Component({
     },
     chooseImage: function(e) {
       const that = this
+      let imageList_length = that.data.imageList.length + that.data.bigCode.length
+      if (imageList_length >=4){
+        wx.showToast({
+          title: '不能超过4张',
+          icon: 'none'
+        })
+        return
+      } 
       wx.chooseImage({
-        count: 9,
+        count: 4 - imageList_length,
         // sizeType:["original"],
         success: function(res) {
           var tempFilePaths = res.tempFilePaths
@@ -301,6 +330,7 @@ Component({
                 }
                 var tmpObj = Object.assign(o1, o2, o3);
                 tmpImageList.push(tmpObj);
+                console.log(tmpImageList)
                 that.setData({
                   // loading_hidden: true,
                   aidList: tmpAidList,
@@ -448,16 +478,38 @@ Component({
     },
     chooseEmojiItem: function(e) {
       const that = this
-      if (that.data.touchEndTime - that.data.touchStartTime > 350) {
+      if (that.data.touchEndTime - that.data.touchStartTime > 350) 
+        return
+      const emojiCode = e.currentTarget.dataset.code
+
+      let typeid = e.currentTarget.dataset.typeid
+      if(typeid == 5){
+        let bigCode = that.data.bigCode
+        let imageList = that.data.imageList
+        if (bigCode.length + imageList.length >= 4){
+          wx.showToast({
+            title: '不能超过4张',
+            icon: 'none'
+          })
+          return
+        }
+        const url = e.currentTarget.dataset.url
+        let imageRes = { url: url, code: emojiCode }
+        bigCode.push(imageRes)
+        that.setData({
+          bigCode: bigCode
+        })
         return
       }
-      const emojiCode = e.currentTarget.dataset.code
+      
       let message = that.data.message
       message += emojiCode
+     
       that.setData({
-        message: message
+        message: message,
       })
     },
+
     bindfocus: function(e) {
       let that = this;
       let height = '';
@@ -488,6 +540,12 @@ Component({
         focus: false,
         showreplyForm: false
       })
+      that.triggerEvent('hideReplyForm') 
+    },
+    toReply(e){
+      const that = this
+      let myEventDetail = { id: '#reply-title' }
+      that.triggerEvent('scrollToBottom', myEventDetail) //myevent自定义名称事件，父组件中使用
     },
     resetData: function() { 
       const that = this
@@ -498,7 +556,7 @@ Component({
         imageUrls: [],
         textContent: '',
         aidList: [],
-        vedioList: [],
+        bigCode: [],
         message: '',
       })
     },
@@ -551,7 +609,7 @@ Component({
           emojiList: emojiList,
           emojiListGroup: emojiListGroup
         })
-
+        console.log(emojiList)
         app.putSt('emojiList', emojiList, 86400) //表情缓存set
         app.putSt('emojiListGroup', emojiListGroup, 86400) //表情缓存set
 
