@@ -11,6 +11,7 @@
     "pages/dialogue/dialogue",
     "pages/add_square/add_square",
     "pages/square_pic/square_pic",
+    "pages/hot_pic/hot_pic",
     "pages/square_detail/square_detail"
   ],
   "subPackages": [

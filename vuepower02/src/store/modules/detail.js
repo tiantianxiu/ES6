@@ -17,7 +17,7 @@ const actions = {
         state.tid = payload.tid
         return new Promise((resolve, reject) => {
             axios.get(
-                '/wmapi/get_post_detail.php',
+                '/wmapi/' + payload.url,
                 {
                     params: {'tid': payload.tid}
                 }
@@ -43,7 +43,7 @@ const actions = {
     getReplyList({dispatch}, payload) {
         return new Promise((resolve, reject) => {
             axios.get(
-                '/wmapi/get_post_detail_comment.php',
+                '/wmapi/' + payload.url,
                 {
                     params: {'tid': payload.tid, 'page_size': payload.page_size, 'page_index': payload.page_index,}
                 }

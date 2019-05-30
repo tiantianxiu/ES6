@@ -103,7 +103,7 @@
 					"id": 10,
 					"name": "贴子详情",
 					"pathName": "pages/detail/detail",
-					"query": "tid=11886",
+					"query": "tid=12017",
 					"scene": 1001
 				},
 				{
@@ -357,7 +357,7 @@
 					"id": 49,
 					"name": "广场详情",
 					"pathName": "pages/square_detail/square_detail",
-					"query": "tid=11930",
+					"query": "tid=12123",
 					"scene": null
 				}
 			]

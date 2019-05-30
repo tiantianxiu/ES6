@@ -367,6 +367,7 @@ Page({
           title: r.data.message,
           icon: 'none'
         })
+        
         that.setData({
           loading_hidden: true,
         })

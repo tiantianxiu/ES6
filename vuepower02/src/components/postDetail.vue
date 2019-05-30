@@ -4,14 +4,14 @@
             <div class="article section-wrap section-detail-wrap">
                 <div class="author-info">
                     <div class="author">
-                        <img :src="thread_data.author_avatar"/>
+                        <img :src="thread_data.author_avatar || thread_data.avatar"/>
                     </div>
 
                     <div class="author-name">
 
                         <span>{{thread_data.author}}</span>
                         <div class="icon1"
-                             v-if="thread_data.level=='自媒体' || thread_data.level=='新能源砖家' || thread_data.is_carvip == 1 || thread_data.is_auth_car_icon == 1">
+                             v-if="thread_data.level=='自媒体' || thread_data.level=='新能源砖家' || thread_data.is_carvip == 1 || thread_data.is_auth_car_icon == 1 || is_ident_icon ==1">
                             <img class="icon-width icon-width-l"
                                  src="http://cdn.e-power.vip/resources/image/icon-v2.png"/>
                         </div>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="ext">
                         <span>浏览：{{thread_data.views}}</span>
-                        {{thread_data.create_time}}
+                        {{thread_data.time}}
                     </div>
                 </div>
 
@@ -41,31 +41,47 @@
                 <div class="poll" v-if="poll">
                     <div class="title">投票: ( 最多可选 {{poll.maxchoices}} 项 ), 共有 {{poll.voters}} 人参与投票</div>
 
-                        <div class="is-vote" v-for="item in polloption">
-                            <div class="text">{{item.polloption}}</div>
-                            <div class="progress">
-                                <div class="progress_em">
-                                    <p :style="{'width': item.vote_rate}"></p>
-                                </div>
-                                <p>{{item.votes}}票 {{item.vote_rate}}</p>
+                    <div class="is-vote" v-for="item in polloption">
+                        <div class="text">{{item.polloption}}</div>
+                        <div class="progress">
+                            <div class="progress_em">
+                                <p :style="{'width': item.vote_rate}"></p>
                             </div>
+                            <p>{{item.votes}}票 {{item.vote_rate}}</p>
                         </div>
+                    </div>
 
                     <div class="poll-btn" @click="popover()">投票</div>
                 </div>
 
                 <div class="article-text article-detail-text" v-html="message" @click="tokenDetail">
                 </div>
-
-
+                <div class="textbox-wrap" v-if="thread_data.video">
+                    <div class="width-atuo tb-img">
+                        <video class="width-atuo" :poster="thread_data.image_list[0]" controls="">
+                            <source :src="thread_data.video" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="textbox-wrap" v-if="image_list_length > 0 && !thread_data.video">
+                    <div class="width-atuo tb-img">
+                        <img lazy-load="" @click="imagePreviews({index:index})" class="width-atuo" v-for="(image, index) in thread_data.image_list"
+                             :src="image" ></div>
+                </div>
             </div>
         </div>
 
+        <div class="section-title">
+          <span>
+            全部回复（{{thread_data.replies || page_indexs}}）
+          </span>
+        </div>
     </div>
 </template>
 
 <script>
     import wxapi from '../store/modules/wxapi'
+    import { transformPHPTime } from '../assets/js/util'
     const Lazyload = vant.Lazyload
     const ImagePreview = vant.ImagePreview
 
@@ -73,13 +89,13 @@
     export default {
         name: 'post-detail',
         components: {wxapi},
-
         data() {
             return {
                 tid: 10681,
                 thread_data: [],
-                message: ''
-
+                message: '',
+                url: 'get_post_detail.php',
+                image_list_length: 0
             }
         },
 
@@ -89,54 +105,62 @@
                 const that = this
                 that.$store.dispatch({
                     type: 'getPostDetail',
-                    tid: that.id
+                    tid: that.id,
+                    url: that.url
                 }).then((res) => {
-                    if (res.data.status == -1) {
-                        that.$emit('statusNeg')
-                        return
-                    }
-                    that.$store.dispatch({
-                        type: 'toast',
-                        hideToast: true
-                    })
+                        if (res.data.status == -1) {
+                            that.$emit('statusNeg')
+                            return
+                        }
+                        that.$store.dispatch({
+                            type: 'toast',
+                            hideToast: true
+                        })
+                        let thread_data = that.hidden == 3 ? res.data.thread : res.data.thread_data
+                        let message = thread_data.message
+                        if (message) {
+                            that.message = message.replace('<br />', '')
+                            that.getImgs(message)
+                        }
+                        if(thread_data.image_list && thread_data.image_list.length > 0) {
+                            that.image_list_length = thread_data.image_list.length
 
-                    let message = res.data.thread_data.message
-                    that.message = message.replace('<br />', '')
-                    that.thread_data = res.data.thread_data
-                    that.subject = res.data.thread_data.subject
-                    wxapi.wxRegister(that.wxRegCallback)
-                    that.getImgs(message)
+                        }
+                        thread_data.time = transformPHPTime(thread_data.dateline)
+                        that.thread_data = thread_data
+                        that.subject = thread_data.subject
+                        wxapi.wxRegister(that.wxRegCallback)
 
-                    if (res.data.poll) {
-                        let expiration = res.data.poll.expiration,
-                            timestamp = Date.parse(new Date()) / 1000,
-                            //当前时间
-                            remainder = 1
-                        if (expiration != 0)
-                            remainder = parseInt(expiration) - timestamp //是否为负数
-                        res.data.poll.remainder = remainder
-                        that.poll = res.data.poll
-                    }
-                    if (res.data.polloption) {
-                        for (let i = 0; i < res.data.polloption.length; i++) {
-                            let vote_rate = res.data.polloption[i].vote_rate,
-                                vote_rate_str = vote_rate.replace("%", "")
+                        if (res.data.poll) {
+                            let expiration = res.data.poll.expiration,
+                                timestamp = Date.parse(new Date()) / 1000,
+                                //当前时间
+                                remainder = 1
+                            if (expiration != 0)
+                                remainder = parseInt(expiration) - timestamp //是否为负数
+                            res.data.poll.remainder = remainder
+                            that.poll = res.data.poll
+                        }
+                        if (res.data.polloption) {
+                            for (let i = 0; i < res.data.polloption.length; i++) {
+                                let vote_rate = res.data.polloption[i].vote_rate,
+                                    vote_rate_str = vote_rate.replace("%", "")
 //                                vote_rate_str = vote_rate_str.split('.')[0] + '%'
 //                                console.log(vote_rate)
-                            res.data.polloption[i].vote_rate_str = vote_rate_str
+                                res.data.polloption[i].vote_rate_str = vote_rate_str
                             }
                             that.polloption = res.data.polloption,
                                 that.optionids = []
                         }
 
                     }
-                    )
+                )
             },
             wxRegCallback() {
                 this.ShareData()
             },
-            popover: function(){
-                this.$emit("pop-over",true)
+            popover: function () {
+                this.$emit("pop-over", true)
             },
             ShareData() {
                 let opstion = {
@@ -185,12 +209,29 @@
                         lazyLoad: true
                     })
                 }
-            }
+            },
+            imagePreviews(e){
+                const that = this
+                let index = e.index
+                let imgs = that.thread_data.image_list
+                ImagePreview({
+                    images: [
+                        ...imgs
+                    ],
+                    startPosition: index,
+                    lazyLoad: true
+                })
+            },
         },
-
         created(options) {
             const that = this
-            let id = this.$route.params.id
+            let id = that.$route.params.id
+            let hidden = that.$route.params.hidden || 0
+            if (hidden == 3) {
+                console.log(hidden)
+                that.url = 'get_square_detail.php'
+            }
+            that.hidden = hidden
             that.id = id
             that.getPostDetail()
         }
@@ -289,17 +330,17 @@
     }
 
     /* 投票 */
-.progress_em{
-    width: 80%;
-    background-color: #eee;
-    height: 4px;
-    vertical-align: middle;
-    margin: auto 4px auto 0;
-    p{
-        background-color: #00c481;
+    .progress_em {
+        width: 80%;
+        background-color: #eee;
         height: 4px;
+        vertical-align: middle;
+        margin: auto 4px auto 0;
+        p {
+            background-color: #00c481;
+            height: 4px;
+        }
     }
-}
 
     .poll {
         border: 1px solid #e0e0e0;

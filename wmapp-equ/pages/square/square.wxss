@@ -178,7 +178,9 @@
  padding-right: 0rpx;
   margin: 0 auto;
 }
-
+.thread-class .user-info .user-v {
+  right: 0;
+}
 .thread-class .level {
   position: static;
 }

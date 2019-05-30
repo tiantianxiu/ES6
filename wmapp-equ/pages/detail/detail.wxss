@@ -553,7 +553,7 @@
 
 .detail-title {
   margin-bottom: 30rpx;
-  font-size: 22rpx;
+  font-size: 26rpx;
 }
 
 .no-reply {

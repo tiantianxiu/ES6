@@ -7,40 +7,46 @@
     {{loading_msg}}
   </loading>
   <navBar navbar-data="{{navbarData}}" bindsquareTap="squareTap" bindsquareLong="squareLong"></navBar>
-  <view class="page-bodys" style="margin-top:{{heightMt}}px">
-
-
-    <view class="section-title section-ext" bindtap="hotTap">
-      <text class="title">热门围观</text>
-      <view class="navigator-arrow" bindtap="moreForum"></view>
-    </view>
-    <scroll-view scroll-x="{{true}}" class="thread-class">
-      <view class="list" bindtap="picTap" data-typeid="{{item.typeid}}" data-class_name="{{item.name}}" wx:for="{{threadclass}}" data-fid="{{item.fid}}" wx:for-item="item" wx:key="{{index}}">
-        <image src="{{item.pic}}"></image>
-      </view>
-    </scroll-view>
-    <view class="square-line"></view>
-    <view class="container">
-      <view class="square-title {{showCate?'active':''}}" bindtap="cateTap">
-        {{square_name}}
-        <view class="square-cate light {{showCate?'active':''}}">
-          <block wx:for="{{cates}}" wx:for-item="cate" wx:key="{{index}}" wx:if="{{cate.type > 0}}">
-            <view class="li" hover-class="li-hover" bindtap="selectedCate" data-type="{{cate.type}}" data-name="{{cate.name}}">
-              {{cate.name}}
+  <view class="page-bodys">
+    <view class="pic-banner">
+      <image src="{{banner}}" class="pic-banner-image" mode="aspectFill"></image>
+      <view class="container pic-title-content">
+        <view class="pic-title">{{class_name}}</view>
+        <view class="footer">
+          <view class="view-reply">
+            <view class="views">
+              <image src="../../resources/image/common/white-views.png"></image>
+              {{views}}
             </view>
-          </block>
+            <view class="replies">
+              <image src="../../resources/image/common/white-replies.png"></image>
+              {{replies}}
+            </view>
+          </view>
         </view>
+        <view class="description">{{description}}</view>
       </view>
-      <view class="square-list">
-        <block wx:for="{{square_thread}}" wx:for-item="item" wx:key="{{index}}">
-          <view class="ad-image" wx:if="{{item.ad == 1}}" bindtap="previewImage" data-current="{{item.data}}" data-list="{{[item.data]}}">
+    </view>
+    <view class="container" id="thread-content-cell">
+      <view class="square-title">
+        {{fid == 133? '全部直播':'最新'}}
+        <view class="square-title-border" wx:if="{{fid == 130}}"></view>
+      </view>
+      <view class="square-list" wx:if="{{fid == 133}}">
+        
+        <view class="order-inverse" bindtap="orderTap">
+          <image src="{{order?'../../resources/image/common/square-inverse.png':'../../resources/image/common/square-order.png'}}"></image>
+        </view>
+        <block wx:for="{{thread}}" wx:for-item="item" wx:key="{{index}}">
+          <view class="ad-image" wx:if="{{item.ad == 1}}">
             <image src="{{item.data}}"></image>
             <text>广告</text>
           </view>
           <view wx:else class="container-list" bindtap="toDetail" data-fid="{{item.fid}}" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}">
+          <view class="zhibo-line" ></view>
             <view class="user-info">
               <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
-                <image class="img" src="{{item.avatar}}"></image>
+                <image class="img" src="{{item.avatar}}" mode="aspectFill"></image>
                 <view class="user-v" wx:if="{{item.is_auth_car_icon == 1}}"></view>
               </view>
               <text>{{item.author}}</text>
@@ -71,7 +77,7 @@
                 </block>
               </view>
               <view class="message">
-                <view class='class-name' hover-stop-propagation='true' catchtap='picTap' data-fid="{{item.fid}}"  wx:if="{{item.class_name}}" data-typeid="{{item.typeid}}" data-class_name="{{item.class_name}}">{{item.class_name}}</view>
+                <view class='class-name' hover-stop-propagation='true' catchtap='picTap' data-fid="{{item.fid}}" wx:if="{{item.class_name}}" data-typeid="{{item.typeid}}" data-class_name="{{item.class_name}}">{{item.class_name}}</view>
                 <rich-text nodes="{{item.mes_mores || item.mes_more || item.message}}"></rich-text>
                 <view class="more" wx:if="{{!item.mes_mores && item.mes_more}}"></view>
               </view>
@@ -120,7 +126,7 @@
             </view>
             <!-- avatar : "https://api.mongo123.com//get_image.php?type=avatar&file_url=data/avatar/000/00/16/44_avatar_big.jpg" extcredits2 : "747" gender : "1" is_carvip : 1 is_follow : 0 is_ident_icon : 1 level : "宝马X1新能源" uid : "1644" username : "特仑姝" -->
             <scroll-view scroll-x="{{true}}" class="thread-class">
-              <view class="list" wx:for="{{member}}" wx:for-item="item" wx:key="{{index}}">
+              <view class="list" bindtap="picTap" data-fid="{{item.fid}}" data-class_name="{{item.name}}" data-typeid="{{item.typeid}}" wx:for="{{member}}" wx:for-item="item" wx:key="{{index}}">
 
                 <view class="user-info">
                   <image class="gender" wx:if="{{item.gender == 1}}" src="../../resources/image/common/male.png"></image>
@@ -137,14 +143,14 @@
                     </view>
                   </view>
                   <!-- is_follow 0:未关注 1：已关注 2：互相关注 3：自己 -->
-                  <view class="add-friend" hover-stop-propagation='true' data-uid="{{item.uid}}"  catchtap="addFollow" wx:if="{{item.is_follow != 3}}">
+                  <view class="add-friend" hover-stop-propagation='true' data-uid="{{item.uid}}" catchtap="addFollow" wx:if="{{item.is_follow != 3}}">
                     <block wx:if="{{item.is_follow == 0}}">
                       <image src="../../resources/image/common/add_friend.png" />关注
                     </block>
                     <block wx:elif="{{item.is_follow == 1}}">
                       已关注
                     </block>
-                     <block wx:else>
+                    <block wx:else>
                       互相关注
                     </block>
                   </view>
@@ -159,17 +165,17 @@
     </view>
 
     <!-- 加载更多 -->
-    <template is="zan-loadmore" data="{{ loading: have_square_data}}"></template>
+    <template is="zan-loadmore" data="{{ loading: have_data}}"></template>
     <!-- <template is="zan-loadmore" data="{{ loading: true}}"></template> -->
     <!-- 没有更多的数据了 -->
-    <template is="zan-loadmore" data="{{ nomore: nomore_square_data}}"></template>
+    <template is="zan-loadmore" data="{{ nomore: nomore_data}}"></template>
     <!-- 返回顶部 -->
     <view class="mask-transparent" bindtap="cateTap" wx:if="{{showCate}}"></view>
     <view class="mask" wx:if="{{show_opera}}" bindtap="operationTap"></view>
     <!--  -->
     <view class="opera-list {{show_opera ? 'active':''}}">
       <view class="li">
-        <view bindtap="dialogueTap">私聊</view>
+        <view>私聊</view>
         <view bindtap="addFollow">{{follow_text}}关注</view>
         <view>不喜欢</view>
       </view>

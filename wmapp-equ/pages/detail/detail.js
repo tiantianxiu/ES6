@@ -579,26 +579,27 @@ Page({
         icon: 'success',
         duration: 2000,
       })
-      let add_post_reply = r.data.reply
-      let articleList = that.data.articleList || []
-      add_post_reply["zan"] = 0
-      add_post_reply["cai"] = 0
-      add_post_reply["is_zan"] = 0
-      add_post_reply["is_add_post"] = 1
+      that.onShow()
+      // let add_post_reply = r.data.reply
+      // let articleList = that.data.articleList || []
+      // add_post_reply["zan"] = 0
+      // add_post_reply["cai"] = 0
+      // add_post_reply["is_zan"] = 0
+      // add_post_reply["is_add_post"] = 1
 
-      let extcredits2 = add_post_reply.extcredits2 + ''
-      add_post_reply.extcredits2_arr = extcredits2.split('')
+      // let extcredits2 = add_post_reply.extcredits2 + ''
+      // add_post_reply.extcredits2_arr = extcredits2.split('')
 
-      articleList.splice(0, 0, add_post_reply)
+      // articleList.splice(0, 0, add_post_reply)
 
-      that.setData({
-        articleList: articleList
-      })
-      setTimeout(() => {
-        that.setData({
-          'articleList[0]is_add_post': 0
-        })
-      }, 3000)
+      // that.setData({
+      //   articleList: articleList
+      // })
+      // setTimeout(() => {
+      //   that.setData({
+      //     'articleList[0]is_add_post': 0
+      //   })
+      // }, 3000)
       that.scrollToBottom({
         detail: {
           id: '#articleWrap'
@@ -643,15 +644,16 @@ Page({
     const pid = e.currentTarget.dataset.pid
     const focus = e.currentTarget.dataset.focus
     const tid = that.data.tid
+    const uppid = e.currentTarget.dataset.uppid
     that.isShowAuthorization().then((res) => {
       if (res == true) {
         if (focus) {
           wx.navigateTo({
-            url: `../replyForm/replyForm?pid=${pid}&tid=${tid}&focus=${focus}`
+            url: `../replyForm/replyForm?pid=${pid}&uppid=${uppid}&tid=${tid}&focus=${focus}`
           })
         } else {
           wx.navigateTo({
-            url: `../replyForm/replyForm?pid=${pid}&tid=${tid}`
+            url: `../replyForm/replyForm?pid=${pid}&tid=${tid}&uppid=${uppid}`
           })
         }
 

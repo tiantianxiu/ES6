@@ -10,7 +10,6 @@ Page({
     windowHeight:'',
     otherHeight:240,
 
-    plid:'',
     uid:'',
     dialogueList:'',
     type:2, //1:post 2:msg 3:system
@@ -25,10 +24,8 @@ Page({
  
   onLoad: function (options) {
     const that = this
-    const plid = options.plid
     const uid = options.uid  
     this.setData({
-      plid: plid,
       uid: uid
     })
     this.reloadIndex()
@@ -42,7 +39,7 @@ Page({
       });
     request('post','get_chat_msg.php',{
       token: wx.getStorageSync("token"),
-      plid: that.data.plid,
+      uid: that.data.uid,
     }).then((res)=>{
       that.setData({
         dialogueList:res.data,

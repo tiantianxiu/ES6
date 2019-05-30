@@ -10,7 +10,6 @@ Page({
 
     loading_hidden: true,
     loading_msg: '加载中...',
- 
     square_thread: [],
     // 广场
     page_square_index: 0,
@@ -188,13 +187,7 @@ Page({
     })
   },
   picTap: function(e) {
-    const that = this
-    let id = e.currentTarget.dataset.typeid
-    let subject = e.currentTarget.dataset.class_name
-    let fid = e.currentTarget.dataset.fid
-    wx.navigateTo({
-      url: `/pages/square_pic/square_pic?id=${id}&subject=${subject}&fid=${fid}`
-    })
+    app.picTap(e)
   },
   toZone: function(e) {
     var fid = e.currentTarget.dataset.fid;
@@ -418,6 +411,18 @@ Page({
       })
     })
   },
-  
+  hotTap(e){
+    const that = this
+    let id = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '/pages/hot_pic/hot_pic?id=' + id
+    })
+  },
+  dialogueTap(e){
+    let uid = this.data.uid
+    wx.navigateTo({
+      url: '/pages/dialogue/dialogue?uid=' + uid
+    })
+  }
 
 })

@@ -8,7 +8,7 @@
   </loading>
   <navBar navbar-data="{{navbarData}}" bindsquareTap="squareTap" bindsquareLong="squareLong"></navBar>
   <view class="page-bodys">
-    <view class="pic-banner" id="thread-content-cell">
+    <view class="pic-banner">
       <image src="{{banner}}" class="pic-banner-image" mode="aspectFill"></image>
       <view class="container pic-title-content">
         <view class="pic-title">{{class_name}}</view>
@@ -27,18 +27,23 @@
         <view class="description">{{description}}</view>
       </view>
     </view>
-    <view class="container">
+    <view class="container" id="thread-content-cell">
       <view class="square-title">
-        最新
-        <view class="square-title-border"></view>
+        {{fid == 133? '全部直播':'最新'}}
+        <view class="square-title-border" wx:if="{{fid != 133}}"></view>
       </view>
-      <view class="square-list">
+      <view class="square-list" >
+        
+        <view class="order-inverse" bindtap="orderTap">
+          <image src="{{order?'../../resources/image/common/square-inverse.png':'../../resources/image/common/square-order.png'}}"></image>
+        </view>
         <block wx:for="{{thread}}" wx:for-item="item" wx:key="{{index}}">
           <view class="ad-image" wx:if="{{item.ad == 1}}">
             <image src="{{item.data}}"></image>
             <text>广告</text>
           </view>
           <view wx:else class="container-list" bindtap="toDetail" data-fid="{{item.fid}}" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}">
+          <view class="zhibo-line" ></view>
             <view class="user-info">
               <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                 <image class="img" src="{{item.avatar}}" mode="aspectFill"></image>

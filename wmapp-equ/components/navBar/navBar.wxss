@@ -28,10 +28,12 @@
   font-size: 34rpx;
   color: #696d79;
   font-weight: 600;
+  
 }
 
 .transparent .nav-title {
   color: #fff;
+  text-shadow: 0 0 10rpx #83868d;
 }
 
 .nav-capsule {

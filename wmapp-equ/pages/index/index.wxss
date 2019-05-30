@@ -100,7 +100,6 @@
   height: 80rpx;
   position: relative;
   padding-right: 30rpx;
-  /* display: inline-block */
 }
 
 .avatar .img {
@@ -114,7 +113,7 @@
   width: 40rpx;
   height: 40rpx;
   position: absolute;
-  bottom: -2px;
+  bottom: -4rpx;
   right: 20rpx;
 }
 
@@ -167,8 +166,10 @@
 }
 
 .container-list {
-  margin-bottom: 42rpx;
+  padding-bottom: 42rpx;
+  position: relative;
 }
+
 
 .subject {
   color: #070c29;
@@ -223,7 +224,7 @@
 }
 
 .view-reply view {
-  width: 110rpx;
+  min-width: 110rpx;
   line-height: 40rpx;
   align-items: center;
   display: flex;
@@ -452,8 +453,7 @@ movable-view {
 .thread-class {
   width: 100%;
   padding-left: 30rpx;
-  /* overflow: hidden; */
-  /* overflow-x: hidden; */
+  /* overflow: hidden; *//* overflow-x: hidden; */
   white-space: nowrap;
   box-sizing: border-box;
 }
@@ -499,8 +499,6 @@ movable-view {
   width: 30rpx;
 }
 
-
-
 .square-line {
   width: 80%;
   margin: 30rpx auto;
@@ -508,7 +506,8 @@ movable-view {
 }
 
 .square-list {
-  padding: 40rpx 0;
+  margin-top: 40rpx;
+  padding: 0 0 40rpx;
 }
 
 .square-list .image-lists {
@@ -551,6 +550,8 @@ movable-view {
 
 .square-content {
   padding-left: 110rpx;
+  word-wrap: break-word;
+  word-break: normal;
 }
 
 .ad-image {

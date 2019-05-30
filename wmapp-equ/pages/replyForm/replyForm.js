@@ -12,7 +12,7 @@ Page({
 
     scrollTop: 0, //滑动高度
     page_index: 0,
-    page_size: 10,
+    page_size: 50,
 
     message: '',
     // 显示点赞需要的参数
@@ -49,10 +49,11 @@ Page({
     var that = this
     let pid = options.pid || 0
     let tid = options.tid || 0
+    let uppid = options.uppid || 0
     let focus = options.focus
     that.setData({
       pid: pid,
-      uppid: pid,
+      uppid: uppid,
       tid: tid
     })
     if (focus)
@@ -103,7 +104,7 @@ Page({
         loading_msg: '加载完成。',
         post_data: post_data,
         reply_data: reply,
-        to_author: post_data.author,
+        // to_author: post_data.author,
         reply_num: res.data.reply_num,
         have_data: data_length < page_size ? false : true,
         nomore_data: data_length < page_size ? true : false
@@ -130,8 +131,13 @@ Page({
       optionids: optionids
     })
   },
-
-
+  hideReplyForm(){
+    const that = this
+    that.setData({
+      to_author: '',
+      reply_pid: 0
+    })
+  },
   addPost: function(e) {
     const that = this
     const message = e.detail.message
@@ -144,19 +150,22 @@ Page({
     request('post', 'add_post.php', {
       token: wx.getStorageSync("token"),
       tid: that.data.tid,
-      uppid: that.data.uppid || 0,
-      reply_pid: that.data.pid || 0,
+      uppid: that.data.re_uppid || that.data.uppid,
+      reply_pid: that.data.reply_pid || that.data.pid,
       aid_list: aidList,
       message: message,
       attachment: attachment
     }).then((r) => {
       if (r.err_code != 0)
         return
+      that.selectComponent("#replyTail").resetData()
+      that.hideReplyForm()
       if (r.data.status == -1) {
         that.setData({
           loading_hidden: true
         })
         app.wxShowToast(r.data.message, 2000, 'none')
+        
         return
       }
       console.log(r.err_code)
@@ -173,8 +182,7 @@ Page({
         duration: 2000,
       })
       that.getComment()     
-
-      that.selectComponent("#replyTail").resetData()
+      
     });
   },
 
@@ -182,11 +190,11 @@ Page({
   replyComment: function(e) {
     const that = this
     const uppid = e.currentTarget.dataset.uppid
-    const reply_pid = e.currentTarget.dataset.pid
+    const pid = e.currentTarget.dataset.pid
     const author = e.currentTarget.dataset.author
     that.setData({
-      uppid: uppid,
-      pid: reply_pid,
+      re_uppid: uppid,
+      reply_pid: pid,
       to_author: author
     })
     

@@ -179,13 +179,13 @@
                         </view>
                       </view>
                       <view class="square-content">
-                        <rich-text class="article-text rich-text " nodes="{{item.message}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{true}}"></rich-text>
+                        <rich-text class="article-text rich-text " nodes="{{item.message}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{true}}" data-uppid="{{item.uppid}}"></rich-text>
                         <view class="image-lists">
                           <block wx:for="{{item.image_list}}" wx:for-item="img" wx:key="{{index}}">
                             <image src="{{img}}" bindtap="previewImage" data-current="{{img}}" data-list="{{item.image_list}}" class="lists"></image>
                           </block>
                         </view>
-                        <view class="post-reply-list" wx:if="{{item.reply.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}">
+                        <view class="post-reply-list" wx:if="{{item.reply.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}" data-uppid="{{item.uppid}}">
                           <view wx:for="{{item.reply}}" wx:for-item="reply" wx:key="{{index}}">
                             <text>{{reply.author}}：</text> {{reply.message}}
                           </view>
@@ -232,13 +232,13 @@
                         </view>
                       </view>
                       <view class="square-content">
-                        <rich-text class="article-text rich-text " nodes="{{item.message}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{true}}"></rich-text>
+                        <rich-text class="article-text rich-text " nodes="{{item.message}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{true}}" data-uppid="{{item.uppid}}"></rich-text>
                         <view class="image-lists">
                           <block wx:for="{{item.image_list}}" wx:for-item="img" wx:key="{{index}}">
                             <image src="{{img}}" bindtap="previewImage" data-current="{{img}}" data-list="{{item.image_list}}" class="lists"></image>
                           </block>
                         </view>
-                        <view class="post-reply-list" wx:if="{{item.reply.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}">
+                        <view class="post-reply-list" wx:if="{{item.reply.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}" data-uppid="{{item.uppid}}">
                           <view wx:for="{{item.reply}}" wx:for-item="reply" wx:key="{{index}}" wx:if="{{item.reply_num != 0}}">
                             <text>{{reply.author}}：</text> {{reply.message}}
                           </view>

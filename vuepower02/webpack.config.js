@@ -5,8 +5,9 @@ module.exports = {
     entry: './src/main.js',
     output: {
         path: path.resolve(__dirname, './dist'),
-        publicPath: '/dist/',
-        filename: 'build.js'
+        publicPath: '/mobile/dist/',
+        // publicPath: '/dist',
+        filename: 'mbuild.js'
     },
     externals: {
         vue: "Vue"

@@ -90,7 +90,11 @@
                       </view>
                     </view>
                     <view class="square-content" bindtap="replyComment" data-pid="{{item.pid}}" data-uppid="{{item.uppid}}" data-author="{{item.author}}">
-                      <rich-text class="article-text rich-text " nodes="{{item.message}}"></rich-text>
+                      <!-- <rich-text class="article-text rich-text" nodes="{{item.message}}"></rich-text> -->
+                      <text wx:if="{{item.reply_author}}" class="grey">回复{{item.reply_author}}：</text>
+                      <!-- <text class="article-text rich-text"> -->
+                      {{item.message}}
+                      <!-- </text> -->
                     </view>
                   </view>
                 </block>
@@ -111,10 +115,10 @@
     <authorization showAuthorization="{{showAuthorization}}"></authorization>
 
     <replyTail id="replyTail" bindshowAuthorization="showAuthorization" bindaddPost="addPost" focus="{{focus}}" message="{{message}}" zan="{{thread_data.zan}}" cai="{{thread_data.cai}}" replies="{{thread_data.replies}}" tid="{{tid}}" showFavorite="{{showFavorite}}"
-      hideSmiley="{{true}}" isreplyPost="{{true}}" idtype="{{idtype}}" is_favorite="{{is_favorite}}" isShowReplyForm="{{true}}" showCai="{{showCai}}" showZan="{{showZan}}" is_zan="{{thread_data.is_zan}}" bindscrollToBottom="scrollToBottom" to_author="{{to_author}}"></replyTail>
+      hideSmiley="{{true}}" isreplyPost="{{true}}" idtype="{{idtype}}" is_favorite="{{is_favorite}}" isShowReplyForm="{{true}}" showCai="{{showCai}}" showZan="{{showZan}}" is_zan="{{thread_data.is_zan}}" bindscrollToBottom="scrollToBottom" to_author="{{to_author || post_data.author}}" bindhideReplyForm="hideReplyForm"></replyTail>
 
-    <block wx:if="{{articleList.length > 0}}">
+    <!-- <block wx:if="{{articleList.length > 0}}">
 
-    </block>
+    </block> -->
   </view>
 </page>

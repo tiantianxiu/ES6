@@ -1,24 +1,17 @@
 <template>
     <div class="relay-list">
 
-
-        <div class="section-title">
-          <span>
-            全部回复（{{total_num}}{{page_indexs}}）
-          </span>
-        </div>
-
         <div class="section-body">
 
             <div class="article" v-for="item in post_list">
                 <div class="author-info">
                     <div class="author">
-                        <img :src="item.author_avatar"/>
+                        <img :src="item.author_avatar || item.avatar"/>
                     </div>
                     <div class="author-name">
                         <span>{{item.author}}</span>
                         <em class="tag-item tag-red" v-if="item.authorid == id">楼主</em>
-                        <div class="icon1" v-if="item.level=='自媒体' || item.level=='新能源砖家' || item.is_carvip == 1 || item.is_auth_car_icon == 1">
+                        <div class="icon1" v-if="item.level=='自媒体' || item.level=='新能源砖家' || item.is_carvip == 1 || item.is_auth_car_icon == 1 || is_ident_icon ==1">
                             <img class="icon-width icon-width-l"
                                  src="http://cdn.e-power.vip/resources/image/icon-v2.png"/>
                         </div>
@@ -35,13 +28,14 @@
                             <i>度</i>
                         </div>
                     </div>
-                    <div class="ext">{{item.position}}楼{{pageIndexFa}}</div>
+                    <!--<div class="ext">{{item.position}}楼{{pageIndexFa}}</div>-->
                 </div>
-                <div v-html="item.message">
-
+                <div class="reply_message" v-if="item.reply_author" v-html="'<span >回复' + item.reply_author +'：</span>' + item.message">
+                </div>
+                <div class="reply_message" v-else v-html="item.message">
                 </div>
                 <div class="article-ext-info">
-                    <span>{{item.create_time}}</span>
+                    <span>{{item.time}}</span>
                     <a @click="popover()" class="item more-function">
                         <div class="itemFunction">
                             <img class="icon-width" src="http://cdn.e-power.vip/resources/image/icon-text.png"/>
@@ -54,21 +48,16 @@
                             <div class="ext-no">{{item.cai}}</div>
                             <img class="ib-width" src="http://cdn.e-power.vip/resources/image/icon-cai.png"/>
                         </div>
-
                     </a>
                 </div>
             </div>
-
-
         </div>
-
-
     </div>
-
 
 </template>
 
 <script>
+    import { transformPHPTime } from '../assets/js/util'
 
     export default {
         name: 'reply-list',
@@ -82,7 +71,8 @@
                 page_index: 0,
                 total_num: 0,
                 post_list: [],
-                page_index_fa: 0
+                page_index_fa: 0,
+                url: 'get_post_detail_comment.php'
             }
         },
         computed: {
@@ -99,12 +89,16 @@
                 const that = this
                 that.$store.dispatch({
                     type: 'getReplyList',
+                    url: that.url,
                     tid: that.id,
                     page_size: that.page_size,
                     page_index: that.page_index
                 }).then((res) => {
-                    let res_post_list = res.data.post_list
-                    that.total_num = res.data.total_num
+                    let res_post_list = that.hidden == 3 ? res.data.post : res.data.post_list
+//                    that.total_num = res.data.total_num
+                    for(let i in res_post_list){
+                        res_post_list[i].time = transformPHPTime(res_post_list[i].dateline)
+                    }
                     let post_list = that.post_list
                     that.post_list = post_list.length == 0 ? res_post_list : post_list.concat(res.data.post_list)
 
@@ -120,6 +114,12 @@
         created(option) {
             const that = this
             let id = that.$route.params.id
+            let hidden = that.$route.params.hidden || 0
+            if(hidden == 3) {
+                console.log(hidden)
+                that.url = 'get_square_detail_comment.php'
+            }
+            that.hidden = hidden
             that.id = id
             that.getReplyList()
         }
@@ -127,6 +127,11 @@
 </script>
 
 <style lang="scss">
+    .reply_message{
+        span{
+            color: #cecfd3
+        }
+    }
     .relay-list {
         background-color: white;
 

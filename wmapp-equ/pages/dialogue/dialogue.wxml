@@ -37,6 +37,7 @@
   <!-- 授权登录框 -->
   <authorization showAuthorization="{{showAuthorization}}"></authorization>
 
-  <replyTail focus="{{focus}}" bindaddPost="addPost" message="{{message}}" articleId="{{aid}}" bindshowAuthorization="showAuthorization"></replyTail>
-  
+  <!-- <replyTail focus="{{focus}}" bindaddPost="addPost" message="{{message}}" articleId="{{aid}}" bindshowAuthorization="showAuthorization"></replyTail> -->
+    <replyQuest id="reply-quest" focus="{{focus}}" bindaddPost="addPost" bindshowAuthorization="showAuthorization" hasTall="{{true}}"></replyQuest>
+
 </view>
