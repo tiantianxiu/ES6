@@ -43,7 +43,7 @@
             <text>广告</text>
           </view>
           <view wx:else class="container-list" bindtap="toDetail" data-fid="{{item.fid}}" data-tid="{{item.tid}}" data-reputation_id="{{item.reputation_id}}">
-          <view class="zhibo-line" ></view>
+          <view class="zhibo-line" wx:if="{{fid == 133}}"></view>
             <view class="user-info">
               <view class="avatar" hover-stop-propagation="true" catchtap="toUserDetail" data-uid="{{item.authorid}}">
                 <image class="img" src="{{item.avatar}}" mode="aspectFill"></image>
@@ -108,7 +108,7 @@
                 </view>
               </view>
 
-              <view class="post-reply-list" wx:if="{{item.post.length > 0}}" bindtap="replyComment" data-pid="{{item.pid}}" data-focus="{{false}}">
+              <view class="post-reply-list" wx:if="{{item.post.length > 0}}">
                 <view wx:for="{{item.post}}" wx:for-item="post" wx:key="{{index}}" wx:if="{{index < 3}}">
                   <text>{{post.author}}：</text> {{post.message}}
                 </view>

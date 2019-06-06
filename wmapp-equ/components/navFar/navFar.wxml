@@ -1,5 +1,5 @@
-<view class="nav-far">
-  <view class="list {{navfarData.position == 'index'?'active':''}}">
+<view class="nav-far" >
+  <view class="list {{navfarData.position == 'index'?'active':''}}" bindtap="navTap" data-item="index">
     <image src="{{navfarData.position == 'index'?'../../resources/image/home.png':'../../resources/image/homes.png'}}"></image>
     <text>首页</text>
   </view>
@@ -32,8 +32,8 @@
     <image src="{{navfarData.position == 'find'?'../../resources/image/finds.png':'../../resources/image/finds.png'}}"></image>
     <text>发现</text>
   </view>
-  <view class="list {{navfarData.position == 'my'?'active':''}}">
-    <image src="{{navfarData.position == 'my'?'../../resources/image/my.png':'../../resources/image/mys.png'}}"></image>
-    <text>自己</text>
+  <view class="list {{navfarData.position == 'user'?'active':''}}" bindtap="navTap" data-item="user">
+    <image src="{{navfarData.position == 'user'?'../../resources/image/my.png':'../../resources/image/mys.png'}}"></image>
+    <text  >自己</text>
   </view>
 </view>

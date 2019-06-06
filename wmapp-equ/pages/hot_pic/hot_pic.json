@@ -2,8 +2,6 @@
   "enablePullDownRefresh": true,
   "onReachBottomDistance": 50,
   "usingComponents": {
-    "authorization": "../../components/authorization/authorization",
-    "navBar": "../../components/navBar/navBar",
-    "replyTail": "/components/replyTail/replyTail"
+    "navBar": "../../components/navBar/navBar"
   }
 }

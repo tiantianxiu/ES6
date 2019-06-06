@@ -278,6 +278,7 @@ App({
   },
   windowHeight: function(options) {
     var that = this
+    wx.hideTabBar({})//隐藏
     // 判断是否由分享进入小程序
     if (options.scene == 1011 || options.scene == 1012 || options.scene == 1013) {
       this.globalData.share = true
@@ -418,8 +419,8 @@ App({
   globalData: {
     shareTitle: 'E区-新能源车主社区',
     base_url: 'http://www.e-power.vip/',
-    // svr_url: 'https://api.mongo123.com/v1/',
-    svr_url: 'https://api.mongo123.com/',
+    svr_url: 'https://api.mongo123.com/v1/',
+    // svr_url: 'https://api.mongo123.com/',
     // svr_url: 'https://api.e-power.vip/',
     userInfo: null,
     lite_switch: false,

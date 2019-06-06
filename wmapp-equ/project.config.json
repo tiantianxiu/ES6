@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 49,
+			"current": 50,
 			"list": [
 				{
 					"id": 0,
@@ -358,6 +358,13 @@
 					"name": "广场详情",
 					"pathName": "pages/square_detail/square_detail",
 					"query": "tid=12123",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "热门围观",
+					"pathName": "pages/hot_pic/hot_pic",
+					"query": "",
 					"scene": null
 				}
 			]

@@ -1,7 +1,11 @@
 <!--user.wxml-->
 <navBar navbar-data="{{navbarData}}"></navBar>
 
-<view class="container bg-white" style="padding-top:{{heightMt}}px">
+ <view class="active-class-tag" style="top:{{heightMt}}px" wx:if="{{thread_data.class_typeid && thread_data.class_tag && is_share!=1}}">
+    <image src="{{thread_data.class_tag}}" data-typeid="{{thread_data.class_typeid}}" data-subject="{{thread_data.class_name}}" data-url="{{thread_data.class_url}}" bindtap="activeTap"></image>
+  </view>
+
+<view class="container bg-white" >
 
   <loading hidden="{{loading_hidden}}">
     {{loading_msg}}
@@ -125,3 +129,5 @@
     </view>
   </view>
 </view>
+
+<navFar navfar-data="{{navfarData}}"></navFar>
