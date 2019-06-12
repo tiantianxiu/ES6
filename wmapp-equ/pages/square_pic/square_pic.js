@@ -80,6 +80,7 @@ Page({
       if (res.err_code != 0)
         return
       let thread = res.data.thread
+        
       if (thread.length > 1)
         for (let i in thread) {
           if (!thread[i].ad) {
@@ -89,10 +90,10 @@ Page({
           }
         }
       that.setData({
-        order: that.data.order,
-        replies: res.data.replies,
-        views: res.data.views,
-        banner: res.data.banner,
+        order: that.data.order || 0,
+        replies: res.data.replies || 0,
+        views: res.data.views || 0,
+        banner: res.data.banner || '',
         class_name: res.data.name || '',
         description: res.data.description || '',
         thread: thread,

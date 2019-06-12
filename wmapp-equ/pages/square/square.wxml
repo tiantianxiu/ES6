@@ -12,7 +12,7 @@
 
     <view class="section-title section-ext" bindtap="hotTap">
       <text class="title">热门围观</text>
-      <view class="navigator-arrow" bindtap="moreForum"></view>
+      <view class="navigator-arrow"></view>
     </view>
     <scroll-view scroll-x="{{true}}" class="thread-class">
       <view class="list" bindtap="picTap" data-typeid="{{item.typeid}}" data-class_name="{{item.name}}" wx:for="{{threadclass}}" data-fid="{{item.fid}}" wx:for-item="item" wx:key="{{index}}">

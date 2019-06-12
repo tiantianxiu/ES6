@@ -158,6 +158,7 @@
 .image-list video {
   width: 100%;
   height: 100%;
+  border-radius:26rpx;
 }
 
 .image-list image {

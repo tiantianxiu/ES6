@@ -49,7 +49,6 @@
                 <!-- 视频 -->
                 <view class="image-list image-list-video" wx:if="{{thread_data.attachment == 1}}">
                   <video src="{{thread_data.video}}" data-pid="{{thread_data.pid + index}}" hover-stop-propagation="{{true}}" poster="{{thread_data.video}}"  direction="0" ></video>
-                 
                 </view>
                 
 

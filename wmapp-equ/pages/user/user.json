@@ -2,7 +2,7 @@
 	"navigationBarTitleText": "个人中心",
 	"usingComponents": {
     	"authorization": "../../components/authorization/authorization",
-      "navBar": "../../components/navBar/navBar"
+      "navBar": "../../components/navBar/navBar",
+      "navFar": "../../components/navFar/navFar"
   	}
-	
 }

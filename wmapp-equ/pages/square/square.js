@@ -64,7 +64,7 @@ Page({
     const that = this
     request('post', 'get_square_class.php', {
       token: wx.getStorageSync("token"),
-      page_size: 3,
+      page_size: 10,
       page_index: 0
     }).then((res) => {
       if (res.err_code != 0)

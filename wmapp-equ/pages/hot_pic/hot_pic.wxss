@@ -1,1 +1,57 @@
-@import '/pages/square/square';
+@import '../square/square.wxss';
+
+.hot-pic {
+  padding: 64rpx 0 0;
+}
+
+.hot-pic .li {
+  display: flex;
+  margin-bottom: 50rpx;
+}
+
+.hot-pic .li .pic-image {
+  border-radius: 20rpx;
+  width: 35vw;
+  height: 35vw;
+  box-shadow: 0 0 4px rgba(0,0,0,.2);
+}
+
+.hot-pic .li .hot-right {
+  flex: 1;
+  padding: 18rpx 0 18rpx 30rpx;
+  position: relative;
+}
+
+.hot-right .name {
+  font-weight: bold;
+  font-size: 32rpx;
+  line-height: 46rpx;
+  padding-bottom: 16rpx;
+  color: #070b28;
+}
+
+.hot-right .description {
+  font-size: 26rpx;
+  line-height: 46rpx;
+  color: #696c7d;
+  letter-spacing: 4rpx;
+  text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /* position: absolute;
+  bottom: calc(18rpx + 46rpx); */
+}
+.footer{
+  font-size: 24rpx;
+  /* position: absolute;
+  right: 0;
+  bottom: 18rpx;
+  width: calc(100% - 30rpx); */
+}
+.footer .time{
+  line-height:42rpx;
+}

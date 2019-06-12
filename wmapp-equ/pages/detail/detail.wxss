@@ -76,6 +76,9 @@
   border-top-left-radius: 30rpx;
   border-top-right-radius: 30rpx;
 }
+.thread_content-cell.no-cover{
+  margin: 0 4% 0;
+}
 
 /* 帖子详情封面图 */
 

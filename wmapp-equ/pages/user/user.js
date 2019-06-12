@@ -27,6 +27,9 @@ Page({
     navbarData: {
       showCapsule: 0, //是否显示左上角图标,
       title: '个人中心', //导航栏 中间的标题
+    },
+    navfarData: {
+      position: 'user'
     }
   },
   onLoad: function() {
@@ -45,43 +48,64 @@ Page({
       hasLogin: wx.getStorageSync("has_login")
     })
   },
-  reloadIndex: function() {
+  reloadIndex(){
     const that = this
-   
-    // if (that.data.hasLogin == 1) {
-    app.getUserInfo().then((res) => {
-      var bio
-      res.bio != '' ? bio = res.bio : bio = '该用户很懒，什么都没有留下'
-      let msg_status = parseInt(res.msg_status)
+    // 获取用户基本信息
 
-      that.setData({
-        userInfo: {
-          avatarUrl: res.avatar,
-          nickName: res.username,
-          uid: res.uid,
-          level: res.level,
-          extcredits2: res.extcredits2,
-          following: res.following,
-          follower: res.follower,
-          bio: bio,
-          msg_status: msg_status
-        },
+      request('post', 'get_user_info.php', {
+        token: wx.getStorageSync('token')
+        // uid: that.data.uid || 0
+      }).then((res) => {
+
+        var extcredits2 = res.data.extcredits2 + ''
+        var extcredits2_arr = extcredits2.split('')
+
+        that.setData({
+          hasUserInfo: true,
+          userInfo: {
+            thread: res.data
+          }
+        })
       })
-      msg_status = msg_status + ''
-      if (msg_status != 0) { //tarba"我的"消息提示
-        wx.setTabBarBadge({
-          index: 4,
-          text: msg_status
-        })
-      } else {
-        wx.removeTabBarBadge({
-          index: 4,
-        })
-      }
-
-    });
-    // }
+    
   },
+  // reloadIndex: function() {
+  //   const that = this
+   
+  //   // if (that.data.hasLogin == 1) {
+  //   app.getUserInfo().then((res) => {
+  //     var bio
+  //     res.bio != '' ? bio = res.bio : bio = '该用户很懒，什么都没有留下'
+  //     let msg_status = parseInt(res.msg_status)
+
+  //     that.setData({
+  //       userInfo: {
+  //         avatarUrl: res.avatar,
+  //         nickName: res.username,
+  //         uid: res.uid,
+  //         level: res.level,
+  //         extcredits2: res.extcredits2,
+  //         following: res.following,
+  //         follower: res.follower,
+  //         bio: bio,
+  //         msg_status: msg_status
+  //       },
+  //     })
+  //     msg_status = msg_status + ''
+  //     if (msg_status != 0) { //tarba"我的"消息提示
+  //       wx.setTabBarBadge({
+  //         index: 4,
+  //         text: msg_status
+  //       })
+  //     } else {
+  //       wx.removeTabBarBadge({
+  //         index: 4,
+  //       })
+  //     }
+
+  //   });
+  //   // }
+  // },
 
   selfLink: function(e) {
     const that = this

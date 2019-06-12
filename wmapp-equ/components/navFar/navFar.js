@@ -65,6 +65,12 @@ Component({
       that.setData({
         show_add: !that.data.show_add
       })
+    },
+    navTap(e){
+      const item = e.currentTarget.dataset.item
+      wx.switchTab({
+        url: `/pages/${item}/${item}`
+      })
     }
 
   }
